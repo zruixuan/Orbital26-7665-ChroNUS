@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import icon from "../assets/icon.png";
+import "@fontsource/quicksand";
+import "../styles/Login.css";
 
 function LoginPage() {
   const [email, setEmail] = useState("");//set the emial variable in order to let react know what users type in
@@ -24,11 +27,13 @@ function LoginPage() {
   // turn to the reghister page
   // turn to the reset passoword page
   return (
-    <div> 
-      <h1>Login</h1>
+    <div className="login-container"> 
+      <img src={icon} alt="ChroNUS Icon" className="logo" />
+
+      <h1 className="login-title">ChroNUS</h1>
 
       <label>Email</label> 
-      <input
+      <input className="login-input"
         type="email"
         placeholder="Enter your email"
         value={email}
@@ -38,7 +43,7 @@ function LoginPage() {
       <br />
 
       <label>Password</label> 
-      <input
+      <input className="login-input"
         type="password"
         placeholder="Enter your password"
         value={password}
@@ -47,13 +52,15 @@ function LoginPage() {
 
       <br />
 
-      <button onClick={handleLogin}>Login</button> 
+      <button className="login-button" onClick={handleLogin}>
+        Login
+      </button>
 
-      <p>
+      <p className="bottom-text">
         Don't have an account? <Link to="/register">Register</Link> 
       </p>
 
-      <p>
+      <p className="bottom-text">
         Forgot password? <Link to="/reset-password">Reset here</Link> 
       </p>
     </div>
