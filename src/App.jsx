@@ -1,10 +1,20 @@
+import { Routes, Route } from "react-router-dom";
+
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+
 function App() {
   return (
-    <div>
-      <h1>ChroNUS</h1>
-      <p>Orbital 2026 Project</p>
-    </div>
+    <Routes>
+      <Route path="/" element={<Login />} />
+
+      <Route path="/register" element={<Register />} />
+      
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      
+    </Routes>
   )
 }
 
-export default App
+export default App;
