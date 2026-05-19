@@ -1,24 +1,22 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
   const [email, setEmail] = useState("");//set the emial variable in order to let react know what users type in
   const [password, setPassword] = useState("");//set the password variable in order to let react know what users type in
-
+  const navigate = useNavigate();
 
   function handleLogin() {  //handle the case when one of them lost value
-    if (email === "") {
-      alert("Please enter your email");
-      return;
-    }
-
-    if (password === "") {
-      alert("Please enter your password");
+    if (email === "" || password === "") {
+      alert("Please enter both email and password");
       return;
     }
 
     console.log("Email:", email);
-    console.log("Password:", password);
+    console.log("Password:", password);// Example: navigate to a dashboard page after successful login
+    alert("Login successful! Navigating to dashboard...");
+    navigate("/dashboard");
   }
 
   // to input email and password, and set the value to the state variable, and update the state variable when user type in
