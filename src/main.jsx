@@ -1,4 +1,5 @@
 import "@fontsource/nunito";
+import "@fontsource/fredoka";
 
 import React from "react";
 import ReactDOM from "react-dom/client";

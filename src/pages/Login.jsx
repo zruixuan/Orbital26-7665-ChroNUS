@@ -61,7 +61,7 @@ function LoginPage() {
       </p>
 
       <p className="bottom-text">
-        Forgot password? <Link to="/reset-password">Reset here</Link> 
+        Forgot password? <Link to="/forgot-password">Reset here</Link> 
       </p>
     </div>
   );

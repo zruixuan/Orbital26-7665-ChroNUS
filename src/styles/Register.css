@@ -1,0 +1,304 @@
+/*title Area*/
+.register-title {
+  font-size: 52px;
+  margin-bottom: 22px;
+}
+
+.register-subtitle {
+  margin-top: -20px;
+  margin-bottom: 28px;
+
+  font-size: 18px;
+  color: #6f6660;
+
+  text-align: center;
+}
+
+.register-title {
+  font-size: 76px !important;
+
+  font-family: "Fredoka", sans-serif !important;
+
+  font-weight: 800;
+
+  letter-spacing: -2px;
+
+  line-height: 1;
+
+  color: #2b120c;
+
+  margin-bottom: 0px;
+
+  text-shadow:
+    0 3px 10px rgba(60, 25, 10, 0.10);
+}
+
+
+/*Form Card*/
+.register-form-card {
+  width: 500px;
+
+  padding: 32px 28px;
+
+  border-radius: 24px;
+
+  background: rgba(255, 248, 244, 0.65);
+
+  backdrop-filter: blur(100px);
+
+  border: 1px solid rgba(255, 255, 255, 0.45);
+
+  box-shadow:
+    0 20px 45px rgba(120, 70, 30, 0.14),
+    0 4px 12px rgba(255, 255, 255, 0.25) inset;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.register-label {
+  width: 420px;
+
+  margin-bottom: 8px;
+
+  font-size: 15px;
+  font-weight: 800;
+  color: #2a1008;
+
+  text-align: left;
+}
+
+
+/*Normal Input*/
+.register-input-wrapper {
+  width: 420px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 14px;
+
+  border-radius: 14px;
+
+  background: rgba(255,255,255,0.72);
+
+  border: 1.5px solid #ffd7bf;
+
+  box-sizing: border-box;
+
+  margin-bottom: 18px;
+}
+
+.register-icon {
+  font-size: 18px;
+
+  color: #9b8b82;
+
+  margin-right: 10px;
+}
+
+.register-input {
+  flex: 1;
+
+  height: 100%;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  font-size: 16px;
+  padding: 0;
+  margin: 0;
+
+  box-sizing: border-box;
+}
+
+.register-input-wrapper .register-input {
+  width: 100%;
+  height: 100%;
+
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+
+  background: transparent !important;
+
+  border-radius: 0 !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  font-size: 16px;
+}
+
+
+/*Verification Code Row*/
+.register-code-row {
+  width: 420px;
+
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  margin-bottom: 18px;
+}
+
+.register-code-input-wrapper {
+  width: 310px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 14px;
+
+  border-radius: 14px;
+
+  background: rgba(255,255,255,0.72);
+
+  border: 1.5px solid #ffd7bf;
+
+  box-sizing: border-box;
+}
+
+.register-code-input {
+  flex: 1;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  font-size: 16px;
+
+  padding: 0;
+  margin: 0;
+}
+
+.register-code-button {
+  width: 100px;
+  height: 46px;
+
+  padding: 0;
+
+  box-sizing: border-box;
+
+  border-radius: 14px;
+
+  background: white;
+
+  color: #ff7a2f;
+
+  border: 1.5px solid #ff7a2f;
+
+  font-weight: 800;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.register-code-button:hover {
+  background: #fff4ec;
+}
+
+
+/*Focus Animation*/
+.register-input-wrapper,
+.register-code-input-wrapper {
+  transition: 0.25s;
+}
+
+.register-input-wrapper:focus-within,
+.register-code-input-wrapper:focus-within {
+
+  border-color: #ff8a3d;
+
+  box-shadow:
+    0 0 0 4px rgba(255, 138, 61, 0.12),
+    0 8px 18px rgba(255, 138, 61, 0.12);
+
+  transform: translateY(-1px);
+}
+
+
+/*Password Eye Icon*/
+.password-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #9b8b82;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.password-toggle:hover {
+  color: #ff8a3d;
+}
+
+
+/*Register Button*/
+.register-button {
+  width: 420px;
+  height: 46px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  background: linear-gradient(to right, #ff8a3d, #ff6726);
+
+  color: white;
+
+  font-size: 16px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.register-button:hover {
+  transform: translateY(-1px);
+
+  box-shadow: 0 8px 18px rgba(255, 122, 47, 0.25);
+}
+
+
+/*Login Text*/
+.register-small-text {
+  margin-top: 12px;
+
+  text-align: center;
+
+  font-size: 16px;
+  color: #7b6f78;
+}
+
+.register-small-text a {
+  margin-left: 6px;
+
+  color: #ff6726;
+
+  font-weight: 800;
+
+  text-decoration: none;
+
+  transition: 0.2s;
+}
+
+.register-small-text a:hover {
+  color: #ff8a3d;
+
+  text-decoration: underline;
+}

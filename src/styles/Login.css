@@ -13,17 +13,16 @@ html, body, #root {
   mix-blend-mode: multiply;
 }
 .login-title {
-  font-size: 108px;
+  font-size: 128px ;
   font-weight: 900;
   color: #2b1d16;
   margin-bottom: 70px;
-  letter-spacing: -2px;
+  letter-spacing: 2px;
   text-shadow: 
     0 0 100px rgba(255, 180, 120, 0.35);
     -webkit-text-stroke: 4px #2b140d;
-  font-family: "Quicksand", sans-serif;
+  font-family: "Fredoka", sans-serif;
   
-  transform: skew(-5deg);
 }
 .login-container {
     min-height: 100vh;
