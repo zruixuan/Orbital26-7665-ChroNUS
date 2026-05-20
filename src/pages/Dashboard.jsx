@@ -1,100 +1,85 @@
+/* src/pages/Dashboard.jsx */
+
 import { useState } from "react";
 import { Link } from "react-router-dom"; 
+import styles from "./Dashboard.module.css";
+import NavBar from "../components/NavBar";
+import TimelineItem from "../components/TimelineItem";
+
+
 
 function Dashboard() {
   // Get local time and tranfer to present date
   // To be used to check if an event is due today
-  const today = new Date().toISOString().split('T')[0];
+  const now = new Date();
+  const today = now.toISOString().split('T')[0];
+  
+  const currentHours = String(now.getHours()).padStart(2, '0');
+  const currentMinutes = String(now.getMinutes()).padStart(2, '0');
+  const currentTime = `${currentHours}:${currentMinutes}`;
+
 
   // Task Management
+  // Support tasks and events
   const [tasks, setTasks] = useState([
-    // Mock tasks
     //TO BE MODIFIED
-    { id: 1, title: "Finish CS2040S PS6", deadline: "2026-05-25", status: "pending" },
-    { id: 2, title: "CS2040 Lecture Review", deadline: "2026-05-22", status: "completed" },
-    { id: 3, title: "CP2106 Orbital Mission Control #2", deadline: today, status: "pending" },
-    { id: 4, title: "CP2106 Orbital Web app development: Implement Dashbord feature", deadline: today, status: "pending" }
+
+    // Mock tasks and events
+    { id: 1, type: "task", title: "Finish CS2040S PS6", date: today, deadline: "23:59", status: "pending" },
+    { id: 2, type: "task", title: "CS2040 Lecture Review", date:today, deadline: "14:00", status: "completed" },
+    { id: 3, type: "event", title: "CP2106 Orbital Mission Control #2", date: today, startTime: "10:00", endTime: "12:00"},
+    { id: 4, type: "task", title: "CP2106 Orbital Web app development: Implement Dashbord feature", date:today, deadline: "16:00", status: "pending" }
   ]);
 
   // Data Filtering
   // Only display tasks that is due today on the dashboard
-  const todaysTasks = tasks.filter(task => task.deadline === today);
+  const todaysTimeline = tasks
+    .filter(task => task.date === today)
+    .sort((a, b) => {
+      const timeA = a.type === "event" ? a.startTime : a.deadline;
+      const timeB = b.type === "event" ? b.startTime : b.deadline;
+      return timeA.localeCompare(timeB);
+    });
+
+    // Visual State Resolver
+    const isFinished = (item) => {
+      if (item.type === "task") {
+        return item.status === "completed";
+      }
+      if (item.type === "event") {
+        return item.endTime < currentTime;
+      }
+      return false;
+    };
 
   // Component Render
   return (
-    <div style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif", backgroundColor: "#f5f5f7", minHeight: "100vh", margin: "-20px" }}>
+    <div className={styles.dashboardContainer}>
       
-      {/* Global Navigation Bar (Center-aligned) */}
-      <nav style={{ 
-        backgroundColor: "rgba(0, 0, 0, 0.8)", 
-        backdropFilter: "saturate(180%) blur(20px)",
-        display: "flex", 
-        justifyContent: "center", 
-        gap: "40px", 
-        padding: "14px 0", 
-        position: "sticky", 
-        top: 0, 
-        zIndex: 100 
-      }}>
-        <span style={{ color: "#f5f5f7", fontSize: "14px", fontWeight: "600", cursor: "pointer" }}>ChroNUS</span>
-        <span style={{ color: "#a1a1a6", fontSize: "14px", cursor: "pointer", transition: "color 0.3s" }}>Today</span>
-        <span style={{ color: "#a1a1a6", fontSize: "14px", cursor: "pointer" }}>All Tasks</span>
-        <span style={{ color: "#a1a1a6", fontSize: "14px", cursor: "pointer" }}>Timer</span>
-        <span style={{ color: "#a1a1a6", fontSize: "14px", cursor: "pointer" }}>Weekly Reflection</span>
-        <span style={{ color: "#a1a1a6", fontSize: "14px", cursor: "pointer" }}>Settings</span>
+      {/* Use the Navigation Bar */}
+      <NavBar />
 
-
-      </nav>
-
-      {/* Main Content */}
-      <main style={{ maxWidth: "800px", margin: "60px auto", padding: "0 20px" }}>
+      <main style={{ maxWidth: "600px", margin: "40px auto", padding: "0 20px" }}>
         
-        <header style={{ textAlign: "center", marginBottom: "50px" }}>
-          <h1 style={{ fontSize: "2rem", fontWeight: "700", letterSpacing: "-0.015em", margin: "0 0 10px 0" }}>
-            Focus on Today.
-          </h1>
-          <p style={{ color: "#86868b", fontSize: "1.2rem", margin: 0, paddingTop: "20px" }}>
-            Master your time. Master your mods.
-          </p>
+        <header style={{ marginBottom: "40px" }}>
+          <h1 style={{ fontSize: "2.5rem", fontWeight: "700", margin: "0 0 5px 0" }}>Timeline</h1>
+          <p style={{ color: "#86868b", fontSize: "1.1rem", margin: 0, paddingTop: "20px" }}>{today}</p>
         </header>
 
-        {/* Dashboard: Today's Tasks */}
-        <section style={{ backgroundColor: "#ffffff", padding: "30px", borderRadius: "18px", boxShadow: "0 4px 6px rgba(0,0,0,0.02), 0 10px 15px rgba(0,0,0,0.03)" }}>
-          
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-            <h2 style={{ margin: 0, fontSize: "1.5rem", fontWeight: "600" }}>Tasks for {today}</h2>
-            <button style={{ backgroundColor: "#0071e3", color: "white", border: "none", padding: "8px 16px", borderRadius: "20px", fontSize: "14px", fontWeight: "500", cursor: "pointer" }}>
-              + New Task
-            </button>
-          </div>
-
-          <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
-            {todaysTasks.length > 0 ? (
-              todaysTasks.map(task => (
-                <li 
-                  key={task.id} 
-                  style={{ 
-                    display: "flex",
-                    alignItems: "center",
-                    textDecoration: task.status === "completed" ? "line-through" : "none",
-                    color: task.status === "completed" ? "#86868b" : "#1d1d1f",
-                    padding: "16px 0",
-                    borderBottom: "1px solid #d2d2d7",
-                    fontSize: "1.1rem"
-                  }}
-                >
-                  {/* Checkbox */}
-                  <div style={{ width: "20px", height: "20px", borderRadius: "50%", border: "2px solid #0071e3", marginRight: "15px", backgroundColor: task.status === "completed" ? "#0071e3" : "transparent" }}></div>
-                  {task.title}
-                </li>
-              ))
-            ) : (
-              // handing empty state
-              <div style={{ textAlign: "center", padding: "40px 0", color: "#86868b" }}>
-                You have a clear day ahead. Enjoy!
-              </div>
-            )}
-          </ul>
+        <section style={{ backgroundColor: "#ffffff", padding: "30px 20px", borderRadius: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.03)" }}>
+          {todaysTimeline.length > 0 ? (
+            todaysTimeline.map((item, index) => (
+              <TimelineItem 
+                key={item.id} 
+                item={item}
+                index={index}
+                isLast={index === todaysTimeline.length - 1}
+                isInactive={isFinished(item)} 
+              />
+            ))
+          ) : (
+            <div style={{ textAlign: "center", padding: "40px 0", color: "#86868b" }}>No events scheduled for today.</div>
+          )}
         </section>
 
       </main>
