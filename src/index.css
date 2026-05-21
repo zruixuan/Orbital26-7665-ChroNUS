@@ -50,6 +50,14 @@
   }
 }
 
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+  background: #f7f4ef;
+}
+
 body {
   margin: 0;
 }

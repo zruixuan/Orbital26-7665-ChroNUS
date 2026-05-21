@@ -18,7 +18,6 @@ function Dashboard() {
   const currentMinutes = String(now.getMinutes()).padStart(2, '0');
   const currentTime = `${currentHours}:${currentMinutes}`;
 
-
   // Task Management
   // Support tasks and events
   const [tasks, setTasks] = useState([
@@ -85,6 +84,28 @@ function Dashboard() {
       </main>
     </div>
   );
+}
+
+function handleAddTask() {
+  if (taskTitle.trim() === "" || taskDeadline === "") {
+    alert("Please enter task title and deadline!");
+    return;
+  }
+
+  const newTask = {
+    id: Date.now(),
+    type: "task",
+    title: taskTitle,
+    category: taskCategory,
+    deadline: taskDeadline,
+    completed: false,
+  };
+
+  setTasks([...tasks, newTask]);
+
+  setTaskTitle("");
+  setTaskDeadline("");
+  setTaskCategory("Study");
 }
 
 export default Dashboard;

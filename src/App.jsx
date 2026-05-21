@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
+import Eisenhower from "./pages/Eisenhower";
 
 function App() {
   return (
@@ -15,6 +16,8 @@ function App() {
       <Route path="/forgot-password" element={<ForgotPassword />} />
 
       <Route path="/dashboard" element={<Dashboard />} />
+
+      <Route path="/eisenhower" element={<Eisenhower />} />
     </Routes>
   )
 }
