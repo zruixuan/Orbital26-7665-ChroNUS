@@ -1,7 +1,86 @@
 import NavBar from "../components/NavBar";
 import styles from "./Eisenhower.module.css";
+import { useState } from "react";
 
 function Eisenhower() {
+  const [tasks, setTasks] = useState([
+    {
+      id: 1,
+      category: "task",
+      title: "Finish Assignment",
+      detail: "Complete exercises",
+      subject: "Study",
+      date: "2026-05-26",
+      deadline: "23:59",
+      importance: "important",
+      status: "pending",
+    },
+
+    {
+      id: 2,
+      category: "event",
+      title: "Orbital Meeting",
+      detail: "Frontend discussion",
+      subject: "Work",
+      date: "2026-05-26",
+      deadline: "14:00",
+      importance: "important",
+      status: "pending",
+    },
+
+    {
+      id: 3,
+      category: "task",
+      title: "Buy groceries",
+      detail: "Milk and bread",
+      subject: "Personal",
+      date: "2026-05-30",
+      deadline: "18:00",
+      importance: "not-important",
+      status: "pending",
+    }
+  ]);
+
+  const [urgentDays, setUrgentDays] = useState(3);
+
+  const [showUrgentMenu, setShowUrgentMenu] = useState(false);
+
+  const today = new Date();
+
+  const isUrgent = (task) => {
+    const taskDate = new Date(task.date);
+
+    const diffTime = taskDate - today;
+
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+    return diffDays <= urgentDays;
+  };
+
+  const importantUrgent = tasks.filter(
+    task =>
+      task.importance === "important" &&
+      isUrgent(task)
+  );
+
+  const importantNotUrgent = tasks.filter(
+    task =>
+      task.importance === "important" &&
+      !isUrgent(task) 
+  );
+
+  const notImportantUrgent = tasks.filter(
+    task =>
+      task.importance === "not-important" &&
+      isUrgent(task)
+  );
+
+  const notImportantNotUrgent = tasks.filter(
+    task =>
+      task.importance === "not-important" &&
+      !isUrgent(task)
+  );
+
   return (
     <div className={styles.page}>
       <NavBar />
@@ -10,17 +89,42 @@ function Eisenhower() {
         <section className={styles.header}>
           <div>
             <h1 className={styles.title}>Eisenhower Matrix</h1>
-            <p className={styles.subtitle}>
-              Visualize and prioritize your tasks by urgency and importance.
-            </p>
+            <div className={styles.subtitleRow}>
+              <p className={styles.subtitle}>
+                Organize tasks visually with the Eisenhower Matrix.
+              </p>
+
+              <div className={styles.tipBadge}>
+                ⓘ Customize what counts as “urgent” using the settings button.
+              </div>
+            </div>
           </div>
 
-          <div className={styles.headerActions}>
-            <button className={styles.settingButton}>⚙ Matrix Settings</button>
-            <button className={styles.settingButton}>
-              ⓘ Urgent = within 3 days
-            </button>
-          </div>
+        <div className={styles.headerActions}>
+          <button
+            className={styles.settingButton}
+            onClick={() => setShowUrgentMenu(!showUrgentMenu)}
+          >
+            <i className="ri-settings-3-line"></i>
+            <span>Urgent = ⚙️ within {urgentDays} days</span>
+          </button>
+
+          {showUrgentMenu && (
+            <div className={styles.urgentDropdown}>
+              {[1, 2, 3, 4, 5, 6, 7].map(day => (
+                <button
+                  key={day}
+                  onClick={() => {
+                    setUrgentDays(day);
+                    setShowUrgentMenu(false);
+                  }}
+                >
+                  {day} Day{day > 1 ? "s" : ""}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         </section>
 
         <section className={styles.statsGrid}>
@@ -94,29 +198,18 @@ function Eisenhower() {
                 </div>
               </div>
 
-              <div className={styles.task}>
-                <div className={styles.taskLeft}>
-                  <div className={styles.redDot}></div>
-                  <span>Finish CS2040 Assignment</span>
-                </div>
-                <span>Due Today</span>
-              </div>
+              {importantUrgent.map(task => (
+                <div key={task.id} className={styles.task}>
+                  <div className={styles.taskLeft}>
+                    <div className={styles.redDot}></div>
+                    <span>{task.title}</span>
+                  </div>
 
-              <div className={styles.task}>
-                <div className={styles.taskLeft}>
-                  <div className={styles.redDot}></div>
-                  <span>Prepare for CS2101 Quiz</span>
+                  <span>
+                    Due: {task.date} {task.deadline}
+                  </span>
                 </div>
-                <span>Due Tomorrow</span>
-              </div>
-
-              <div className={styles.task}>
-                <div className={styles.taskLeft}>
-                  <div className={styles.redDot}></div>
-                  <span>Submit Lab Report</span>
-                </div>
-                <span>Due in 2 days</span>
-              </div>
+              ))}
 
               <div className={styles.quadrantFooter}>
                 <span className={styles.redFooter}>3 TASKS</span>
@@ -140,29 +233,18 @@ function Eisenhower() {
                 </div>
               </div>
 
-              <div className={styles.task}>
-                <div className={styles.taskLeft}>
-                  <div className={styles.greenDot}></div>
-                  <span>Study for Midterms</span>
-                </div>
-                <span>Due in 10 days</span>
-              </div>
+              {importantNotUrgent.map(task => (
+                <div key={task.id} className={styles.task}>
+                  <div className={styles.taskLeft}>
+                    <div className={styles.greenDot}></div>
+                    <span>{task.title}</span>
+                  </div>
 
-              <div className={styles.task}>
-                <div className={styles.taskLeft}>
-                  <div className={styles.greenDot}></div>
-                  <span>Work on Final Project</span>
+                  <span>
+                    Due: {task.date} {task.deadline}
+                  </span>
                 </div>
-                <span>Due in 14 days</span>
-              </div>
-
-              <div className={styles.task}>
-                <div className={styles.taskLeft}>
-                  <div className={styles.greenDot}></div>
-                  <span>Read Research Papers</span>
-                </div>
-                <span>Due in 1 week</span>
-              </div>
+              ))}
 
               <div className={styles.quadrantFooter}>
                 <span className={styles.greenFooter}>3 TASKS</span>
@@ -186,21 +268,18 @@ function Eisenhower() {
                 </div>
               </div>
 
-              <div className={styles.task}>
-                <div className={styles.taskLeft}>
-                  <div className={styles.blueDot}></div>
-                  <span>Reply to Club Emails</span>
-                </div>
-                <span>Due Today</span>
-              </div>
+              {notImportantUrgent.map(task => (
+                <div key={task.id} className={styles.task}>
+                  <div className={styles.taskLeft}>
+                    <div className={styles.blueDot}></div>
+                    <span>{task.title}</span>
+                  </div>
 
-              <div className={styles.task}>
-                <div className={styles.taskLeft}>
-                  <div className={styles.blueDot}></div>
-                  <span>Buy Groceries</span>
+                  <span>
+                    Due: {task.date} {task.deadline}
+                  </span>
                 </div>
-                <span>Due Tomorrow</span>
-              </div>
+              ))}
 
               <div className={styles.quadrantFooter}>
                 <span className={styles.blueFooter}>2 TASKS</span>
@@ -226,29 +305,18 @@ function Eisenhower() {
                 </div>
               </div>
 
-              <div className={styles.task}>
-                <div className={styles.taskLeft}>
-                  <div className={styles.orangeDot}></div>
-                  <span>Browse Social Media</span>
-                </div>
-                <span>No Deadline</span>
-              </div>
+              {notImportantNotUrgent.map(task => (
+                <div key={task.id} className={styles.task}>
+                  <div className={styles.taskLeft}>
+                    <div className={styles.orangeDot}></div>
+                    <span>{task.title}</span>
+                  </div>
 
-              <div className={styles.task}>
-                <div className={styles.taskLeft}>
-                  <div className={styles.orangeDot}></div>
-                  <span>Watch YouTube Videos</span>
+                  <span>
+                    Due: {task.date} {task.deadline}
+                  </span>
                 </div>
-                <span>No Deadline</span>
-              </div>
-
-              <div className={styles.task}>
-                <div className={styles.taskLeft}>
-                  <div className={styles.orangeDot}></div>
-                  <span>Online Shopping</span>
-                </div>
-                <span>No Deadline</span>
-              </div>
+              ))}
 
               <div className={styles.quadrantFooter}>
                 <span className={styles.orangeFooter}>3 TASKS</span>
