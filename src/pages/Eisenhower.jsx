@@ -84,7 +84,7 @@ function Eisenhower() {
               <div className={styles.quadrantHeader}>
                 <div className={styles.quadrantTitleRow}>
                   <div className={`${styles.quadrantIcon} ${styles.redIcon}`}>
-                    !
+                    ⏰
                   </div>
 
                   <div>
