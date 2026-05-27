@@ -86,26 +86,4 @@ function Dashboard() {
   );
 }
 
-function handleAddTask() {
-  if (taskTitle.trim() === "" || taskDeadline === "") {
-    alert("Please enter task title and deadline!");
-    return;
-  }
-
-  const newTask = {
-    id: Date.now(),
-    type: "task",
-    title: taskTitle,
-    category: taskCategory,
-    deadline: taskDeadline,
-    completed: false,
-  };
-
-  setTasks([...tasks, newTask]);
-
-  setTaskTitle("");
-  setTaskDeadline("");
-  setTaskCategory("Study");
-}
-
 export default Dashboard;
