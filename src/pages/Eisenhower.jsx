@@ -45,6 +45,8 @@ function Eisenhower() {
 
   const [showUrgentMenu, setShowUrgentMenu] = useState(false);
 
+  const [expandedTaskId, setExpandedTaskId] = useState(null);
+
   const today = new Date();
 
   const isUrgent = (task) => {
@@ -79,7 +81,17 @@ function Eisenhower() {
     task =>
       task.importance === "not-important" &&
       !isUrgent(task)
-  );
+  ); 
+
+  const urgentTasks = tasks.filter(task => isUrgent(task));
+  const importantTasks = tasks.filter(task => task.importance === "important");
+  
+  const overdueTasks = tasks.filter(task => {
+    const taskDateTime = new Date(`${task.date}T${task.deadline}`);
+    return taskDateTime < today;
+  });
+
+  const totalTasks = tasks.length;
 
   return (
     <div className={styles.page}>
@@ -131,16 +143,18 @@ function Eisenhower() {
           <div className={`${styles.statCard} ${styles.redCard}`}>
             <div className={styles.statIcon}>⏰</div>
             <div>
-              <h2>4</h2>
+              <h2>{urgentTasks.length}</h2>
               <p>Urgent Tasks</p>
-              <span className={styles.redSub}>Due in 3 days or less</span>
+              <span className={styles.redSub}>
+                Due in {urgentDays} day{urgentDays > 1 ? "s" : ""} or less
+              </span>
             </div>
           </div>
 
           <div className={`${styles.statCard} ${styles.orangeCard}`}>
             <div className={styles.statIcon}>☆</div>
             <div>
-              <h2>7</h2>
+              <h2>{importantTasks.length}</h2>
               <p>Important Tasks</p>
               <span className={styles.orangeSub}>Marked as important</span>
             </div>
@@ -149,7 +163,7 @@ function Eisenhower() {
           <div className={`${styles.statCard} ${styles.purpleCard}`}>
             <div className={styles.statIcon}>📅</div>
             <div>
-              <h2>1</h2>
+              <h2>{overdueTasks.length}</h2>
               <p>Overdue Tasks</p>
               <span className={styles.purpleSub}>Past the deadline</span>
             </div>
@@ -158,7 +172,7 @@ function Eisenhower() {
           <div className={`${styles.statCard} ${styles.blueCard}`}>
             <div className={styles.statIcon}>📋</div>
             <div>
-              <h2>12</h2>
+              <h2>{totalTasks}</h2>
               <p>Total Tasks</p>
               <span className={styles.blueSub}>All tasks</span>
             </div>
@@ -199,15 +213,94 @@ function Eisenhower() {
               </div>
 
               {importantUrgent.map(task => (
-                <div key={task.id} className={styles.task}>
-                  <div className={styles.taskLeft}>
-                    <div className={styles.redDot}></div>
-                    <span>{task.title}</span>
+                <div className={styles.taskWrapper} key={task.id}>
+                  <div
+                    className={styles.task}
+                    onClick={() =>
+                      setExpandedTaskId(expandedTaskId === task.id ? null : task.id)
+                    }
+                  >
+                    <div className={styles.taskLeft}>
+                      <div className={styles.redDot}></div>
+                      <span>{task.title}</span>
+                    </div>
+
+                    <span>
+                      Due: {task.date} {task.deadline}
+                    </span>
                   </div>
 
-                  <span>
-                    Due: {task.date} {task.deadline}
-                  </span>
+                  {expandedTaskId === task.id && (
+                    <div className={styles.taskPopover}>
+                      <div className={styles.popoverHeader}>
+                        <div className={styles.popoverIcon}>🗓️</div>
+                        <h3>{task.title}</h3>
+                        <button
+                          className={styles.popoverClose}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setExpandedTaskId(null);
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
+                      <div className={styles.popoverBody}>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>📚</span>
+                          <div>
+                            <p className={styles.infoLabel}>Subject</p>
+                            <p className={styles.infoValue}>{task.subject}</p>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>⭐</span>
+                          <div>
+                            <p className={styles.infoLabel}>Importance</p>
+                            <span className={styles.orangeBadge}>
+                              {task.importance}
+                            </span>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>🏷️</span>
+                          <div>
+                            <p className={styles.infoLabel}>Category</p>
+                            <p className={styles.infoValue}>{task.category}</p>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>🔵</span>
+                          <div>
+                            <p className={styles.infoLabel}>Status</p>
+                            <span className={styles.blueBadge}>
+                              {task.status}
+                            </span>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>📅</span>
+                          <div>
+                            <p className={styles.infoLabel}>Date</p>
+                            <p className={styles.infoValue}>{task.date}</p>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>⏰</span>
+                          <div>
+                            <p className={styles.infoLabel}>Deadline</p>
+                            <p className={styles.infoValue}>{task.deadline}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className={styles.popoverDetail}>
+                        <p className={styles.detailLabel}>Detail</p>
+                        <div className={styles.detailBox}>
+                          {task.detail}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
 
@@ -234,7 +327,14 @@ function Eisenhower() {
               </div>
 
               {importantNotUrgent.map(task => (
-                <div key={task.id} className={styles.task}>
+                <div className={styles.taskWrapper} key={task.id}>
+                  <div
+                    key={task.id}
+                    className={styles.task}
+                    onClick={() =>
+                      setExpandedTaskId(expandedTaskId === task.id ? null : task.id)
+                    }
+                  >
                   <div className={styles.taskLeft}>
                     <div className={styles.greenDot}></div>
                     <span>{task.title}</span>
@@ -243,6 +343,79 @@ function Eisenhower() {
                   <span>
                     Due: {task.date} {task.deadline}
                   </span>
+
+                  {expandedTaskId === task.id && (
+                    <div className={styles.taskPopover}>
+                      <div className={styles.popoverHeader}>
+                        <div className={styles.popoverIcon}>🗓️</div>
+                        <h3>{task.title}</h3>
+                        <button
+                          className={styles.popoverClose}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setExpandedTaskId(null);
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
+                      <div className={styles.popoverBody}>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>📚</span>
+                          <div>
+                            <p className={styles.infoLabel}>Subject</p>
+                            <p className={styles.infoValue}>{task.subject}</p>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>⭐</span>
+                          <div>
+                            <p className={styles.infoLabel}>Importance</p>
+                            <span className={styles.orangeBadge}>
+                              {task.importance}
+                            </span>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>🏷️</span>
+                          <div>
+                            <p className={styles.infoLabel}>Category</p>
+                            <p className={styles.infoValue}>{task.category}</p>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>🔵</span>
+                          <div>
+                            <p className={styles.infoLabel}>Status</p>
+                            <span className={styles.blueBadge}>
+                              {task.status}
+                            </span>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>📅</span>
+                          <div>
+                            <p className={styles.infoLabel}>Date</p>
+                            <p className={styles.infoValue}>{task.date}</p>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>⏰</span>
+                          <div>
+                            <p className={styles.infoLabel}>Deadline</p>
+                            <p className={styles.infoValue}>{task.deadline}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className={styles.popoverDetail}>
+                        <p className={styles.detailLabel}>Detail</p>
+                        <div className={styles.detailBox}>
+                          {task.detail}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                 </div>
                 </div>
               ))}
 
@@ -269,7 +442,14 @@ function Eisenhower() {
               </div>
 
               {notImportantUrgent.map(task => (
-                <div key={task.id} className={styles.task}>
+                <div className={styles.taskWrapper} key={task.id}>
+                  <div
+                    key={task.id}
+                    className={styles.task}
+                    onClick={() =>
+                      setExpandedTaskId(expandedTaskId === task.id ? null : task.id)
+                    }
+                  >
                   <div className={styles.taskLeft}>
                     <div className={styles.blueDot}></div>
                     <span>{task.title}</span>
@@ -278,6 +458,79 @@ function Eisenhower() {
                   <span>
                     Due: {task.date} {task.deadline}
                   </span>
+
+                  {expandedTaskId === task.id && (
+                    <div className={styles.taskPopover}>
+                      <div className={styles.popoverHeader}>
+                        <div className={styles.popoverIcon}>🗓️</div>
+                        <h3>{task.title}</h3>
+                        <button
+                          className={styles.popoverClose}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setExpandedTaskId(null);
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
+                      <div className={styles.popoverBody}>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>📚</span>
+                          <div>
+                            <p className={styles.infoLabel}>Subject</p>
+                            <p className={styles.infoValue}>{task.subject}</p>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>⭐</span>
+                          <div>
+                            <p className={styles.infoLabel}>Importance</p>
+                            <span className={styles.orangeBadge}>
+                              {task.importance}
+                            </span>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>🏷️</span>
+                          <div>
+                            <p className={styles.infoLabel}>Category</p>
+                            <p className={styles.infoValue}>{task.category}</p>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>🔵</span>
+                          <div>
+                            <p className={styles.infoLabel}>Status</p>
+                            <span className={styles.blueBadge}>
+                              {task.status}
+                            </span>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>📅</span>
+                          <div>
+                            <p className={styles.infoLabel}>Date</p>
+                            <p className={styles.infoValue}>{task.date}</p>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>⏰</span>
+                          <div>
+                            <p className={styles.infoLabel}>Deadline</p>
+                            <p className={styles.infoValue}>{task.deadline}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className={styles.popoverDetail}>
+                        <p className={styles.detailLabel}>Detail</p>
+                        <div className={styles.detailBox}>
+                          {task.detail}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 </div>
               ))}
 
@@ -306,7 +559,14 @@ function Eisenhower() {
               </div>
 
               {notImportantNotUrgent.map(task => (
-                <div key={task.id} className={styles.task}>
+                <div className={styles.taskWrapper} key={task.id}>
+                  <div
+                    key={task.id}
+                    className={styles.task}
+                    onClick={() =>
+                      setExpandedTaskId(expandedTaskId === task.id ? null : task.id)
+                    }
+                  >
                   <div className={styles.taskLeft}>
                     <div className={styles.orangeDot}></div>
                     <span>{task.title}</span>
@@ -315,6 +575,79 @@ function Eisenhower() {
                   <span>
                     Due: {task.date} {task.deadline}
                   </span>
+
+                  {expandedTaskId === task.id && (
+                    <div className={styles.taskPopover}>
+                      <div className={styles.popoverHeader}>
+                        <div className={styles.popoverIcon}>🗓️</div>
+                        <h3>{task.title}</h3>
+                        <button
+                          className={styles.popoverClose}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setExpandedTaskId(null);
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
+                      <div className={styles.popoverBody}>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>📚</span>
+                          <div>
+                            <p className={styles.infoLabel}>Subject</p>
+                            <p className={styles.infoValue}>{task.subject}</p>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>⭐</span>
+                          <div>
+                            <p className={styles.infoLabel}>Importance</p>
+                            <span className={styles.orangeBadge}>
+                              {task.importance}
+                            </span>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>🏷️</span>
+                          <div>
+                            <p className={styles.infoLabel}>Category</p>
+                            <p className={styles.infoValue}>{task.category}</p>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>🔵</span>
+                          <div>
+                            <p className={styles.infoLabel}>Status</p>
+                            <span className={styles.blueBadge}>
+                              {task.status}
+                            </span>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>📅</span>
+                          <div>
+                            <p className={styles.infoLabel}>Date</p>
+                            <p className={styles.infoValue}>{task.date}</p>
+                          </div>
+                        </div>
+                        <div className={styles.popoverInfo}>
+                          <span className={styles.infoIcon}>⏰</span>
+                          <div>
+                            <p className={styles.infoLabel}>Deadline</p>
+                            <p className={styles.infoValue}>{task.deadline}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className={styles.popoverDetail}>
+                        <p className={styles.detailLabel}>Detail</p>
+                        <div className={styles.detailBox}>
+                          {task.detail}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 </div>
               ))}
 
@@ -333,7 +666,7 @@ function Eisenhower() {
 
           <div className={styles.infoSection}>
             <div className={styles.infoCard}>
-              <div className={`${styles.infoIcon} ${styles.redInfoIcon}`}>
+              <div className={`${styles.infoIcon1} ${styles.redInfoIcon}`}>
                 ⏰
               </div>
               <div className={styles.infoText}>
@@ -343,7 +676,7 @@ function Eisenhower() {
             </div>
 
             <div className={styles.infoCard}>
-              <div className={`${styles.infoIcon} ${styles.orangeInfoIcon}`}>
+              <div className={`${styles.infoIcon1} ${styles.orangeInfoIcon}`}>
                 ★
               </div>
               <div className={styles.infoText}>
@@ -353,7 +686,7 @@ function Eisenhower() {
             </div>
 
             <div className={styles.infoCard}>
-              <div className={`${styles.infoIcon} ${styles.grayInfoIcon}`}>
+              <div className={`${styles.infoIcon1} ${styles.grayInfoIcon}`}>
                 ⊞
               </div>
               <div className={styles.infoText}>

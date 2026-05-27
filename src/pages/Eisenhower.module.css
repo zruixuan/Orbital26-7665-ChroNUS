@@ -526,7 +526,7 @@
   background: rgba(255, 255, 255, 0.82);
 }
 
-.infoIcon {
+.infoIcon1 {
   width: 38px;
   height: 38px;
   border-radius: 12px;
@@ -573,4 +573,191 @@
   font-weight: 500;
   line-height: 1.45;
   color: #7b7f86;
+}
+
+.taskWrapper {
+  position: relative;
+}
+
+.taskPopover {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 28px;
+
+  width: 400px;
+
+  z-index: 50;
+
+  border-radius: 22px;
+
+  background: rgba(255, 252, 248, 0.96);
+  backdrop-filter: blur(24px);
+
+  border: 1px solid rgba(255, 180, 120, 0.28);
+
+  box-shadow:
+    0 22px 50px rgba(80, 45, 20, 0.18);
+
+  overflow: hidden;
+
+  animation: popIn 0.18s ease;
+}
+
+.popoverHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 16px 20px;
+
+  border-bottom: 1px solid rgba(120, 90, 70, 0.12);
+}
+
+.popoverIcon {
+  width: 46px;
+  height: 46px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+
+
+  font-size: 22px;
+}
+
+.popoverHeader h3 {
+  flex: 1;
+
+  margin: 0;
+
+  font-size: 20px;
+  font-weight: 800;
+
+  color: #2f3135;
+}
+
+.popoverClose {
+  border: none;
+  background: transparent;
+
+  font-size: 26px;
+  color: #999;
+
+  cursor: pointer;
+}
+
+.popoverBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+
+  padding: 20px 28px;
+
+  gap: 20px 28px;
+}
+
+.popoverInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  min-width: 0;
+}
+
+.popoverInfo > div {
+  min-width: 0;
+}
+
+.infoIcon {
+  flex: 0 0 18px;
+
+  width: 18px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 15px;
+
+  margin-top: 0;
+  transform: translateY(-25px);
+}
+
+.infoLabel {
+  margin: 0 0 3px;
+
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1;
+
+  color: #8a817c;
+}
+.infoValue {
+  margin: 0;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  line-height: 1.15;
+}
+
+.orangeBadge,
+.blueBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  max-width: 120px;
+
+  padding: 6px 12px;
+
+  border-radius: 10px;
+
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1.1;
+
+  white-space: normal;
+  text-align: center;
+}
+
+.orangeBadge {
+  background: rgba(255, 122, 47, 0.12);
+  color: #ff7a2f;
+}
+
+.blueBadge {
+  background: rgba(66, 133, 244, 0.12);
+  color: #2f72d8;
+}
+
+.popoverDetail {
+  padding: 14px 20px 18px;
+
+  border-top: 1px solid rgba(120, 90, 70, 0.12);
+}
+
+.detailBox {
+  margin-top: 8px;
+
+  padding: 12px 16px;
+
+  border-radius: 14px;
+
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
