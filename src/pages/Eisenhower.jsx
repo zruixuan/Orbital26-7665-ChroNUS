@@ -49,6 +49,15 @@ function Eisenhower() {
       importance: "important",
       completed: false,
     },
+      {
+      id: 6,
+      type: "taskaaaa",
+      title: "Revise aaaaaaaaReact",
+      detail: "Review component props and hooks",
+      deadline: "2026-05-28T21:00",
+      importance: "important",
+      completed: false,
+    },
   ]);
 
   const [urgentDays, setUrgentDays] = useState(3);
@@ -141,8 +150,10 @@ function Eisenhower() {
 
         <span>Due: {formatDateTime(task.deadline)}</span>
       </div>
+    </div>
+  );
 
-      {expandedTaskId === task.id && (
+  const renderPopover = (task) => (
         <div className={styles.taskPopover}>
           <div className={styles.popoverHeader}>
             <div className={styles.popoverIcon}>📝</div>
@@ -204,9 +215,7 @@ function Eisenhower() {
             </div>
           </div>
         </div>
-      )}
-    </div>
-  );
+      );
 
   return (
     <div className={styles.page}>
@@ -360,6 +369,11 @@ function Eisenhower() {
                 )}
               </div>
 
+              {importantUrgent.map(task =>
+                expandedTaskId === task.id &&
+                renderPopover(task)
+              )}
+
               <div className={styles.quadrantFooter}>
                 <span className={styles.redFooter}>
                   {importantUrgent.length} TASKS
@@ -387,6 +401,11 @@ function Eisenhower() {
                   renderTask(task, styles.greenDot)
                 )}
               </div>
+
+              {importantNotUrgent.map(task =>
+                expandedTaskId === task.id &&
+                renderPopover(task)
+              )}
 
               <div className={styles.quadrantFooter}>
                 <span className={styles.greenFooter}>
@@ -418,6 +437,11 @@ function Eisenhower() {
                 )}
               </div>
 
+              {notImportantUrgent.map(task =>
+                expandedTaskId === task.id &&
+                renderPopover(task)
+              )}
+
               <div className={styles.quadrantFooter}>
                 <span className={styles.blueFooter}>
                   {notImportantUrgent.length} TASKS
@@ -447,6 +471,11 @@ function Eisenhower() {
                   renderTask(task, styles.orangeDot)
                 )}
               </div>
+
+              {notImportantNotUrgent.map(task =>
+                expandedTaskId === task.id &&
+                renderPopover(task)
+              )}
 
               <div className={styles.quadrantFooter}>
                 <span className={styles.orangeFooter}>
