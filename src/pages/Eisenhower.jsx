@@ -6,92 +6,207 @@ function Eisenhower() {
   const [tasks, setTasks] = useState([
     {
       id: 1,
-      category: "task",
+      type: "task",
       title: "Finish Assignment",
-      detail: "Complete exercises",
-      subject: "Study",
-      date: "2026-05-26",
-      deadline: "23:59",
+      detail: "Complete exercises for CS2100 tutorial",
+      deadline: "2026-05-26T23:59",
       importance: "important",
-      status: "pending",
+      completed: false,
     },
-
     {
       id: 2,
-      category: "event",
-      title: "Orbital Meeting",
-      detail: "Frontend discussion",
-      subject: "Work",
-      date: "2026-05-26",
-      deadline: "14:00",
+      type: "task",
+      title: "Prepare Presentation",
+      detail: "Finalize Orbital presentation slides",
+      deadline: "2026-05-27T18:00",
       importance: "important",
-      status: "pending",
+      completed: false,
     },
-
     {
       id: 3,
-      category: "task",
-      title: "Buy groceries",
-      detail: "Milk and bread",
-      subject: "Personal",
-      date: "2026-05-30",
-      deadline: "18:00",
+      type: "task",
+      title: "Buy Groceries",
+      detail: "Milk, bread, eggs and fruits",
+      deadline: "2026-05-30T17:00",
       importance: "not-important",
-      status: "pending",
-    }
+      completed: false,
+    },
+    {
+      id: 4,
+      type: "task",
+      title: "Clean Room",
+      detail: "Organize desk and vacuum floor",
+      deadline: "2026-06-02T20:00",
+      importance: "not-important",
+      completed: false,
+    },
+    {
+      id: 5,
+      type: "task",
+      title: "Revise React",
+      detail: "Review component props and hooks",
+      deadline: "2026-05-28T21:00",
+      importance: "important",
+      completed: false,
+    },
   ]);
 
   const [urgentDays, setUrgentDays] = useState(3);
-
   const [showUrgentMenu, setShowUrgentMenu] = useState(false);
-
   const [expandedTaskId, setExpandedTaskId] = useState(null);
+  const [activeFilter, setActiveFilter] = useState("all");
 
   const today = new Date();
 
+  const formatDateTime = (dateTime) => {
+    const date = new Date(dateTime);
+
+    return date.toLocaleString("en-GB", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   const isUrgent = (task) => {
-    const taskDate = new Date(task.date);
-
-    const diffTime = taskDate - today;
-
+    const deadline = new Date(task.deadline);
+    const diffTime = deadline - today;
     const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
     return diffDays <= urgentDays;
   };
 
-  const importantUrgent = tasks.filter(
-    task =>
-      task.importance === "important" &&
-      isUrgent(task)
+  let filteredTasks = tasks;
+
+  if (activeFilter === "urgent") {
+    filteredTasks = tasks.filter(task => isUrgent(task));
+  }
+  if (activeFilter === "important") {
+    filteredTasks = tasks.filter(
+      task => task.importance === "important"
+    );
+  }
+  if (activeFilter === "overdue") {
+    filteredTasks = tasks.filter(task => {
+      const deadline = new Date(task.deadline);
+
+      return deadline < today && !task.completed;
+    });
+  }
+
+  const importantUrgent = filteredTasks.filter(
+    task => task.importance === "important" && isUrgent(task)
   );
 
-  const importantNotUrgent = tasks.filter(
-    task =>
-      task.importance === "important" &&
-      !isUrgent(task) 
+  const importantNotUrgent = filteredTasks.filter(
+    task => task.importance === "important" && !isUrgent(task)
   );
 
-  const notImportantUrgent = tasks.filter(
-    task =>
-      task.importance === "not-important" &&
-      isUrgent(task)
+  const notImportantUrgent = filteredTasks.filter(
+    task => task.importance === "not-important" && isUrgent(task)
   );
 
-  const notImportantNotUrgent = tasks.filter(
-    task =>
-      task.importance === "not-important" &&
-      !isUrgent(task)
-  ); 
+  const notImportantNotUrgent = filteredTasks.filter(
+    task => task.importance === "not-important" && !isUrgent(task)
+  );
 
   const urgentTasks = tasks.filter(task => isUrgent(task));
-  const importantTasks = tasks.filter(task => task.importance === "important");
-  
+
+  const importantTasks = tasks.filter(
+    task => task.importance === "important"
+  );
+
   const overdueTasks = tasks.filter(task => {
-    const taskDateTime = new Date(`${task.date}T${task.deadline}`);
-    return taskDateTime < today;
+    const deadline = new Date(task.deadline);
+
+    return deadline < today && !task.completed;
   });
 
   const totalTasks = tasks.length;
+
+  const renderTask = (task, dotClass) => (
+    <div className={styles.taskWrapper} key={task.id}>
+      <div
+        className={styles.task}
+        onClick={() =>
+          setExpandedTaskId(expandedTaskId === task.id ? null : task.id)
+        }
+      >
+        <div className={styles.taskLeft}>
+          <div className={dotClass}></div>
+          <span>{task.title}</span>
+        </div>
+
+        <span>Due: {formatDateTime(task.deadline)}</span>
+      </div>
+
+      {expandedTaskId === task.id && (
+        <div className={styles.taskPopover}>
+          <div className={styles.popoverHeader}>
+            <div className={styles.popoverIcon}>📝</div>
+            <h3>{task.title}</h3>
+
+            <button
+              className={styles.popoverClose}
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpandedTaskId(null);
+              }}
+            >
+              ×
+            </button>
+          </div>
+
+          <div className={styles.popoverBody}>
+            <div className={styles.popoverInfo}>
+              <span className={styles.infoIcon}>⭐</span>
+              <div>
+                <p className={styles.infoLabel}>Importance</p>
+                <span className={styles.orangeBadge}>
+                  {task.importance}
+                </span>
+              </div>
+            </div>
+
+            <div className={styles.popoverInfo}>
+              <span className={styles.infoIcon}>🔵</span>
+              <div>
+                <p className={styles.infoLabel}>Completion</p>
+                <span
+                  className={
+                    task.completed
+                      ? styles.completedBadge
+                      : styles.pendingBadge
+                  }
+                >
+                  {task.completed ? "true" : "false"}
+                </span>
+              </div>
+            </div>
+
+            <div className={`${styles.popoverInfo} ${styles.fullWidthInfo}`}>
+              <span className={styles.infoIcon}>⏰</span>
+              <div>
+                <p className={styles.infoLabel}>Deadline</p>
+                <p className={styles.infoValue}>
+                  {formatDateTime(task.deadline)}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.popoverDetail}>
+            <p className={styles.detailLabel}>Detail</p>
+            <div className={styles.detailBox}>
+              {task.detail}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div className={styles.page}>
@@ -101,6 +216,7 @@ function Eisenhower() {
         <section className={styles.header}>
           <div>
             <h1 className={styles.title}>Eisenhower Matrix</h1>
+
             <div className={styles.subtitleRow}>
               <p className={styles.subtitle}>
                 Organize tasks visually with the Eisenhower Matrix.
@@ -112,31 +228,34 @@ function Eisenhower() {
             </div>
           </div>
 
-        <div className={styles.headerActions}>
-          <button
-            className={styles.settingButton}
-            onClick={() => setShowUrgentMenu(!showUrgentMenu)}
-          >
-            <i className="ri-settings-3-line"></i>
-            <span>Urgent = ⚙️ within {urgentDays} days</span>
-          </button>
+          <div className={styles.headerActions}>
+            <button
+              className={styles.settingButton}
+              onClick={() => setShowUrgentMenu(!showUrgentMenu)}
+            >
+              <i className="ri-settings-3-line"></i>
+              <span>
+                Urgent = ⚙️ within {urgentDays} day
+                {urgentDays > 1 ? "s" : ""}
+              </span>
+            </button>
 
-          {showUrgentMenu && (
-            <div className={styles.urgentDropdown}>
-              {[1, 2, 3, 4, 5, 6, 7].map(day => (
-                <button
-                  key={day}
-                  onClick={() => {
-                    setUrgentDays(day);
-                    setShowUrgentMenu(false);
-                  }}
-                >
-                  {day} Day{day > 1 ? "s" : ""}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+            {showUrgentMenu && (
+              <div className={styles.urgentDropdown}>
+                {[1, 2, 3, 4, 5, 6, 7].map(day => (
+                  <button
+                    key={day}
+                    onClick={() => {
+                      setUrgentDays(day);
+                      setShowUrgentMenu(false);
+                    }}
+                  >
+                    {day} Day{day > 1 ? "s" : ""}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </section>
 
         <section className={styles.statsGrid}>
@@ -180,10 +299,33 @@ function Eisenhower() {
         </section>
 
         <section className={styles.filterTabs}>
-          <button className={styles.activeTab}>All</button>
-          <button>Urgent</button>
-          <button>Important</button>
-          <button>Overdue</button>
+          <button
+            className={activeFilter === "all" ? styles.activeTab : ""}
+            onClick={() => setActiveFilter("all")}
+          >
+            All
+          </button>
+
+          <button
+            className={activeFilter === "urgent" ? styles.activeTab : ""}
+            onClick={() => setActiveFilter("urgent")}
+          >
+            Urgent
+          </button>
+
+          <button
+            className={activeFilter === "important" ? styles.activeTab : ""}
+            onClick={() => setActiveFilter("important")}
+          >
+            Important
+          </button>
+
+          <button
+            className={activeFilter === "overdue" ? styles.activeTab : ""}
+            onClick={() => setActiveFilter("overdue")}
+          >
+            Overdue
+          </button>
         </section>
 
         <div className={styles.matrixLabels}>
@@ -212,100 +354,16 @@ function Eisenhower() {
                 </div>
               </div>
 
-              {importantUrgent.map(task => (
-                <div className={styles.taskWrapper} key={task.id}>
-                  <div
-                    className={styles.task}
-                    onClick={() =>
-                      setExpandedTaskId(expandedTaskId === task.id ? null : task.id)
-                    }
-                  >
-                    <div className={styles.taskLeft}>
-                      <div className={styles.redDot}></div>
-                      <span>{task.title}</span>
-                    </div>
-
-                    <span>
-                      Due: {task.date} {task.deadline}
-                    </span>
-                  </div>
-
-                  {expandedTaskId === task.id && (
-                    <div className={styles.taskPopover}>
-                      <div className={styles.popoverHeader}>
-                        <div className={styles.popoverIcon}>🗓️</div>
-                        <h3>{task.title}</h3>
-                        <button
-                          className={styles.popoverClose}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setExpandedTaskId(null);
-                          }}
-                        >
-                          ×
-                        </button>
-                      </div>
-                      <div className={styles.popoverBody}>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>📚</span>
-                          <div>
-                            <p className={styles.infoLabel}>Subject</p>
-                            <p className={styles.infoValue}>{task.subject}</p>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>⭐</span>
-                          <div>
-                            <p className={styles.infoLabel}>Importance</p>
-                            <span className={styles.orangeBadge}>
-                              {task.importance}
-                            </span>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>🏷️</span>
-                          <div>
-                            <p className={styles.infoLabel}>Category</p>
-                            <p className={styles.infoValue}>{task.category}</p>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>🔵</span>
-                          <div>
-                            <p className={styles.infoLabel}>Status</p>
-                            <span className={styles.blueBadge}>
-                              {task.status}
-                            </span>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>📅</span>
-                          <div>
-                            <p className={styles.infoLabel}>Date</p>
-                            <p className={styles.infoValue}>{task.date}</p>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>⏰</span>
-                          <div>
-                            <p className={styles.infoLabel}>Deadline</p>
-                            <p className={styles.infoValue}>{task.deadline}</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className={styles.popoverDetail}>
-                        <p className={styles.detailLabel}>Detail</p>
-                        <div className={styles.detailBox}>
-                          {task.detail}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
+              <div className={styles.taskList}>
+                {importantUrgent.map(task =>
+                  renderTask(task, styles.redDot)
+                )}
+              </div>
 
               <div className={styles.quadrantFooter}>
-                <span className={styles.redFooter}>3 TASKS</span>
+                <span className={styles.redFooter}>
+                  {importantUrgent.length} TASKS
+                </span>
                 <span className={styles.footerNote}>Focus on these now</span>
               </div>
             </div>
@@ -313,9 +371,7 @@ function Eisenhower() {
             <div className={`${styles.quadrant} ${styles.schedule}`}>
               <div className={styles.quadrantHeader}>
                 <div className={styles.quadrantTitleRow}>
-                  <div
-                    className={`${styles.quadrantIcon} ${styles.greenIcon}`}
-                  >
+                  <div className={`${styles.quadrantIcon} ${styles.greenIcon}`}>
                     ★
                   </div>
 
@@ -326,101 +382,16 @@ function Eisenhower() {
                 </div>
               </div>
 
-              {importantNotUrgent.map(task => (
-                <div className={styles.taskWrapper} key={task.id}>
-                  <div
-                    key={task.id}
-                    className={styles.task}
-                    onClick={() =>
-                      setExpandedTaskId(expandedTaskId === task.id ? null : task.id)
-                    }
-                  >
-                  <div className={styles.taskLeft}>
-                    <div className={styles.greenDot}></div>
-                    <span>{task.title}</span>
-                  </div>
-
-                  <span>
-                    Due: {task.date} {task.deadline}
-                  </span>
-
-                  {expandedTaskId === task.id && (
-                    <div className={styles.taskPopover}>
-                      <div className={styles.popoverHeader}>
-                        <div className={styles.popoverIcon}>🗓️</div>
-                        <h3>{task.title}</h3>
-                        <button
-                          className={styles.popoverClose}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setExpandedTaskId(null);
-                          }}
-                        >
-                          ×
-                        </button>
-                      </div>
-                      <div className={styles.popoverBody}>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>📚</span>
-                          <div>
-                            <p className={styles.infoLabel}>Subject</p>
-                            <p className={styles.infoValue}>{task.subject}</p>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>⭐</span>
-                          <div>
-                            <p className={styles.infoLabel}>Importance</p>
-                            <span className={styles.orangeBadge}>
-                              {task.importance}
-                            </span>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>🏷️</span>
-                          <div>
-                            <p className={styles.infoLabel}>Category</p>
-                            <p className={styles.infoValue}>{task.category}</p>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>🔵</span>
-                          <div>
-                            <p className={styles.infoLabel}>Status</p>
-                            <span className={styles.blueBadge}>
-                              {task.status}
-                            </span>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>📅</span>
-                          <div>
-                            <p className={styles.infoLabel}>Date</p>
-                            <p className={styles.infoValue}>{task.date}</p>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>⏰</span>
-                          <div>
-                            <p className={styles.infoLabel}>Deadline</p>
-                            <p className={styles.infoValue}>{task.deadline}</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className={styles.popoverDetail}>
-                        <p className={styles.detailLabel}>Detail</p>
-                        <div className={styles.detailBox}>
-                          {task.detail}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                 </div>
-                </div>
-              ))}
+              <div className={styles.taskList}>
+                {importantNotUrgent.map(task =>
+                  renderTask(task, styles.greenDot)
+                )}
+              </div>
 
               <div className={styles.quadrantFooter}>
-                <span className={styles.greenFooter}>3 TASKS</span>
+                <span className={styles.greenFooter}>
+                  {importantNotUrgent.length} TASKS
+                </span>
                 <span className={styles.footerNote}>
                   Plan and schedule these
                 </span>
@@ -441,101 +412,16 @@ function Eisenhower() {
                 </div>
               </div>
 
-              {notImportantUrgent.map(task => (
-                <div className={styles.taskWrapper} key={task.id}>
-                  <div
-                    key={task.id}
-                    className={styles.task}
-                    onClick={() =>
-                      setExpandedTaskId(expandedTaskId === task.id ? null : task.id)
-                    }
-                  >
-                  <div className={styles.taskLeft}>
-                    <div className={styles.blueDot}></div>
-                    <span>{task.title}</span>
-                  </div>
-
-                  <span>
-                    Due: {task.date} {task.deadline}
-                  </span>
-
-                  {expandedTaskId === task.id && (
-                    <div className={styles.taskPopover}>
-                      <div className={styles.popoverHeader}>
-                        <div className={styles.popoverIcon}>🗓️</div>
-                        <h3>{task.title}</h3>
-                        <button
-                          className={styles.popoverClose}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setExpandedTaskId(null);
-                          }}
-                        >
-                          ×
-                        </button>
-                      </div>
-                      <div className={styles.popoverBody}>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>📚</span>
-                          <div>
-                            <p className={styles.infoLabel}>Subject</p>
-                            <p className={styles.infoValue}>{task.subject}</p>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>⭐</span>
-                          <div>
-                            <p className={styles.infoLabel}>Importance</p>
-                            <span className={styles.orangeBadge}>
-                              {task.importance}
-                            </span>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>🏷️</span>
-                          <div>
-                            <p className={styles.infoLabel}>Category</p>
-                            <p className={styles.infoValue}>{task.category}</p>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>🔵</span>
-                          <div>
-                            <p className={styles.infoLabel}>Status</p>
-                            <span className={styles.blueBadge}>
-                              {task.status}
-                            </span>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>📅</span>
-                          <div>
-                            <p className={styles.infoLabel}>Date</p>
-                            <p className={styles.infoValue}>{task.date}</p>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>⏰</span>
-                          <div>
-                            <p className={styles.infoLabel}>Deadline</p>
-                            <p className={styles.infoValue}>{task.deadline}</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className={styles.popoverDetail}>
-                        <p className={styles.detailLabel}>Detail</p>
-                        <div className={styles.detailBox}>
-                          {task.detail}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                </div>
-              ))}
+              <div className={styles.taskList}>
+                {notImportantUrgent.map(task =>
+                  renderTask(task, styles.blueDot)
+                )}
+              </div>
 
               <div className={styles.quadrantFooter}>
-                <span className={styles.blueFooter}>2 TASKS</span>
+                <span className={styles.blueFooter}>
+                  {notImportantUrgent.length} TASKS
+                </span>
                 <span className={styles.footerNote}>
                   Try to delegate or reduce
                 </span>
@@ -545,9 +431,7 @@ function Eisenhower() {
             <div className={`${styles.quadrant} ${styles.delete}`}>
               <div className={styles.quadrantHeader}>
                 <div className={styles.quadrantTitleRow}>
-                  <div
-                    className={`${styles.quadrantIcon} ${styles.orangeIcon}`}
-                  >
+                  <div className={`${styles.quadrantIcon} ${styles.orangeIcon}`}>
                     ×
                   </div>
 
@@ -558,101 +442,16 @@ function Eisenhower() {
                 </div>
               </div>
 
-              {notImportantNotUrgent.map(task => (
-                <div className={styles.taskWrapper} key={task.id}>
-                  <div
-                    key={task.id}
-                    className={styles.task}
-                    onClick={() =>
-                      setExpandedTaskId(expandedTaskId === task.id ? null : task.id)
-                    }
-                  >
-                  <div className={styles.taskLeft}>
-                    <div className={styles.orangeDot}></div>
-                    <span>{task.title}</span>
-                  </div>
-
-                  <span>
-                    Due: {task.date} {task.deadline}
-                  </span>
-
-                  {expandedTaskId === task.id && (
-                    <div className={styles.taskPopover}>
-                      <div className={styles.popoverHeader}>
-                        <div className={styles.popoverIcon}>🗓️</div>
-                        <h3>{task.title}</h3>
-                        <button
-                          className={styles.popoverClose}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setExpandedTaskId(null);
-                          }}
-                        >
-                          ×
-                        </button>
-                      </div>
-                      <div className={styles.popoverBody}>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>📚</span>
-                          <div>
-                            <p className={styles.infoLabel}>Subject</p>
-                            <p className={styles.infoValue}>{task.subject}</p>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>⭐</span>
-                          <div>
-                            <p className={styles.infoLabel}>Importance</p>
-                            <span className={styles.orangeBadge}>
-                              {task.importance}
-                            </span>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>🏷️</span>
-                          <div>
-                            <p className={styles.infoLabel}>Category</p>
-                            <p className={styles.infoValue}>{task.category}</p>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>🔵</span>
-                          <div>
-                            <p className={styles.infoLabel}>Status</p>
-                            <span className={styles.blueBadge}>
-                              {task.status}
-                            </span>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>📅</span>
-                          <div>
-                            <p className={styles.infoLabel}>Date</p>
-                            <p className={styles.infoValue}>{task.date}</p>
-                          </div>
-                        </div>
-                        <div className={styles.popoverInfo}>
-                          <span className={styles.infoIcon}>⏰</span>
-                          <div>
-                            <p className={styles.infoLabel}>Deadline</p>
-                            <p className={styles.infoValue}>{task.deadline}</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className={styles.popoverDetail}>
-                        <p className={styles.detailLabel}>Detail</p>
-                        <div className={styles.detailBox}>
-                          {task.detail}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                </div>
-              ))}
+              <div className={styles.taskList}>
+                {notImportantNotUrgent.map(task =>
+                  renderTask(task, styles.orangeDot)
+                )}
+              </div>
 
               <div className={styles.quadrantFooter}>
-                <span className={styles.orangeFooter}>3 TASKS</span>
+                <span className={styles.orangeFooter}>
+                  {notImportantNotUrgent.length} TASKS
+                </span>
                 <span className={styles.footerNote}>
                   Eliminate or do later
                 </span>
@@ -669,9 +468,13 @@ function Eisenhower() {
               <div className={`${styles.infoIcon1} ${styles.redInfoIcon}`}>
                 ⏰
               </div>
+
               <div className={styles.infoText}>
                 <h3>Urgent</h3>
-                <p>Tasks due within 3 days or overdue</p>
+                <p>
+                  Tasks due within {urgentDays} day
+                  {urgentDays > 1 ? "s" : ""} or overdue
+                </p>
               </div>
             </div>
 
@@ -679,6 +482,7 @@ function Eisenhower() {
               <div className={`${styles.infoIcon1} ${styles.orangeInfoIcon}`}>
                 ★
               </div>
+
               <div className={styles.infoText}>
                 <h3>Important</h3>
                 <p>Tasks marked as important in Dashboard</p>
@@ -689,6 +493,7 @@ function Eisenhower() {
               <div className={`${styles.infoIcon1} ${styles.grayInfoIcon}`}>
                 ⊞
               </div>
+
               <div className={styles.infoText}>
                 <h3>Auto Sorting</h3>
                 <p>Tasks are automatically placed in the matrix</p>
