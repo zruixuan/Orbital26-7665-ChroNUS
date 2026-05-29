@@ -28,7 +28,7 @@ function Eisenhower() {
       title: "Buy Groceries",
       detail: "Milk, bread, eggs and fruits",
       deadline: "2026-05-30T17:00",
-      importance: "unimportant",
+      importance: "Unimportant",
       completed: false,
     },
     {
@@ -37,7 +37,7 @@ function Eisenhower() {
       title: "Clean Room",
       detail: "Organize desk and vacuum floor",
       deadline: "2026-06-02T20:00",
-      importance: "unimportant",
+      importance: "Unimportant",
       completed: false,
     },
     {
@@ -114,11 +114,11 @@ function Eisenhower() {
   );
 
   const notImportantUrgent = filteredTasks.filter(
-    task => task.importance === "unimportant" && isUrgent(task)
+    task => task.importance === "Unimportant" && isUrgent(task)
   );
 
   const notImportantNotUrgent = filteredTasks.filter(
-    task => task.importance === "unimportant" && !isUrgent(task)
+    task => task.importance === "Unimportant" && !isUrgent(task)
   );
 
   const urgentTasks = tasks.filter(task => isUrgent(task));
