@@ -4,29 +4,31 @@ import { useNavigate } from "react-router-dom";
 import icon from "../assets/icon.png";
 import "@fontsource/quicksand";
 import "../styles/Login.css";
-import { loginApi } from "../api/authApi";
+
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../api/firebase";
 
 function LoginPage() {
-  const [email, setEmail] = useState("");//set the emial variable in order to let react know what users type in
-  const [password, setPassword] = useState("");//set the password variable in order to let react know what users type in
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  function handleLogin() {  //handle the case when one of them lost value
+  async function handleLogin() {
     if (email === "" || password === "") {
       alert("Please enter both email and password");
       return;
     }
 
-    console.log("Email:", email);
-    console.log("Password:", password);// Example: navigate to a dashboard page after successful login
-    alert("Login successful! Navigating to dashboard...");
-    navigate("/dashboard");
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+
+      alert("Login successful! Navigating to dashboard...");
+      navigate("/dashboard");
+    } catch (error) {
+      alert(error.message);
+    }
   }
 
-  // to input email and password, and set the value to the state variable, and update the state variable when user type in
-  // to check if the email and password are empty, if not, print the email and password to the console
-  // turn to the reghister page
-  // turn to the reset passoword page
   return (
     <div className="login-container"> 
       <img src={icon} alt="ChroNUS Icon" className="logo" />
