@@ -1,31 +1,27 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../styles/ForgotPassword.css";
 
-import {
-  FiMail,
-  FiLock,
-  FiShield,
-  FiEye,
-  FiEyeOff
-} from "react-icons/fi";
+import { FiMail } from "react-icons/fi";
+
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../api/firebase";
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
 
-  const navigate = useNavigate();
-
-  const handleReset = () => {
-    if (!email || !code || !newPassword) {
-      alert("Please fill in all fields");
+  const handleReset = async () => {
+    if (!email) {
+      alert("Please enter your email");
       return;
     }
 
-    alert("Password reset successful");
-    navigate("/");
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert("Password reset email sent. Please check your inbox.");
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -34,7 +30,7 @@ function ForgotPassword() {
         <h1 className="login-title reset-title">Reset Password</h1>
 
         <p className="reset-subtitle">
-          Enter your email and create a new password.
+          Enter your email and we will send you a password reset link.
         </p>
 
         <div className="reset-form-card">
@@ -50,48 +46,11 @@ function ForgotPassword() {
             />
           </div>
 
-          <label className="reset-label">Verification Code</label>
-          <div className="reset-code-row">
-            <div className="reset-code-input-wrapper">
-              <FiShield className="reset-icon" />
-              <input
-                type="text"
-                placeholder="Verification code"
-                className="reset-code-input"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-              />
-            </div>
-
-            <button className="reset-code-button">
-              Send Code
-            </button>
-          </div>
-
-          <label className="reset-label">New Password</label>
-          <div className="reset-input-wrapper">
-            <FiLock className="reset-icon" />
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Create new password"
-              className="login-input reset-input"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-
-            <div
-              className="password-toggle"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? <FiEyeOff /> : <FiEye />}
-            </div>
-          </div>
-
           <button
             className="login-button reset-button"
             onClick={handleReset}
           >
-            Reset Password
+            Send Reset Email
           </button>
 
           <p className="reset-small-text">
