@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import icon from "../assets/icon.png";
 import "@fontsource/quicksand";
 import "../styles/Login.css";
+import { loginApi } from "../api/authApi";
 
 function LoginPage() {
   const [email, setEmail] = useState("");//set the emial variable in order to let react know what users type in
