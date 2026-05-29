@@ -62,21 +62,6 @@ function Register() {
               />
             </div>
 
-            <label className="register-label">Verification Code</label>
-            <div className="register-code-row">
-                <div className="register-code-input-wrapper">
-                  <FiShield className="register-icon" />
-                  <input
-                    type="text"
-                    placeholder="Verification code"
-                    className="register-code-input"
-                  />
-                </div>
-                <button className="register-code-button">
-                  Send Code
-                </button>
-            </div>
-
               <label className="register-label">Password</label>
               <div className="register-input-wrapper">
                 <FiLock className="register-icon" />
