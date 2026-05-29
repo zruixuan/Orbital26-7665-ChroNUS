@@ -10,6 +10,9 @@ import {
   FiEyeOff
 } from "react-icons/fi";
 
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../api/firebase";
+
 function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,7 +21,7 @@ function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!email || !password || !confirmPassword) {
       alert("Please fill in all fields");
       return;
@@ -29,8 +32,14 @@ function Register() {
       return;
     }
 
-    alert("Register successful");
-    navigate("/");
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+
+      alert("Register successful");
+      navigate("/");
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -51,21 +60,6 @@ function Register() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-            </div>
-
-            <label className="register-label">Verification Code</label>
-            <div className="register-code-row">
-                <div className="register-code-input-wrapper">
-                  <FiShield className="register-icon" />
-                  <input
-                    type="text"
-                    placeholder="Verification code"
-                    className="register-code-input"
-                  />
-                </div>
-                <button className="register-code-button">
-                  Send Code
-                </button>
             </div>
 
               <label className="register-label">Password</label>
