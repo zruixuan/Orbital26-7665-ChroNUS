@@ -1,4 +1,4 @@
-/* src/pages/Dashboard.jsx */
+// src/pages/Dashboard.jsx
 
 import { useState } from "react";
 import styles from "./Dashboard.module.css";
@@ -13,6 +13,26 @@ function Dashboard() {
   const currentMinutes = String(now.getMinutes()).padStart(2, '0');
   const currentFullTime = `${today} ${currentHours}:${currentMinutes}`;
   
+  // ==========================================
+  // 核心升级：动态生成日历数组 (Dynamic Date Generator)
+  // ==========================================
+  const generateCarouselDates = (centerDate) => {
+    const dates = [];
+    for (let i = -3; i <= 3; i++) { // 前后各推 3 天
+      const d = new Date(centerDate);
+      d.setDate(centerDate.getDate() + i);
+      dates.push(d);
+    }
+    return dates;
+  };
+
+  const carouselDates = generateCarouselDates(now);
+
+  // 动态生成页面中部的格式化长日期 (例如: "Wednesday, 28 May 2025")
+  const formattedTodayText = new Intl.DateTimeFormat('en-GB', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+  }).format(now);
+
   // Mock Data
   const [tasks] = useState([
     { 
@@ -70,46 +90,49 @@ function Dashboard() {
           {/* Date Carousel */}
           <div className={styles.dateCarousel}>
             <button style={{ border: "1px solid #eaeaea", background: "white", borderRadius: "50%", width: "32px", height: "32px", cursor: "pointer", color: "#f15c22" }}>&lt;</button>
-            <div className={styles.dateItem}>
-              <span style={{ fontSize: "0.8rem", color: "#86868b", marginBottom: "4px" }}>MON</span>
-              <span style={{ fontSize: "1.4rem", fontWeight: "600" }}>26</span>
-              <span style={{ fontSize: "0.8rem", color: "#86868b" }}>May</span>
-            </div>
-            <div className={styles.dateItem}>
-              <span style={{ fontSize: "0.8rem", color: "#86868b", marginBottom: "4px" }}>TUE</span>
-              <span style={{ fontSize: "1.4rem", fontWeight: "600" }}>27</span>
-              <span style={{ fontSize: "0.8rem", color: "#86868b" }}>May</span>
-            </div>
-            <div className={`${styles.dateItem} ${styles.active}`}>
-              <span style={{ fontSize: "0.8rem", color: "#f15c22", marginBottom: "4px", fontWeight: "600" }}>WED</span>
-              <span style={{ fontSize: "1.8rem", fontWeight: "700" }}>28</span>
-              <span style={{ fontSize: "0.8rem", color: "#f15c22" }}>May</span>
-            </div>
-            <div className={styles.dateItem}>
-              <span style={{ fontSize: "0.8rem", color: "#86868b", marginBottom: "4px" }}>THU</span>
-              <span style={{ fontSize: "1.4rem", fontWeight: "600" }}>29</span>
-              <span style={{ fontSize: "0.8rem", color: "#86868b" }}>May</span>
-            </div>
-            <div className={styles.dateItem}>
-              <span style={{ fontSize: "0.8rem", color: "#86868b", marginBottom: "4px" }}>FRI</span>
-              <span style={{ fontSize: "1.4rem", fontWeight: "600" }}>30</span>
-              <span style={{ fontSize: "0.8rem", color: "#86868b" }}>May</span>
-            </div>
-            <div className={styles.dateItem}>
-              <span style={{ fontSize: "0.8rem", color: "#86868b", marginBottom: "4px" }}>SAT</span>
-              <span style={{ fontSize: "1.4rem", fontWeight: "600" }}>31</span>
-              <span style={{ fontSize: "0.8rem", color: "#86868b" }}>May</span>
-            </div>
-            <div className={styles.dateItem}>
-              <span style={{ fontSize: "0.8rem", color: "#86868b", marginBottom: "4px" }}>SUN</span>
-              <span style={{ fontSize: "1.4rem", fontWeight: "600" }}>1</span>
-              <span style={{ fontSize: "0.8rem", color: "#86868b" }}>Jun</span>
-            </div>
+            
+            {/* 动态映射渲染日历项 */}
+            {carouselDates.map((dateObj, index) => {
+              // 判断当前循环的日期是否是"今天"
+              const isToday = dateObj.toDateString() === now.toDateString();
+              
+              // 格式化日期信息
+              const shortDay = new Intl.DateTimeFormat('en-US', { weekday: 'short' }).format(dateObj).toUpperCase(); // e.g., MON
+              const dateNum = dateObj.getDate(); // e.g., 26
+              const shortMonth = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(dateObj); // e.g., May
+
+              return (
+                <div key={index} className={`${styles.dateItem} ${isToday ? styles.active : ''}`}>
+                  <span style={{ 
+                    fontSize: "0.8rem", 
+                    color: isToday ? "#f15c22" : "#86868b", 
+                    marginBottom: "4px", 
+                    fontWeight: isToday ? "600" : "normal" 
+                  }}>
+                    {shortDay}
+                  </span>
+                  <span style={{ 
+                    fontSize: isToday ? "1.8rem" : "1.4rem", 
+                    fontWeight: isToday ? "700" : "600" 
+                  }}>
+                    {dateNum}
+                  </span>
+                  <span style={{ 
+                    fontSize: "0.8rem", 
+                    color: isToday ? "#f15c22" : "#86868b" 
+                  }}>
+                    {shortMonth}
+                  </span>
+                </div>
+              );
+            })}
+
             <button style={{ border: "1px solid #eaeaea", background: "white", borderRadius: "50%", width: "32px", height: "32px", cursor: "pointer", color: "#f15c22" }}>&gt;</button>
           </div>
 
+          {/* 动态插入今天的完整日期文本 */}
           <div style={{ textAlign: "center", margin: "20px 0 30px 0", color: "#1d1d1f", fontWeight: "600", fontSize: "1.1rem" }}>
-            Wednesday, 28 May 2025
+            {formattedTodayText}
           </div>
 
           {/* Timeline List */}
@@ -120,7 +143,7 @@ function Dashboard() {
                 item={item}
                 index={index}
                 isLast={index === tasks.length - 1}
-                isInactive={checkIsInactive(item)} // 3. 修复：务必将计算出的状态传递给子组件
+                isInactive={checkIsInactive(item)}
               />
             ))}
           </div>
