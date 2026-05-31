@@ -102,3 +102,40 @@ html, body, #root {
   text-shadow:
     0 0 8px rgba(255, 140, 90, 0.4);
 }
+
+.password-wrapper {
+  position: relative;
+  width: 324px;
+  margin: 10px;
+}
+
+.password-wrapper .login-input {
+  width: 100%;
+  margin: 0;
+  padding-right: 48px;
+  box-sizing: border-box;
+}
+
+.eye-button {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  border: none;
+  background: transparent;
+
+  color: #6f5a50;
+  font-size: 20px;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eye-button:hover {
+  color: #2b140d;
+}

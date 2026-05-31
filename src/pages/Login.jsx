@@ -4,6 +4,13 @@ import { useNavigate } from "react-router-dom";
 import icon from "../assets/icon.png";
 import "@fontsource/quicksand";
 import "../styles/Login.css";
+import {
+  FiMail,
+  FiLock,
+  FiShield,
+  FiEye,
+  FiEyeOff
+} from "react-icons/fi";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../api/firebase";
@@ -12,6 +19,7 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   async function handleLogin() {
     if (email === "" || password === "") {
@@ -45,13 +53,25 @@ function LoginPage() {
 
       <br />
 
-      <label>Password</label> 
-      <input className="login-input"
-        type="password"
-        placeholder="Enter your password"
-        value={password}
-        onChange={(event) => setPassword(event.target.value)}
-      />
+      <label>Password</label>
+
+      <div className="password-wrapper">
+        <input
+          className="login-input"
+          type={showPassword ? "text" : "password"}
+          placeholder="Enter your password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+        />
+
+        <button
+          type="button"
+          className="eye-button"
+          onClick={() => setShowPassword(!showPassword)}
+        >
+          {showPassword ? <FiEyeOff /> : <FiEye />}
+        </button>
+      </div>
 
       <br />
 
