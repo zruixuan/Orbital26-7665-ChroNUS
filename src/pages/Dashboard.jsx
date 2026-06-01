@@ -1,9 +1,12 @@
 // src/pages/Dashboard.jsx
 
 import { useState } from "react";
+import { useEffect } from "react";
 import styles from "./Dashboard.module.css";
 import TimelineItem from "../components/TimelineItem";
 import NavBar from "../components/NavBar"; 
+import { collection, addDoc, onSnapshot, query, where } from "firebase/firestore";
+import { db } from "../api/firebase";
 
 const getLocalDateString = (dateObj) => {
   const year = dateObj.getFullYear();
@@ -59,7 +62,7 @@ function Dashboard() {
   const isCurrentlyToday = selectedDateStr === getLocalDateString(now);
 
   // Mock Data
-  const [tasks, setTasks] = useState([
+  const tutorialTasks = [
     { 
       id: 1, type: "event", 
       title: "CP2106 Orbital Mission Control #2", 
@@ -86,14 +89,41 @@ function Dashboard() {
     },
     { 
       id: 4, type: "task", 
-      itle: "Finish CS2040S PS6", 
+      title: "Finish CS2040S PS6", 
       detail: "Implement amortized analysis for Union-Find",
       deadline: `${getLocalDateString(now)} 23:59`, 
       completed: true,
       importance: "important" 
     }
-  ]);
+  ];
 
+  const [tasks, setTasks] = useState(tutorialTasks); 
+
+  // Real-time Firebase Sync with Auth
+  useEffect(() => {
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const q = query(
+          collection(db, "tasks"), 
+          where("userId", "==", user.uid)
+        );
+        
+        const unsubscribeSnapshot = onSnapshot(q, (querySnapshot) => {
+          const firebaseTasks = [];
+          querySnapshot.forEach((doc) => {
+            firebaseTasks.push({ id: doc.id, ...doc.data() });
+          });
+          setTasks([...tutorialTasks, ...firebaseTasks]); 
+        });
+
+        return () => unsubscribeSnapshot();
+      } else {
+        setTasks(tutorialTasks);
+      }
+    });
+
+    return () => unsubscribeAuth();
+  }, []); 
   const displayTasks = tasks
     .filter(item => {
       const itemDateString = item.type === "event" ? item.startTime : item.deadline;
@@ -129,12 +159,20 @@ function Dashboard() {
   };
 
   // Handle Add Item
-  const handleAddItem = () => {
+  const handleAddItem = async () => {
     if (!formData.title.trim()) return alert("Title cannot be empty!"); 
 
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      return alert("You must be logged in to add a task!");
+    }
+
     const newItem = {
-      id: Date.now(), 
-      type: formData.type, title: formData.title, detail: formData.detail, importance: formData.importance,
+      userId: currentUser.uid,
+      type: formData.type, 
+      title: formData.title, 
+      detail: formData.detail, 
+      importance: formData.importance,
     };
 
     if (formData.type === "task") {
@@ -145,9 +183,14 @@ function Dashboard() {
       newItem.endTime = `${formData.date} ${formData.time2}`;
     }
 
-    setTasks([...tasks, newItem]);
-    setIsModalOpen(false);
-    setFormData({ type: "task", title: "", detail: "", importance: "Unimportant", date: selectedDateStr, time1: "12:00", time2: "13:00" });
+    try {
+      await addDoc(collection(db, "tasks"), newItem);
+      
+      setIsModalOpen(false);
+      setFormData({ type: "task", title: "", detail: "", importance: "important", date: selectedDateStr, time1: currentTimeStr, time2: timePlusOneHourStr });
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
   };
 
   // Visuals
@@ -273,8 +316,8 @@ function Dashboard() {
             <div style={{ display: "flex", gap: "10px", marginBottom: "15px" }}>
               <input type="date" name="date" value={formData.date} onChange={handleInputChange} style={{ flex: 1, padding: "12px", borderRadius: "12px", border: "1px solid #ddd" }} />
               <select name="importance" value={formData.importance} onChange={handleInputChange} style={{ flex: 1, padding: "12px", borderRadius: "12px", border: "1px solid #ddd", background: "white" }}>
-                <option value="important">Important ⚠️</option>
-                <option value="unimportant">Normal</option>
+                <option value="important">Important</option>
+                <option value="unimportant">Unimportant</option>
               </select>
             </div>
 
