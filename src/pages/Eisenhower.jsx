@@ -1,69 +1,48 @@
 import NavBar from "../components/NavBar";
 import styles from "./Eisenhower.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import { collection, getDocs } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "../api/firebase";
 
 function Eisenhower() {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      type: "task",
-      title: "Finish Assignment",
-      detail: "Complete exercises for CS2100 tutorial",
-      deadline: "2026-05-26T23:59",
-      importance: "important",
-      completed: false,
-    },
-    {
-      id: 2,
-      type: "task",
-      title: "Prepare Presentation",
-      detail: "Finalize Orbital presentation slides",
-      deadline: "2026-05-27T18:00",
-      importance: "important",
-      completed: false,
-    },
-    {
-      id: 3,
-      type: "task",
-      title: "Buy Groceries",
-      detail: "Milk, bread, eggs and fruits",
-      deadline: "2026-05-30T17:00",
-      importance: "Unimportant",
-      completed: false,
-    },
-    {
-      id: 4,
-      type: "task",
-      title: "Clean Room",
-      detail: "Organize desk and vacuum floor",
-      deadline: "2026-06-02T20:00",
-      importance: "Unimportant",
-      completed: false,
-    },
-    {
-      id: 5,
-      type: "task",
-      title: "Revise React",
-      detail: "Review component props and hooks",
-      deadline: "2026-05-28T21:00",
-      importance: "important",
-      completed: false,
-    },
-      {
-      id: 6,
-      type: "taskaaaa",
-      title: "Revise aaaaaaaaReact",
-      detail: "Review component props and hooks",
-      deadline: "2026-05-28T21:00",
-      importance: "important",
-      completed: false,
-    },
-  ]);
-
+  const [tasks, setTasks] = useState([]);
   const [urgentDays, setUrgentDays] = useState(3);
   const [showUrgentMenu, setShowUrgentMenu] = useState(false);
   const [expandedTaskId, setExpandedTaskId] = useState(null);
   const [activeFilter, setActiveFilter] = useState("all");
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        console.log("No user logged in");
+        setTasks([]);
+        return;
+      }
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "tasks"));
+
+        const taskList = querySnapshot.docs
+          .map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+          .filter(
+            (item) =>
+              item.type === "task" &&
+              item.userId === user.uid
+          );
+
+        setTasks(taskList);
+      } catch (error) {
+        console.error("Failed to fetch tasks:", error);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const today = new Date();
 
@@ -87,18 +66,27 @@ function Eisenhower() {
     return diffDays <= urgentDays;
   };
 
+  const isImportant = (task) =>
+    task.importance?.toLowerCase() === "important";
+
+  const isUnimportant = (task) =>
+    task.importance?.toLowerCase() === "unimportant";
+
+  const displayImportance = (task) =>
+    isImportant(task) ? "Important" : "Unimportant";
+
   let filteredTasks = tasks;
 
   if (activeFilter === "urgent") {
-    filteredTasks = tasks.filter(task => isUrgent(task));
+    filteredTasks = tasks.filter((task) => isUrgent(task));
   }
+
   if (activeFilter === "important") {
-    filteredTasks = tasks.filter(
-      task => task.importance === "important"
-    );
+    filteredTasks = tasks.filter((task) => isImportant(task));
   }
+
   if (activeFilter === "overdue") {
-    filteredTasks = tasks.filter(task => {
+    filteredTasks = tasks.filter((task) => {
       const deadline = new Date(task.deadline);
 
       return deadline < today && !task.completed;
@@ -106,28 +94,26 @@ function Eisenhower() {
   }
 
   const importantUrgent = filteredTasks.filter(
-    task => task.importance === "important" && isUrgent(task)
+    (task) => isImportant(task) && isUrgent(task)
   );
 
   const importantNotUrgent = filteredTasks.filter(
-    task => task.importance === "important" && !isUrgent(task)
+    (task) => isImportant(task) && !isUrgent(task)
   );
 
   const notImportantUrgent = filteredTasks.filter(
-    task => task.importance === "Unimportant" && isUrgent(task)
+    (task) => isUnimportant(task) && isUrgent(task)
   );
 
   const notImportantNotUrgent = filteredTasks.filter(
-    task => task.importance === "Unimportant" && !isUrgent(task)
+    (task) => isUnimportant(task) && !isUrgent(task)
   );
 
-  const urgentTasks = tasks.filter(task => isUrgent(task));
+  const urgentTasks = tasks.filter((task) => isUrgent(task));
 
-  const importantTasks = tasks.filter(
-    task => task.importance === "important"
-  );
+  const importantTasks = tasks.filter((task) => isImportant(task));
 
-  const overdueTasks = tasks.filter(task => {
+  const overdueTasks = tasks.filter((task) => {
     const deadline = new Date(task.deadline);
 
     return deadline < today && !task.completed;
@@ -154,68 +140,68 @@ function Eisenhower() {
   );
 
   const renderPopover = (task) => (
-        <div className={styles.taskPopover}>
-          <div className={styles.popoverHeader}>
-            <div className={styles.popoverIcon}>📝</div>
-            <h3>{task.title}</h3>
+    <div className={styles.taskPopover}>
+      <div className={styles.popoverHeader}>
+        <div className={styles.popoverIcon}>📝</div>
+        <h3>{task.title}</h3>
 
-            <button
-              className={styles.popoverClose}
-              onClick={(e) => {
-                e.stopPropagation();
-                setExpandedTaskId(null);
-              }}
-            >
-              ×
-            </button>
-          </div>
+        <button
+          className={styles.popoverClose}
+          onClick={(e) => {
+            e.stopPropagation();
+            setExpandedTaskId(null);
+          }}
+        >
+          ×
+        </button>
+      </div>
 
-          <div className={styles.popoverBody}>
-            <div className={styles.popoverInfo}>
-              <span className={styles.infoIcon}>⭐</span>
-              <div>
-                <p className={styles.infoLabel}>Importance</p>
-                <span className={styles.orangeBadge}>
-                  {task.importance}
-                </span>
-              </div>
-            </div>
-
-            <div className={styles.popoverInfo}>
-              <span className={styles.infoIcon}>🔵</span>
-              <div>
-                <p className={styles.infoLabel}>Completion</p>
-                <span
-                  className={
-                    task.completed
-                      ? styles.completedBadge
-                      : styles.pendingBadge
-                  }
-                >
-                  {task.completed ? "true" : "false"}
-                </span>
-              </div>
-            </div>
-
-            <div className={`${styles.popoverInfo} ${styles.fullWidthInfo}`}>
-              <span className={styles.infoIcon}>⏰</span>
-              <div>
-                <p className={styles.infoLabel}>Deadline</p>
-                <p className={styles.infoValue}>
-                  {formatDateTime(task.deadline)}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.popoverDetail}>
-            <p className={styles.detailLabel}>Detail</p>
-            <div className={styles.detailBox}>
-              {task.detail}
-            </div>
+      <div className={styles.popoverBody}>
+        <div className={styles.popoverInfo}>
+          <span className={styles.infoIcon}>⭐</span>
+          <div>
+            <p className={styles.infoLabel}>Importance</p>
+            <span className={styles.orangeBadge}>
+              {displayImportance(task)}
+            </span>
           </div>
         </div>
-      );
+
+        <div className={styles.popoverInfo}>
+          <span className={styles.infoIcon}>🔵</span>
+          <div>
+            <p className={styles.infoLabel}>Completion</p>
+            <span
+              className={
+                task.completed
+                  ? styles.completedBadge
+                  : styles.pendingBadge
+              }
+            >
+              {task.completed ? "true" : "false"}
+            </span>
+          </div>
+        </div>
+
+        <div className={`${styles.popoverInfo} ${styles.fullWidthInfo}`}>
+          <span className={styles.infoIcon}>⏰</span>
+          <div>
+            <p className={styles.infoLabel}>Deadline</p>
+            <p className={styles.infoValue}>
+              {formatDateTime(task.deadline)}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.popoverDetail}>
+        <p className={styles.detailLabel}>Detail</p>
+        <div className={styles.detailBox}>
+          {task.detail}
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className={styles.page}>
@@ -251,7 +237,7 @@ function Eisenhower() {
 
             {showUrgentMenu && (
               <div className={styles.urgentDropdown}>
-                {[1, 2, 3, 4, 5, 6, 7].map(day => (
+                {[1, 2, 3, 4, 5, 6, 7].map((day) => (
                   <button
                     key={day}
                     onClick={() => {
@@ -345,7 +331,7 @@ function Eisenhower() {
         <div className={styles.matrixWrapper}>
           <div className={styles.verticalLabels}>
             <span>Important</span>
-            <span>Not Important</span>
+            <span>Unimportant</span>
           </div>
 
           <section className={styles.matrix}>
@@ -364,14 +350,14 @@ function Eisenhower() {
               </div>
 
               <div className={styles.taskList}>
-                {importantUrgent.map(task =>
+                {importantUrgent.map((task) =>
                   renderTask(task, styles.redDot)
                 )}
               </div>
 
-              {importantUrgent.map(task =>
-                expandedTaskId === task.id &&
-                renderPopover(task)
+              {importantUrgent.map(
+                (task) =>
+                  expandedTaskId === task.id && renderPopover(task)
               )}
 
               <div className={styles.quadrantFooter}>
@@ -397,14 +383,14 @@ function Eisenhower() {
               </div>
 
               <div className={styles.taskList}>
-                {importantNotUrgent.map(task =>
+                {importantNotUrgent.map((task) =>
                   renderTask(task, styles.greenDot)
                 )}
               </div>
 
-              {importantNotUrgent.map(task =>
-                expandedTaskId === task.id &&
-                renderPopover(task)
+              {importantNotUrgent.map(
+                (task) =>
+                  expandedTaskId === task.id && renderPopover(task)
               )}
 
               <div className={styles.quadrantFooter}>
@@ -432,14 +418,14 @@ function Eisenhower() {
               </div>
 
               <div className={styles.taskList}>
-                {notImportantUrgent.map(task =>
+                {notImportantUrgent.map((task) =>
                   renderTask(task, styles.blueDot)
                 )}
               </div>
 
-              {notImportantUrgent.map(task =>
-                expandedTaskId === task.id &&
-                renderPopover(task)
+              {notImportantUrgent.map(
+                (task) =>
+                  expandedTaskId === task.id && renderPopover(task)
               )}
 
               <div className={styles.quadrantFooter}>
@@ -467,14 +453,14 @@ function Eisenhower() {
               </div>
 
               <div className={styles.taskList}>
-                {notImportantNotUrgent.map(task =>
+                {notImportantNotUrgent.map((task) =>
                   renderTask(task, styles.orangeDot)
                 )}
               </div>
 
-              {notImportantNotUrgent.map(task =>
-                expandedTaskId === task.id &&
-                renderPopover(task)
+              {notImportantNotUrgent.map(
+                (task) =>
+                  expandedTaskId === task.id && renderPopover(task)
               )}
 
               <div className={styles.quadrantFooter}>
