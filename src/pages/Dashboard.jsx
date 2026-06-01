@@ -7,6 +7,8 @@ import TimelineItem from "../components/TimelineItem";
 import NavBar from "../components/NavBar"; 
 import { collection, addDoc, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../api/firebase";
+import { auth } from "../api/firebase"; 
+import { onAuthStateChanged } from "firebase/auth";
 
 const getLocalDateString = (dateObj) => {
   const year = dateObj.getFullYear();
