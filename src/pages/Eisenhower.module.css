@@ -128,11 +128,12 @@
 
 .statCard {
   height: 80px;
+  width: 190px;
   border-radius: 16px;
   padding: 18px 22px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 10px;
   text-align: left;
   border: 1px solid rgba(230, 230, 230, 0.65);
   box-shadow: 0 10px 24px rgba(80, 45, 25, 0.06);
@@ -180,23 +181,23 @@
 }
 
 .redCard {
-  background: #fff0ec;
-  border: 1px solid #ffe1d9;
+  background: #f8f8f8;
+  border: 1px solid #dbdbdb;
 }
 
 .orangeCard {
-  background: #fff4dd;
-  border: 1px solid #ffe7b8;
+  background: #f8f8f8;
+  border: 1px solid #dbdbdb;
 }
 
 .purpleCard {
-  background: #efe4ff;
-  border: 1px solid #e2d0ff;
+  background: #f8f8f8;
+  border: 1px solid #dbdbdb;
 }
 
 .blueCard {
-  background: #e8f0ff;
-  border: 1px solid #d7e6ff;
+  background: #f8f8f8;
+  border: 1px solid #dbdbdb;
 }
 
 .redSub,
@@ -216,7 +217,7 @@
 }
 
 .purpleSub {
-  color: #8b6fd6 !important;
+  color: #7c7c7c !important;
 }
 
 .blueSub {

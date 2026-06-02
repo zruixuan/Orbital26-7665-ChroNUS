@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../api/firebase";
+import { FiTrash2 } from "react-icons/fi";
 
 function Eisenhower() {
   const [tasks, setTasks] = useState([]);
@@ -285,9 +286,9 @@ function Eisenhower() {
           </div>
 
           <div className={`${styles.statCard} ${styles.purpleCard}`}>
-            <div className={styles.statIcon}>📅</div>
+            <div className={styles.statIcon}><FiTrash2 /></div>
             <div>
-              <h2 style={{ color: "#a111ba" }}>{overdueTasks.length}</h2>
+              <h2 style={{ color: "#828080" }}>{overdueTasks.length}</h2>
               <p>Overdue Tasks</p>
               <span className={styles.purpleSub}>Past the deadline</span>
             </div>
