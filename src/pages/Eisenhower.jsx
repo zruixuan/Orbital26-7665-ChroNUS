@@ -205,30 +205,40 @@ function Eisenhower() {
 
   return (
     <div className={styles.page}>
+      <div className={styles.eisenhowerShell}>
       <NavBar />
 
       <main className={styles.container}>
-        <section className={styles.header}>
           <div>
-            <h1 className={styles.title}>Eisenhower Matrix</h1>
+            <div className={styles.sectionTitle}>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#f15c22"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M4 4h7v7H4z"/>
+                <path d="M13 4h7v7h-7z"/>
+                <path d="M4 13h7v7H4z"/>
+                <path d="M13 13h7v7h-7z"/>
+              </svg>
 
-            <div className={styles.subtitleRow}>
-              <p className={styles.subtitle}>
-                Organize tasks visually with the Eisenhower Matrix.
-              </p>
-
-              <div className={styles.tipBadge}>
-                ⓘ Customize what counts as “urgent” using the settings button.
-              </div>
+              Eisenhower Matrix
             </div>
           </div>
 
+        <div className={styles.urgentRow}>
           <div className={styles.headerActions}>
             <button
               className={styles.settingButton}
               onClick={() => setShowUrgentMenu(!showUrgentMenu)}
             >
               <i className="ri-settings-3-line"></i>
+
               <span>
                 Urgent = ⚙️ within {urgentDays} day
                 {urgentDays > 1 ? "s" : ""}
@@ -251,13 +261,13 @@ function Eisenhower() {
               </div>
             )}
           </div>
-        </section>
+        </div>
 
         <section className={styles.statsGrid}>
           <div className={`${styles.statCard} ${styles.redCard}`}>
             <div className={styles.statIcon}>⏰</div>
             <div>
-              <h2>{urgentTasks.length}</h2>
+              <h2 style={{ color: "#f44336" }}>{urgentTasks.length}</h2>
               <p>Urgent Tasks</p>
               <span className={styles.redSub}>
                 Due in {urgentDays} day{urgentDays > 1 ? "s" : ""} or less
@@ -268,7 +278,7 @@ function Eisenhower() {
           <div className={`${styles.statCard} ${styles.orangeCard}`}>
             <div className={styles.statIcon}>☆</div>
             <div>
-              <h2>{importantTasks.length}</h2>
+              <h2 style={{ color: "#ff9800" }}>{importantTasks.length}</h2>
               <p>Important Tasks</p>
               <span className={styles.orangeSub}>Marked as important</span>
             </div>
@@ -277,7 +287,7 @@ function Eisenhower() {
           <div className={`${styles.statCard} ${styles.purpleCard}`}>
             <div className={styles.statIcon}>📅</div>
             <div>
-              <h2>{overdueTasks.length}</h2>
+              <h2 style={{ color: "#a111ba" }}>{overdueTasks.length}</h2>
               <p>Overdue Tasks</p>
               <span className={styles.purpleSub}>Past the deadline</span>
             </div>
@@ -286,7 +296,7 @@ function Eisenhower() {
           <div className={`${styles.statCard} ${styles.blueCard}`}>
             <div className={styles.statIcon}>📋</div>
             <div>
-              <h2>{totalTasks}</h2>
+              <h2 style={{ color: "#257cc9" }}>{totalTasks}</h2>
               <p>Total Tasks</p>
               <span className={styles.blueSub}>All tasks</span>
             </div>
@@ -517,6 +527,7 @@ function Eisenhower() {
           </div>
         </section>
       </main>
+      </div>
     </div>
   );
 }

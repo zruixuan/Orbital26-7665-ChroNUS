@@ -1,217 +1,202 @@
 .page {
-  min-height: 100vh;
-  background: #f7f4ef;
   position: relative;
+  padding: 24px 32px 48px !important;
+  font-family: 'Inter', 'Nunito', sans-serif;
+  border: 1px solid #dddcdc;
 }
 
 .page::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: #f7f4ef;
   z-index: -1;
 }
 
 .eisenhowerContainer {
-  padding: 34px 52px 40px;
+  padding-top: 46px;
+  padding-left: 60px;
+  padding-right: 60px;
+  padding-bottom: 40px;
 }
-
 
 .container {
-  flex: 1;
-  padding: 36px 48px 100px;
-  background: #f7f4ef;
-  position: relative;
-  z-index: 1;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 48px 64px 60px !important;
+  background: transparent !important;
+  border: 1px solid #eae8e8;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 28px;
-}
 
-.header > div:first-child {
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-}
-
-.title {
+.eisenhowerShell {
   width: 100%;
-  font-size: 50px;
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.6px;
-  color: #242424;
-  margin: 0 0 10px 0;
-  text-align: left;
+  max-width: 1100px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #eaeaea;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
 }
 
-.subtitleRow {
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 20px 0;
+  font-size: 27px;
+  font-weight: 500;
+  color: #232323;
+  transform: none;
+  
+  margin-top: -10px;
+  margin-left: -6px;
+}
+
+.urgentRow {
   display: flex;
   align-items: center;
   gap: 14px;
-  flex-wrap: nowrap;
-}
 
-.subtitle {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 500;
-  color: #5f6368;
-  text-align: left;
-}
-
-.tipBadge {
-  padding: 8px 14px;
-
-  border-radius: 999px;
-
-  background: rgba(255, 165, 0, 0.10);
-
-  border: 1px solid rgba(255, 165, 0, 0.16);
-
-  color: #c77b00;
-
-  font-size: 13px;
-  font-weight: 650;
-
-  white-space: nowrap;
+  margin-top: 12px;
+  margin-bottom: 24px;
 }
 
 .headerActions {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-top: 8px;
   position: relative;
 }
 
 .settingButton {
-  height: 30px;
-  padding: 0 18px;
-  border: none;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.78);
-  color: #2f3135;
-  font-size: 14px;
-  font-weight: 650;
+  height: 25px;
+  padding: 0 14px;
+  border: 1px solid #cecdcd;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #333;
+  font-size: 13px;
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 8px 22px rgba(70, 45, 25, 0.07);
+  gap: 6px;
+  box-shadow: none;
   cursor: pointer;
 }
 
 .urgentDropdown {
   position: absolute;
-  top: 42px;
-  right: 0;
+  top: 0;
+  left: calc(100% + 10px);
+
   display: flex;
-  flex-direction: column;
-  padding: 8px;
-  border-radius: 14px;
-  background: white;
-  box-shadow: 0 8px 22px rgba(70, 45, 25, 0.12);
+  flex-direction: row;
+  gap: 6px;
+
+  padding: 4px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid #eee3dc;
+  box-shadow: 0 8px 22px rgba(70, 45, 25, 0.10);
   z-index: 100;
+  white-space: nowrap;
 }
 
 .urgentDropdown button {
+  height: 15px;
   border: none;
   background: transparent;
-  padding: 8px 14px;
-  border-radius: 10px;
+  padding: 0 10px;
+  border-radius: 999px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: 650;
+  color: #666;
 }
 
 .urgentDropdown button:hover {
-  background: #f5f5f5;
+  background: #fff1e8;
+  color: #f15c22;
 }
 
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
-  margin-bottom: 28px;
+  margin: 20px 0 30px;
 }
 
 .statCard {
-  height: 100px;
-  border-radius: 22px;
-  padding: 24px 28px;
+  height: 80px;
+  border-radius: 16px;
+  padding: 18px 22px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 28px;
+  gap: 16px;
   text-align: left;
-  border: none;
-  box-shadow:
-    0 16px 36px rgba(80, 45, 25, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(230, 230, 230, 0.65);
+  box-shadow: 0 10px 24px rgba(80, 45, 25, 0.06);
 }
 
 .statIcon {
-  width: 62px;
-  height: 62px;
+  width: 38px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
-  background: rgba(255, 255, 255, 0.65);
+  font-size: 25px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.72);
   box-shadow: 0 8px 18px rgba(80, 45, 25, 0.08);
 }
 
-.statText {
-  width: 190px;
+.statCard > div:last-child {
+  height: 100px;
+
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-}
-
-.statCard h2,
-.statCard p,
-.statCard span {
-  text-align: left;
+  justify-content: space-evenly;
 }
 
 .statCard h2 {
-  margin: 0 0 2px;
-  font-size: 42px;
+  margin: 0 0 4px;
+  font-size: 30px;
+  font-weight: 600;
   line-height: 1;
 }
 
 .statCard p {
-  margin: 0 0 6px;
-  font-size: 18px;
-  font-weight: 800;
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 500;
+  color: #2f3135;
 }
 
 .statCard span {
-  font-size: 14px;
-  color: #7b6f68;
+  font-size: 13px;
+  font-weight: 500;
   line-height: 1.2;
 }
 
 .redCard {
-  background: #ffe9e3;
+  background: #fff0ec;
+  border: 1px solid #ffe1d9;
 }
 
 .orangeCard {
-  background: #ffefcf;
+  background: #fff4dd;
+  border: 1px solid #ffe7b8;
 }
 
 .purpleCard {
-  background: #eadfff;
+  background: #efe4ff;
+  border: 1px solid #e2d0ff;
 }
 
 .blueCard {
-  background: #dfeaff;
+  background: #e8f0ff;
+  border: 1px solid #d7e6ff;
 }
 
 .redSub,
@@ -239,28 +224,47 @@
 }
 
 .filterTabs {
-  width: fit-content;
   display: flex;
-  gap: 6px;
-  padding: 5px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid #e7dfd8;
+  padding: 6px;
+  background: #fffaf7;
+  border: 1px solid #ebe3dc;
+  border-radius: 20px;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.03);
   margin-bottom: 28px;
+  width: fit-content;
 }
 
 .filterTabs button {
   border: none;
   background: transparent;
-  padding: 10px 26px;
-  border-radius: 999px;
-  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 16px;
+  min-width: 90px;
+  font-size: 12px;
+  font-weight: 300;
+  color: #4f4b48;
   cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.filterTabs button:hover {
+  background: rgba(255, 138, 42, 0.08);
+
+  color: #ff8a2a;
 }
 
 .activeTab {
-  background: #ff8a2a !important;
-  color: white;
+  background: linear-gradient(
+    135deg,
+    #ff9838,
+    #ff7a1a
+  ) !important;
+
+  color: white !important;
+
+  box-shadow:
+    0 4px 12px rgba(255, 138, 42, 0.25);
 }
 
 .matrixLabels {
@@ -291,11 +295,9 @@
 }
 
 .verticalLabels {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  padding-top: 80px;
-  padding-bottom: 80px;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 22px;
 }
 
 .verticalLabels span {
@@ -303,7 +305,12 @@
   transform: rotate(180deg);
   font-weight: 800;
   font-size: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 
 .verticalLabels span:first-child {
   color: #e53935;
@@ -316,12 +323,15 @@
 .matrix {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: minmax(280px, auto);
   gap: 22px;
   width: 100%;
 }
 
 .quadrant {
-  min-height: 200px;
+  min-height: 285px;
+  max-height: 285px;
+
   border-radius: 24px;
   padding: 24px;
   border: 1px solid rgba(255, 255, 255, 0.85);
@@ -329,13 +339,20 @@
   background: white;
   overflow: visible;
   position: relative;
+
+  display: flex;
+  flex-direction: column;
 }
 
 .taskList {
+  flex: 1;
   max-height: 170px;
   overflow-y: auto;
+
   padding-right: 6px;
+  margin-bottom: 12px;
 }
+
 
 .taskList::-webkit-scrollbar {
   width: 6px;
@@ -435,7 +452,7 @@
 }
 
 .task {
-  background: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.998);
   border: 1px solid rgba(230, 220, 214, 0.85);
   border-radius: 12px;
   padding: 10px 16px;
@@ -545,29 +562,33 @@
 }
 
 .infoCard {
-  padding: 16px 18px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.62);
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  height: 100px;
+  padding: 0 28px;
+  border-radius: 24px;
+  background: white;
+  border: 1px solid #dddcdc;
   display: flex;
   align-items: center;
-  gap: 14px;
-  transition: all 0.2s ease;
+  gap: 24px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
 }
 
 .infoCard:hover {
-  transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.82);
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.05);
 }
 
 .infoIcon1 {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  background: #f7f7f7;
+  color: #666;
+  font-size: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
   flex-shrink: 0;
 }
 
@@ -585,6 +606,7 @@
   background: rgba(120, 120, 120, 0.08);
   color: #757575;
 }
+
 
 .infoText {
   flex: 1;
@@ -615,12 +637,11 @@
 
 .taskPopover {
   position: absolute;
-
-  top: 120px;
+  top: 115px;
   left: 40px;
 
-  width: 400px;
-
+  width: 360px;
+  max-width: 90vw;
   z-index: 999;
 
   border-radius: 22px;
@@ -634,6 +655,9 @@
   box-shadow:
     0 22px 50px rgba(80, 45, 20, 0.18);
 
+  max-height: 445px;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 
@@ -641,10 +665,15 @@
   grid-column: span 2;
 }
 
+.popoverHeader,
+.popoverBody {
+  flex-shrink: 0;
+}
+
 .pendingBadge {
   padding: 6px 14px;
   border-radius: 10px;
-  background: #e6eefc;
+  background: #ffffff;
   color: #2f78d6;
   font-size: 15px;
   font-weight: 750;
@@ -664,14 +693,14 @@
   align-items: center;
   gap: 14px;
 
-  padding: 16px 20px;
+  padding: 14px 18px;
 
   border-bottom: 1px solid rgba(120, 90, 70, 0.12);
 }
 
 .popoverIcon {
-  width: 46px;
-  height: 46px;
+  width: 40px;
+  height: 40px;
 
   border-radius: 50%;
 
@@ -791,6 +820,9 @@
   padding: 14px 20px 18px;
   background: #fffdfb;
   border-top: 1px solid rgba(120, 90, 70, 0.12);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .detailBox {
@@ -807,6 +839,11 @@
   font-size: 15px;
 
   line-height: 1.6;
+
+  max-height: 120px;
+  overflow-y: auto;
+  word-break: break-word;
+  padding-bottom: 18px;
 }
 
 @keyframes popIn {
@@ -819,10 +856,4 @@
     opacity: 1;
     transform: translateY(0) scale(1);
   }
-}
-
-.page,
-.container,
-.howItWorks {
-  background-color: #f7f4ef;
 }
