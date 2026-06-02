@@ -277,7 +277,7 @@ function Eisenhower() {
           </div>
 
           <div className={`${styles.statCard} ${styles.orangeCard}`}>
-            <div className={styles.statIcon}>☆</div>
+            <div className={styles.statIcon}>⭐️</div>
             <div>
               <h2 style={{ color: "#ff9800" }}>{importantTasks.length}</h2>
               <p>Important Tasks</p>
@@ -286,7 +286,7 @@ function Eisenhower() {
           </div>
 
           <div className={`${styles.statCard} ${styles.purpleCard}`}>
-            <div className={styles.statIcon}><FiTrash2 /></div>
+            <div className={styles.statIcon}>🗑️</div>
             <div>
               <h2 style={{ color: "#828080" }}>{overdueTasks.length}</h2>
               <p>Overdue Tasks</p>
