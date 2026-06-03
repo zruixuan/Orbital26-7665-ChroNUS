@@ -2,6 +2,7 @@
 
 .pageWrapper {
   background-color: #fafafc; 
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   padding: 20px;
@@ -14,7 +15,7 @@
   max-width: 1100px;
   background-color: #ffffff;
   border-radius: 12px;
-  border: 1px solid #eae8e8;
+  border: 1px solid #eaeaea;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
   display: flex;
   flex-direction: column;
@@ -53,8 +54,6 @@
   padding: 8px 16px;
   border-radius: 8px;
   transition: all 0.2s;
-  text-decoration: none;
-  color: inherit;
 }
 
 .navItem.active {
@@ -76,7 +75,7 @@
   background: linear-gradient(135deg, #f15c22, #2c3e50);
 }
 
-/* 主内容区 (Main Content) */
+/* Main Content */
 .mainContent {
   padding: 40px 60px;
   background-color: #fafafc;
@@ -92,7 +91,7 @@
   margin-bottom: 24px;
 }
 
-/* 日期轮播 (Date Carousel) */
+/* Date Carousel */
 .dateCarousel {
   display: flex;
   align-items: center;
@@ -155,4 +154,29 @@
 }
 .addButton:hover {
   background-color: #fff4ed;
+}
+
+/* Interactive Elements for TimelineItem */
+.itemCard {
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin-left: -12px; 
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.itemCard:hover {
+  background-color: #f9fafb;
+}
+
+.itemCard:active {
+  transform: scale(0.99); 
+}
+
+.interactiveDot {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease;
+}
+
+.interactiveDot:hover {
+  transform: scale(1.2); 
 }
