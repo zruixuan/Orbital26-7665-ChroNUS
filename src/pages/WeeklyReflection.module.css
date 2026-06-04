@@ -216,7 +216,24 @@
 }
 
 .card {
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 20px;
   padding: 20px;
+
+  box-shadow:
+    0 2px 6px rgba(0,0,0,0.04),
+    0 8px 24px rgba(0,0,0,0.03);
+
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 6px 12px rgba(0,0,0,0.06),
+    0 12px 32px rgba(0,0,0,0.08);
 }
 
 .cardTitle,
@@ -226,13 +243,26 @@
 }
 
 .cardTitle {
+  display: flex;
+  align-items: center;
   gap: 12px;
+
+  padding-bottom: 16px;
   margin-bottom: 18px;
+
+  border-bottom: 1px solid #eeeeee;
+}
+
+.cardTitle svg {
+  color: #f15c22;
+  font-size: 22px;
 }
 
 .cardTitle h3 {
   margin: 0;
   font-size: 18px;
+  font-weight: 650;
+  color: #2f3135;
 }
 
 .achievementList {
@@ -244,24 +274,72 @@
 .achievementList li {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 11px 0;
+  gap: 14px;
+
+  padding: 10px 0;
+
   font-size: 15px;
+  font-weight: 1000;
+  color: #35353b;
+
+  text-align: left;
 }
 
-.achievementList svg {
+.achievementList li svg {
+  flex-shrink: 0;
   color: #22c55e;
+  font-size: 20px;
+}
+
+.achievementList li span {
+  flex: 1;
+  text-align: left;
+  line-height: 1.45;
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+
+  border-bottom: 1px solid #d8d7d7;
+}
+
+.cardTitle svg {
+  color: #f15c22;
+  font-size: 22px;
+}
+
+.cardTitle h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2f3135;
 }
 
 .addAchievement {
-  margin-top: 12px;
-  padding-top: 18px;
-  border-top: 1px solid #eee;
-  color: #ff5a1f;
+  margin-top: 14px;
+
+  padding-top: 16px;
+
+  border-top: 1px solid #d8d7d7;
+
   display: flex;
-  gap: 12px;
   align-items: center;
+  gap: 12px;
+
+  color: #f15c22;
+  font-size: 15px;
   font-weight: 600;
+
+  cursor: pointer;
+}
+
+.addAchievement svg {
+  font-size: 18px;
 }
 
 .nextList {

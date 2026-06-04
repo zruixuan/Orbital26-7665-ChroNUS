@@ -99,11 +99,30 @@ function WeeklyReflection() {
                 </div>
 
                 <ul className={styles.achievementList}>
-                  <li><FiCheckCircle />Completed CP2106 Mission Control #2</li>
-                  <li><FiCheckCircle />Finished CS2040 Lecture Review</li>
-                  <li><FiCheckCircle />Updated Dashboard UI and connected Firebase</li>
-                  <li><FiCheckCircle />Organized tasks with Eisenhower Matrix</li>
-                  <li><FiCheckCircle />Submitted Assignment 3</li>
+                <li>
+                    <FiCheckCircle />
+                    <span>Completed CP2106 Mission Control #2</span>
+                </li>
+
+                <li>
+                    <FiCheckCircle />
+                    <span>Finished CS2040 Lecture Review</span>
+                </li>
+
+                <li>
+                    <FiCheckCircle />
+                    <span>Updated Dashboard UI and connected Firebase</span>
+                </li>
+
+                <li>
+                    <FiCheckCircle />
+                    <span>Organized tasks with Eisenhower Matrix</span>
+                </li>
+
+                <li>
+                    <FiCheckCircle />
+                    <span>Submitted Assignment 3</span>
+                </li>
                 </ul>
 
                 <div className={styles.addAchievement}>
