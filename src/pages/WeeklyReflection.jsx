@@ -15,8 +15,28 @@ import {
   FiSave,
 } from "react-icons/fi";
 import NavBar from "../components/NavBar";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 function WeeklyReflection() {
+const navigate = useNavigate();
+const [answers, setAnswers] = useState({
+  proud: "",
+  challenge: "",
+  goal: "",
+});
+
+const maxLength = 500;
+
+const handleAnswerChange = (key, value) => {
+  if (value.length <= maxLength) {
+    setAnswers({
+      ...answers,
+      [key]: value,
+    });
+  }
+};
+
   return (
     <div className={styles.reflectionPage}>
       <div className={styles.reflectionShell}>
@@ -134,11 +154,12 @@ function WeeklyReflection() {
               <div className={styles.card}>
                 <div className={styles.cardTitle}>
                   <FiCalendar />
-                  <h3>Looking Ahead (Next Week)</h3>
+                  <h3>Upcoming Priorities (Next Week)</h3>
                 </div>
 
                 <div className={styles.nextList}>
                   <div className={styles.nextItem}>
+                    <div className={styles.priorityBar}></div>
                     <FiClock />
                     <div>
                       <strong>CP2106 Project Milestone</strong>
@@ -148,6 +169,7 @@ function WeeklyReflection() {
                   </div>
 
                   <div className={styles.nextItem}>
+                    <div className={styles.priorityBar}></div>
                     <FiClipboard />
                     <div>
                       <strong>CS2040 Assignment 2</strong>
@@ -157,6 +179,7 @@ function WeeklyReflection() {
                   </div>
 
                   <div className={styles.nextItem}>
+                    <div className={styles.priorityBar}></div>
                     <FiClock />
                     <div>
                       <strong>Orbital 26 Meeting</strong>
@@ -166,7 +189,17 @@ function WeeklyReflection() {
                   </div>
                 </div>
 
-                <button className={styles.viewSchedule}>View full schedule →</button>
+                <button
+                    className={styles.viewSchedule}
+                    onClick={() => {
+                        navigate("/dashboard");
+                        setTimeout(() => {
+                        window.scrollTo(0, 0);
+                        }, 0);
+                    }}
+                    >
+                    View full schedule →
+                </button>
               </div>
             </div>
 
@@ -241,26 +274,51 @@ function WeeklyReflection() {
                 <h3>Reflection Questions</h3>
               </div>
 
-              <div className={styles.questionGroup}>
-                <label>1. What achievement are you most proud of this week?</label>
-                <textarea placeholder="Share your proudest moment..." />
-                <span>0/500</span>
-              </div>
+            <div className={styles.questionGroup}>
+            <label>
+                1. What achievement are you most proud of this week?
+            </label>
 
-              <div className={styles.questionGroup}>
-                <label>2. What challenges affected your productivity?</label>
-                <textarea placeholder="Share the challenges you faced..." />
-                <span>0/500</span>
-              </div>
+            <textarea
+                value={answers.proud}
+                maxLength={500}
+                onChange={(e) => handleAnswerChange("proud", e.target.value)}
+                placeholder="Share your proudest moment..."
+            />
 
-              <div className={styles.questionGroup}>
-                <label>3. What is your main goal for next week?</label>
-                <textarea placeholder="What will you focus on next week?" />
-                <span>0/500</span>
-              </div>
+            <span>{answers.proud.length}/500</span>
+            </div>
 
+            <div className={styles.questionGroup}>
+            <label>
+                2. What challenges affected your productivity?
+            </label>
+
+            <textarea
+                value={answers.challenge}
+                maxLength={500}
+                onChange={(e) => handleAnswerChange("challenge", e.target.value)}
+                placeholder="Share the challenges you faced..."
+            />
+
+            <span>{answers.challenge.length}/500</span>
+            </div>
+
+            <div className={styles.questionGroup}>
+            <label>
+                3. What is your main goal for next week?
+            </label>
+
+            <textarea
+                value={answers.goal}
+                maxLength={500}
+                onChange={(e) => handleAnswerChange("goal", e.target.value)}
+                placeholder="What will you focus on next week?"
+            />
+
+            <span>{answers.goal.length}/500</span>
+            </div>
               <button className={styles.saveButton}>
-                <FiSave />
                 Save Reflection
               </button>
             </div>
