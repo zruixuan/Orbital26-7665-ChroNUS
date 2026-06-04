@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
 import Eisenhower from "./pages/Eisenhower";
+import WeeklyReflection from "./pages/WeeklyReflection";
 
 function App() {
   return (
@@ -18,6 +19,8 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
 
       <Route path="/eisenhower" element={<Eisenhower />} />
+
+      <Route path="/weekly-reflection" element={<WeeklyReflection />} />
     </Routes>
   )
 }

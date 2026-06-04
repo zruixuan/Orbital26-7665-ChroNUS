@@ -48,16 +48,16 @@
   color: #232323;
   transform: none;
   
-  margin-top: -10px;
+  margin-top: -5px;
   margin-left: -6px;
 }
 
 .urgentRow {
   display: flex;
+  justify-content: flex-end;
   align-items: center;
-  gap: 14px;
 
-  margin-top: 12px;
+  margin-top: -30px;
   margin-bottom: 24px;
 }
 
@@ -68,24 +68,24 @@
 }
 
 .settingButton {
-  height: 25px;
-  padding: 0 14px;
-  color: #333;
-  font-size: 13px;
-  font-weight: 600;
+  height: 32px;
+  padding: 0 18px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  cursor: pointer;
+  gap: 12px;
   background: #ffffff;
-  border: 1px solid #dfdfdf;
-  border-radius: 20px;
-
+  border: 1px solid #eaeaea;
+  border-radius: 999px;
+  color: #333;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
   box-shadow:
     0 2px 6px rgba(0,0,0,0.04),
     0 8px 24px rgba(0,0,0,0.03);
-
   transition: all 0.2s ease;
+  margin-left: -225px;
+  margin-top: -10px;
 }
 
 .settingButton:hover {
@@ -99,7 +99,8 @@
 .urgentDropdown {
   position: absolute;
   top: 0;
-  left: calc(100% + 10px);
+  right: calc(100% + 225px);
+  left: auto;
 
   display: flex;
   flex-direction: row;
@@ -112,17 +113,19 @@
   box-shadow: 0 8px 22px rgba(70, 45, 25, 0.10);
   z-index: 100;
   white-space: nowrap;
+    margin-left: -225px;
+  margin-top: -10px;
 }
 
 .urgentDropdown button {
-  height: 15px;
+  height: 22px;
   border: none;
   background: transparent;
   padding: 0 10px;
   border-radius: 999px;
   cursor: pointer;
   font-size: 12px;
-  font-weight: 650;
+  font-weight: 500;
   color: #666;
 }
 
@@ -341,8 +344,8 @@
 }
 
 .quadrant {
-  min-height: 285px;
-  max-height: 285px;
+  min-height: 300px;
+  max-height: 300px;
 
   border-radius: 24px;
   padding: 24px;
