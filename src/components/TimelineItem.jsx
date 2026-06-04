@@ -17,16 +17,17 @@ function TimelineItem({ item, index, isLast, isInactive, onToggle, onCardClick }
           padding: "4px 12px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: "500",
           backgroundColor: isInactive ? "#f5f5f7" : "#fff4ed", 
           color: isInactive ? "#86868b" : "#f15c22", 
-          border: isInactive ? "1px solid #e5e7eb" : "1px solid #ffe4d6" 
+          border: isInactive ? "1px solid #e5e7eb" : "1px solid #ffe4d6",
+          display: "inline-block"
         }}>
           Event
         </span>
       );
     }
     if (isInactive) {
-      return <span style={{ padding: "4px 12px", borderRadius: "8px", backgroundColor: "#f0fdf4", color: "#16a34a", fontSize: "0.85rem", fontWeight: "500", border: "1px solid #dcfce7" }}>✓ Completed</span>;
+      return <span style={{ padding: "4px 12px", borderRadius: "8px", backgroundColor: "#f0fdf4", color: "#16a34a", fontSize: "0.85rem", fontWeight: "500", border: "1px solid #dcfce7", display: "inline-block" }}>✓ Completed</span>;
     }
-    return <span style={{ padding: "4px 12px", borderRadius: "8px", backgroundColor: "#eff6ff", color: "#2563eb", fontSize: "0.85rem", fontWeight: "500", border: "1px solid #dbeafe" }}>Pending</span>;
+    return <span style={{ padding: "4px 12px", borderRadius: "8px", backgroundColor: "#eff6ff", color: "#2563eb", fontSize: "0.85rem", fontWeight: "500", border: "1px solid #dbeafe", display: "inline-block" }}>Pending</span>;
   };
 
   return (
@@ -62,7 +63,6 @@ function TimelineItem({ item, index, isLast, isInactive, onToggle, onCardClick }
             <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: themeColor, border: "2px solid #ffffff", boxShadow: `0 0 0 2px ${themeColor}`, boxSizing: "content-box" }} />
           </div>
         ) : (
-          /* Interactive Task Dot */
           <button 
             type="button"
             onClick={(e) => {
@@ -93,15 +93,32 @@ function TimelineItem({ item, index, isLast, isInactive, onToggle, onCardClick }
         )}
       </div>
 
-      {/* Right Column */}
-      <div style={{ flex: 1, paddingBottom: "30px", paddingTop: "4px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-        <div style={{ color: textColor, textAlign: "left" }}>
-          <h3 style={{ margin: "0 0 4px 0", fontSize: "1.1rem", fontWeight: "600", textDecoration: isInactive && item.type === "task" ? "line-through" : "none" }}>
+      {/* Right Column: 增加了 gap: "16px" 和 minWidth: 0，解决溢出和挤压问题 */}
+      <div style={{ flex: 1, paddingBottom: "30px", paddingTop: "4px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "16px", minWidth: 0 }}>
+        
+        {/* Text Container: 添加了 flex: 1 和 minWidth: 0 允许文本强制换行 */}
+        <div style={{ color: textColor, textAlign: "left", flex: 1, minWidth: 0 }}>
+          <h3 style={{ 
+            margin: "0 0 4px 0", 
+            fontSize: "1.1rem", 
+            fontWeight: "600", 
+            textDecoration: isInactive && item.type === "task" ? "line-through" : "none",
+            wordBreak: "break-word",
+            overflowWrap: "anywhere"
+          }}>
             {item.title}
           </h3>
           
           {item.detail && (
-            <div style={{ margin: "0 0 10px 0", fontSize: "0.95rem", color: "#86868b", lineHeight: "1.4", textDecoration: isInactive && item.type === "task" ? "line-through" : "none" }}>
+            <div style={{ 
+              margin: "0 0 10px 0", 
+              fontSize: "0.95rem", 
+              color: "#86868b", 
+              lineHeight: "1.4", 
+              textDecoration: isInactive && item.type === "task" ? "line-through" : "none",
+              wordBreak: "break-word",
+              overflowWrap: "anywhere"
+            }}>
               {item.detail}
             </div>
           )}
@@ -124,7 +141,8 @@ function TimelineItem({ item, index, isLast, isInactive, onToggle, onCardClick }
           </div>
         </div>
         
-        <div>{renderBadge()}</div>
+        {/* Badge Container: 添加 flexShrink: 0 保证徽章不变形 */}
+        <div style={{ flexShrink: 0 }}>{renderBadge()}</div>
       </div>
 
     </div>

@@ -180,3 +180,14 @@
 .interactiveDot:hover {
   transform: scale(1.2); 
 }
+
+/* Delete Button Styles (Apple-style red button) */
+.deleteButton {
+  background-color: #ff3b30;
+  color: white;
+  transition: background-color 0.2s ease;
+}
+
+.deleteButton:hover {
+  background-color: #e03126;
+}

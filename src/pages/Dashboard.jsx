@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import styles from "./Dashboard.module.css";
 import TimelineItem from "../components/TimelineItem";
 import NavBar from "../components/NavBar"; 
-import { collection, addDoc, onSnapshot, query, where, doc, updateDoc } from "firebase/firestore";
+import { collection, addDoc, onSnapshot, query, where, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db, auth } from "../api/firebase"; 
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -56,7 +56,7 @@ function Dashboard() {
   const goToToday = () => setSelectedDate(new Date());
   const isCurrentlyToday = selectedDateStr === getLocalDateString(now);
 
-  // Mock Data (Strictly preserved as requested)
+  // Mock Data (Strictly preserved)
   const tutorialTasks = [
     { 
       id: 1, type: "event", 
@@ -157,12 +157,9 @@ function Dashboard() {
     setFormData({ ...formData, [name]: value });
   };
 
-  // Toggle Completion: Unrestricted interaction for both Local & Firebase data
   const handleToggleCompletion = async (taskId, currentStatus) => {
-    // 1. 乐观 UI 更新 (Optimistic UI Update) - 立刻更新本地 State，无视数据源
     setTasks(prevTasks => prevTasks.map(t => t.id === taskId ? { ...t, completed: !currentStatus } : t));
 
-    // 2. 如果是 Firebase 真实数据，则同步到云端
     if (typeof taskId === "string") {
       try {
         const taskRef = doc(db, "tasks", taskId);
@@ -196,6 +193,24 @@ function Dashboard() {
     }
   };
 
+  const handleDeleteItem = async () => {
+    if (!editingItemId) return;
+
+    setTasks(prev => prev.filter(t => t.id !== editingItemId));
+
+    if (typeof editingItemId === "string") {
+      try {
+        const itemRef = doc(db, "tasks", editingItemId);
+        await deleteDoc(itemRef);
+      } catch (error) {
+        console.error("Firebase Delete Error: ", error);
+      }
+    }
+
+    setIsModalOpen(false);
+    setEditingItemId(null);
+  };
+
   const handleSaveItem = async () => {
     if (!formData.title.trim()) return alert("Title cannot be empty!"); 
 
@@ -225,14 +240,12 @@ function Dashboard() {
           const itemRef = doc(db, "tasks", editingItemId);
           await updateDoc(itemRef, itemData);
         } else {
-          // 本地 Mock 数据修改兜底
           setTasks(prev => prev.map(t => t.id === editingItemId ? { ...itemData, id: t.id } : t));
         }
       } else {
         if (auth.currentUser) {
            await addDoc(collection(db, "tasks"), itemData);
         } else {
-           // 未登录状态下测试新增数据
            setTasks(prev => [...prev, { ...itemData, id: Date.now() }]);
         }
       }
@@ -368,7 +381,13 @@ function Dashboard() {
               )}
             </div>
 
+            {/* Bottom Actions Layout */}
             <div style={{ display: "flex", gap: "10px" }}>
+              {editingItemId && (
+                <button onClick={handleDeleteItem} className={styles.deleteButton} style={{ flex: 1, padding: "12px", borderRadius: "12px", border: "none", fontWeight: "700", cursor: "pointer" }}>
+                  Remove
+                </button>
+              )}
               <button onClick={() => { setIsModalOpen(false); setEditingItemId(null); }} style={{ flex: 1, padding: "12px", borderRadius: "12px", border: "none", background: "#f0f0f5", color: "#86868b", fontWeight: "700", cursor: "pointer" }}>Cancel</button>
               <button onClick={handleSaveItem} style={{ flex: 1, padding: "12px", borderRadius: "12px", border: "none", background: "#2b1d16", color: "white", fontWeight: "700", cursor: "pointer" }}>Save</button>
             </div>
