@@ -54,159 +54,189 @@ const handleAddAchievement = () => {
 };
 
 const activities = [
-  // Monday: 10 tasks + 2 events = 12
-  ...Array.from({ length: 10 }).map((_, i) => ({
-    title: `Monday Task ${i + 1}`,
+  // Week 1: 1 Jun – 7 Jun
+  ...Array.from({ length: 5 }).map((_, i) => ({
+    title: `W1 Monday Task ${i + 1}`,
     type: "task",
     date: "2026-06-01",
     completed: true,
-    important: i < 3,
+    important: i < 2,
   })),
   ...Array.from({ length: 2 }).map((_, i) => ({
-    title: `Monday Event ${i + 1}`,
+    title: `W1 Monday Event ${i + 1}`,
     type: "event",
     date: "2026-06-01",
     completed: true,
     important: false,
-  })),
-
-  // Tuesday: 9 tasks + 3 events = 12
-  ...Array.from({ length: 9 }).map((_, i) => ({
-    title: `Tuesday Task ${i + 1}`,
-    type: "task",
-    date: "2026-06-02",
-    completed: true,
-    important: i < 2,
   })),
   ...Array.from({ length: 3 }).map((_, i) => ({
-    title: `Tuesday Event ${i + 1}`,
-    type: "event",
-    date: "2026-06-02",
-    completed: true,
-    important: false,
-  })),
-
-  // Wednesday: 8 tasks + 4 events = 12
-  ...Array.from({ length: 8 }).map((_, i) => ({
-    title: `Wednesday Task ${i + 1}`,
+    title: `W1 Wednesday Task ${i + 1}`,
     type: "task",
     date: "2026-06-03",
-    completed: true,
-    important: i < 2,
-  })),
-  ...Array.from({ length: 4 }).map((_, i) => ({
-    title: `Wednesday Event ${i + 1}`,
-    type: "event",
-    date: "2026-06-03",
-    completed: true,
-    important: false,
-  })),
-
-  // Thursday: 6 tasks + 6 events = 12
-  ...Array.from({ length: 6 }).map((_, i) => ({
-    title: `Thursday Task ${i + 1}`,
-    type: "task",
-    date: "2026-06-04",
-    completed: true,
-    important: i < 2,
-  })),
-  ...Array.from({ length: 6 }).map((_, i) => ({
-    title: `Thursday Event ${i + 1}`,
-    type: "event",
-    date: "2026-06-04",
-    completed: true,
-    important: false,
-  })),
-
-  // Friday: 10 tasks + 2 events = 12
-  ...Array.from({ length: 10 }).map((_, i) => ({
-    title: `Friday Task ${i + 1}`,
-    type: "task",
-    date: "2026-06-05",
-    completed: true,
-    important: i < 3,
-  })),
-  ...Array.from({ length: 2 }).map((_, i) => ({
-    title: `Friday Event ${i + 1}`,
-    type: "event",
-    date: "2026-06-05",
-    completed: true,
-    important: false,
-  })),
-
-  // Saturday: 7 tasks + 5 events = 12
-  ...Array.from({ length: 7 }).map((_, i) => ({
-    title: `Saturday Task ${i + 1}`,
-    type: "task",
-    date: "2026-06-06",
-    completed: true,
-    important: i < 2,
-  })),
-  ...Array.from({ length: 5 }).map((_, i) => ({
-    title: `Saturday Event ${i + 1}`,
-    type: "event",
-    date: "2026-06-06",
-    completed: true,
-    important: false,
-  })),
-
-  // Sunday: 5 tasks + 7 events = 12
-  ...Array.from({ length: 5 }).map((_, i) => ({
-    title: `Sunday Task ${i + 1}`,
-    type: "task",
-    date: "2026-06-07",
     completed: true,
     important: i < 1,
   })),
-  ...Array.from({ length: 7 }).map((_, i) => ({
-    title: `Sunday Event ${i + 1}`,
+  ...Array.from({ length: 4 }).map((_, i) => ({
+    title: `W1 Friday Event ${i + 1}`,
     type: "event",
-    date: "2026-06-07",
+    date: "2026-06-05",
     completed: true,
     important: false,
   })),
 
-  // Next week priorities: 5 items
-  {
-    title: "CP2106 Project Milestone",
+  // Week 2: 8 Jun – 14 Jun
+  ...Array.from({ length: 6 }).map((_, i) => ({
+    title: `W2 Tuesday Task ${i + 1}`,
+    type: "task",
+    date: "2026-06-09",
+    completed: true,
+    important: i < 3,
+  })),
+  ...Array.from({ length: 3 }).map((_, i) => ({
+    title: `W2 Tuesday Event ${i + 1}`,
     type: "event",
-    date: "2026-06-12",
+    date: "2026-06-09",
+    completed: true,
+    important: false,
+  })),
+  ...Array.from({ length: 2 }).map((_, i) => ({
+    title: `W2 Thursday Task ${i + 1}`,
+    type: "task",
+    date: "2026-06-11",
     completed: false,
     important: false,
-  },
-  {
-    title: "CS2040 Assignment 2",
-    type: "task",
+  })),
+  ...Array.from({ length: 5 }).map((_, i) => ({
+    title: `W2 Sunday Event ${i + 1}`,
+    type: "event",
     date: "2026-06-14",
-    completed: false,
+    completed: true,
     important: false,
-  },
-  {
-    title: "Orbital 26 Meeting",
-    type: "event",
-    date: "2026-06-16",
-    completed: false,
-    important: false,
-  },
-  {
-    title: "MA1521 Quiz",
+  })),
+
+  // Week 3: 15 Jun – 21 Jun
+  ...Array.from({ length: 4 }).map((_, i) => ({
+    title: `W3 Monday Task ${i + 1}`,
     type: "task",
-    date: "2026-06-18",
-    completed: false,
+    date: "2026-06-15",
+    completed: true,
+    important: i < 1,
+  })),
+  ...Array.from({ length: 4 }).map((_, i) => ({
+    title: `W3 Monday Event ${i + 1}`,
+    type: "event",
+    date: "2026-06-15",
+    completed: true,
     important: false,
-  },
-  {
-    title: "Team Progress Check",
+  })),
+  ...Array.from({ length: 8 }).map((_, i) => ({
+    title: `W3 Wednesday Task ${i + 1}`,
+    type: "task",
+    date: "2026-06-17",
+    completed: true,
+    important: i < 4,
+  })),
+  ...Array.from({ length: 1 }).map((_, i) => ({
+    title: `W3 Saturday Event ${i + 1}`,
     type: "event",
     date: "2026-06-20",
     completed: false,
     important: false,
-  },
-];
+  })),
 
-const weeklyAchievements = activities.filter(
-  item => item.type === "task" && item.completed
+  // Week 4: 22 Jun – 28 Jun
+  ...Array.from({ length: 2 }).map((_, i) => ({
+    title: `W4 Monday Task ${i + 1}`,
+    type: "task",
+    date: "2026-06-22",
+    completed: true,
+    important: i < 1,
+  })),
+  ...Array.from({ length: 6 }).map((_, i) => ({
+    title: `W4 Thursday Event ${i + 1}`,
+    type: "event",
+    date: "2026-06-25",
+    completed: true,
+    important: false,
+  })),
+  ...Array.from({ length: 5 }).map((_, i) => ({
+    title: `W4 Friday Task ${i + 1}`,
+    type: "task",
+    date: "2026-06-26",
+    completed: true,
+    important: i < 2,
+  })),
+  ...Array.from({ length: 3 }).map((_, i) => ({
+    title: `W4 Sunday Event ${i + 1}`,
+    type: "event",
+    date: "2026-06-28",
+    completed: false,
+    important: false,
+  })),
+];
+const getStartOfWeek = (date) => {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+
+  d.setDate(d.getDate() + diff);
+  d.setHours(0, 0, 0, 0);
+
+  return d;
+};
+
+const addDays = (date, days) => {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+};
+
+const formatDateKey = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
+const [currentWeekStart, setCurrentWeekStart] = useState(
+  getStartOfWeek(new Date())
 );
+
+const currentWeekEnd = addDays(currentWeekStart, 7);
+
+const currentWeekActivities = activities.filter((item) => {
+  const itemDate = new Date(item.date);
+  return itemDate >= currentWeekStart && itemDate < currentWeekEnd;
+});
+
+const nextWeekStart = currentWeekEnd;
+const nextWeekEnd = addDays(currentWeekEnd, 7);
+
+const goPreviousWeek = () => {
+  setCurrentWeekStart((prev) => addDays(prev, -7));
+};
+
+const goNextWeek = () => {
+  setCurrentWeekStart((prev) => addDays(prev, 7));
+};
+
+const formatWeekRange = (startDate) => {
+  const endDate = addDays(startDate, 6);
+
+  const startText = startDate.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+  });
+
+  const endText = endDate.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+
+  return `${startText} – ${endText}`;
+};
 
 const formatDueDate = (dateString) => {
   const date = new Date(dateString);
@@ -219,8 +249,9 @@ const formatDueDate = (dateString) => {
   });
 };
 
-const nextWeekStart = new Date("2026-06-08");
-const nextWeekEnd = new Date("2026-06-15");
+const weeklyAchievements = currentWeekActivities.filter(
+  (item) => item.type === "task" && item.completed
+);
 
 const nextWeekItems = activities
   .filter((item) => {
@@ -235,28 +266,51 @@ const nextWeekItems = activities
     type: item.type,
   }));
 
-const totalActivities = activities.length;
-const completedActivities = activities.filter(item => item.completed).length;
-const importantDone = activities.filter(item => item.completed && item.important).length;
-const overdue = activities.filter(item => !item.completed && new Date(item.date) < new Date("2026-06-05")).length;
+const today = new Date();
+today.setHours(0, 0, 0, 0);
 
-const completionRate = Math.round((completedActivities / totalActivities) * 100);
-const productivityScore = Math.min(100, completionRate + importantDone * 2 - overdue * 5);
+const totalActivities = currentWeekActivities.length;
+
+const completedActivities = currentWeekActivities.filter(
+  (item) => item.completed
+).length;
+
+const importantDone = currentWeekActivities.filter(
+  (item) => item.completed && item.important
+).length;
+
+const overdue = currentWeekActivities.filter(
+  (item) => !item.completed && new Date(item.date) < today
+).length;
+
+const completionRate =
+  totalActivities === 0
+    ? 0
+    : Math.round((completedActivities / totalActivities) * 100);
+
+const productivityScore = Math.min(
+  100,
+  Math.max(0, completionRate + importantDone * 2 - overdue * 5)
+);
 
 const DOT_COUNT = 10;
 
-const weekDays = [
-  { day: "Monday", shortDay: "Mon", date: "1 Jun", fullDate: "2026-06-01" },
-  { day: "Tuesday", shortDay: "Tue", date: "2 Jun", fullDate: "2026-06-02" },
-  { day: "Wednesday", shortDay: "Wed", date: "3 Jun", fullDate: "2026-06-03" },
-  { day: "Thursday", shortDay: "Thu", date: "4 Jun", fullDate: "2026-06-04" },
-  { day: "Friday", shortDay: "Fri", date: "5 Jun", fullDate: "2026-06-05" },
-  { day: "Saturday", shortDay: "Sat", date: "6 Jun", fullDate: "2026-06-06" },
-  { day: "Sunday", shortDay: "Sun", date: "7 Jun", fullDate: "2026-06-07" },
-];
+const weekDays = Array.from({ length: 7 }).map((_, index) => {
+  const dateObj = addDays(currentWeekStart, index);
+
+  return {
+    day: dateObj.toLocaleDateString("en-US", { weekday: "long" }),
+    shortDay: dateObj.toLocaleDateString("en-US", { weekday: "short" }),
+    date: dateObj.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+    }),
+    fullDate: formatDateKey(dateObj),
+  };
+});
 
 const activitiesByDay = weekDays.map((dayItem) => {
-  const dayActivities = activities.filter(
+  const dayActivities = currentWeekActivities.filter(
     (item) => item.date === dayItem.fullDate && item.completed
   );
 
@@ -288,8 +342,7 @@ const recommendation =
   overdue > 0
     ? "Try starting urgent tasks earlier next week to reduce last-minute pressure and keep your schedule more balanced."
     : "Keep your current pace and continue reviewing your weekly priorities regularly.";
-  
-  
+    
     return (
     <div className={styles.reflectionPage}>
       <div className={styles.reflectionShell}>
@@ -314,12 +367,26 @@ const recommendation =
               Weekly Reflection
             </div>
 
-            <button className={styles.weekSelector}>
-              <FiChevronLeft />
-              <FiCalendar />
-              <span>1 – 7 June 2026</span>
-              <FiChevronRight />
-            </button>
+              <div className={styles.weekSelector}>
+                <button type="button" onClick={goPreviousWeek}>
+                  <FiChevronLeft />
+                </button>
+
+                <FiCalendar />
+
+                <span
+                  style={{
+                    fontWeight: 800,
+                    fontSize: "14px",
+                    color: "#111827",
+                  }}>
+                  {formatWeekRange(currentWeekStart)}
+                </span>
+
+                <button type="button" onClick={goNextWeek}>
+                  <FiChevronRight />
+                </button>
+              </div>
           </div>
 
             <section className={styles.statsGrid}>
@@ -344,7 +411,7 @@ const recommendation =
             <div className={`${styles.statCard} ${styles.orangeCard}`}>
                 <div className={styles.statIcon}>⭐</div>
                 <div>
-                <h2 style={{ color: "#828080" }}>{overdue}</h2>
+                <h2 style={{ color: "#daab54" }}>{importantDone}</h2>
                 <p>Important Done</p>
                 <span className={styles.orangeSub}>Marked as important</span>
                 </div>

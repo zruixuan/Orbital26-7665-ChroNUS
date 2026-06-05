@@ -59,45 +59,60 @@
 }
 
 .weekSelector {
-  height: 32px;
-  padding: 0 18px;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
+  border: 1px solid #e5e7eb;
   background: #ffffff;
-  border: 1px solid #eaeaea;
   border-radius: 999px;
-  color: #333;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
+  padding: 4px 14px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: #4b5563;
+  font-size: 14px;
+  font-weight: 2000;
   box-shadow:
-    0 2px 6px rgba(0,0,0,0.04),
-    0 8px 24px rgba(0,0,0,0.03);
-  transition: all 0.2s ease;
+  0 2px 6px rgba(0,0,0,0.04),
+  0 8px 20px rgba(0,0,0,0.03);
+
+transition: all 0.2s ease;
+}
+
+.weekSelector button {
+  border: none;
+  background: transparent;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.weekText {
+  font-size: 13.5px !important;
+  font-weight: 800 !important;
+  color: #374151 !important;
 }
 
 .weekSelector:hover {
   transform: translateY(-2px);
+
   box-shadow:
-    0 6px 12px rgba(0,0,0,0.06),
-    0 12px 32px rgba(0,0,0,0.08);
+    0 6px 14px rgba(0,0,0,0.06),
+    0 12px 28px rgba(0,0,0,0.05);
 }
 
-.weekSelector svg:first-child,
-.weekSelector svg:last-child {
-  width: 18px;
-  height: 18px;
-  padding: 4px;
-  border-radius: 50%;
-  background: #f8f8f8;
-  transition: 0.2s;
-}
-
-.weekSelector svg:first-child:hover,
-.weekSelector svg:last-child:hover {
-  background: #fff1ea;
+.weekSelector button:hover {
   color: #f15c22;
+}
+
+.weekSelector span {
+  min-width: 120px;
+  text-align: center;
+  font-weight: 2000 !important;
 }
 
 .statsGrid {
