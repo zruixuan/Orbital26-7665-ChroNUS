@@ -31,6 +31,7 @@ function Dashboard() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const selectedDateStr = getLocalDateString(selectedDate);
   
+  // Carousel Dates
   const generateCarouselDates = (centerDate) => {
     const dates = [];
     for (let i = -3; i <= 3; i++) {
@@ -53,10 +54,11 @@ function Dashboard() {
     });
   };
 
+  // Go To Today Button 
   const goToToday = () => setSelectedDate(new Date());
   const isCurrentlyToday = selectedDateStr === getLocalDateString(now);
 
-  // Mock Data (Strictly preserved)
+  // Mock Data 
   const tutorialTasks = [
     { 
       id: 1, type: "event", 
@@ -122,6 +124,7 @@ function Dashboard() {
     return () => unsubscribeAuth();
   }, []); 
 
+  // Filtering and Sorting 
   const displayTasks = tasks
     .filter(item => {
       const itemDateString = item.type === "event" ? item.startTime : item.deadline;
@@ -381,7 +384,6 @@ function Dashboard() {
               )}
             </div>
 
-            {/* Bottom Actions Layout */}
             <div style={{ display: "flex", gap: "10px" }}>
               {editingItemId && (
                 <button onClick={handleDeleteItem} className={styles.deleteButton} style={{ flex: 1, padding: "12px", borderRadius: "12px", border: "none", fontWeight: "700", cursor: "pointer" }}>
