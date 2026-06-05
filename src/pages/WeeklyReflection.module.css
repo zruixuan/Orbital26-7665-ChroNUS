@@ -264,14 +264,31 @@
 }
 
 .achievementList {
-  list-style: none;
-  padding: 0;
+  min-height: 190px;
+  max-height: 190px;
+
+  overflow-y: auto;
+
+  padding-right: 6px;
   margin: 0;
+}
+
+.achievementList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.achievementList::-webkit-scrollbar-thumb {
+  background: #d6d6d6;
+  border-radius: 999px;
+}
+
+.achievementList::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .achievementList li {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 14px;
 
   padding: 10px 0;
@@ -291,8 +308,10 @@
 
 .achievementList li span {
   flex: 1;
-  text-align: left;
-  line-height: 1.45;
+
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.5;
 }
 
 .cardTitle {
@@ -336,6 +355,31 @@
   cursor: pointer;
 }
 
+.addAchievement input {
+  flex: 1;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
+  padding: 10px 14px;
+
+  font-size: 14px;
+}
+
+.addAchievement button {
+  width: 40px;
+  height: 40px;
+
+  border: none;
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  background: #f15c22;
+  color: white;
+}
+
+
 .addAchievement svg {
   font-size: 18px;
 }
@@ -343,12 +387,11 @@
 .nextList {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  min-height: 350px;
+  gap: 25px;
 }
 
 .nextItem {
-  min-height: 72px;
-
   padding: 14px 0;
 
   display: grid;
@@ -356,7 +399,7 @@
 
   align-items: center;
 
-  gap: 25px;
+  gap: 30px;
 
   border-bottom: 1px solid #ececec;
 }
@@ -496,11 +539,9 @@ font-family: 'Inter', 'Nunito', sans-serif;
 .taskDot,
 .eventDot,
 .emptyDot {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  display: inline-block;
-  flex-shrink: 0;
 }
 
 .taskDot {
@@ -664,60 +705,397 @@ font-family: 'Inter', 'Nunito', sans-serif;
   min-height: auto;
 }
 
-.aiHeader {
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.aiHeader button {
-  border: 1px solid #ffd6c7;
-  background: white;
-  color: #ff5a1f;
-  border-radius: 12px;
-  padding: 10px 16px;
-  font-weight: 800;
-}
-
-.aiBox {
-  min-height: 250px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #fff6f1, #fffaf7);
-  padding: 28px;
+.aiCoachHeader {
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 16px;
+
+  margin-bottom: 22px;
 }
 
-.robot {
-  font-size: 74px;
-}
+.aiAvatar {
+  width: 58px;
+  height: 58px;
 
-.aiText p {
-  line-height: 1.7;
-  margin: 0 0 16px;
-}
+  border-radius: 50%;
 
-.aiTags {
-  display: flex;
-  gap: 14px;
-  margin-top: 20px;
-}
-
-.aiTags span {
-  padding: 9px 16px;
-  border-radius: 999px;
   background: #fff1ea;
-  color: #ff5a1f;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 30px;
+}
+
+.aiCoachHeader h3 {
+  margin: 0 0 4px;
+
+  font-size: 20px;
+  font-weight: 700;
+  color: #2f3135;
+}
+
+.aiCoachHeader p {
+  margin: 0;
+
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.scoreBox {
+  padding: 18px;
+
+  border: 1px solid #eeeeee;
+  border-radius: 16px;
+
+  margin-bottom: 20px;
+}
+
+.scoreTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 12px;
+}
+
+.scoreTop span {
+  font-size: 15px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.scoreTop strong {
+  font-size: 34px;
   font-weight: 800;
-  font-size: 13px;
+  color: #ff5a1f;
 }
 
-.aiTags span:nth-child(2) {
-  background: #fff7df;
-  color: #b7791f;
+.scoreTop em {
+  font-size: 15px;
+  font-style: normal;
+  color: #6b7280;
 }
 
-.aiTags span:nth-child(3) {
-  background: #e9f9ef;
+.scoreBar {
+  height: 9px;
+
+  border-radius: 999px;
+
+  background: #ffe5d9;
+
+  overflow: hidden;
+}
+
+.scoreFill {
+  width: 82%;
+  height: 100%;
+
+  border-radius: 999px;
+
+  background: #ff5a1f;
+}
+
+.aiPointList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  margin-bottom: 20px;
+}
+
+.aiPoint {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.aiPoint p {
+  margin: 0;
+
+  font-size: 14px;
+  line-height: 1.5;
+  color: #374151;
+}
+
+.greenCircle,
+.blueCircle,
+.yellowCircle {
+  width: 34px;
+  height: 34px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.greenCircle {
+  background: #eaf8ef;
   color: #16a34a;
+}
+
+.blueCircle {
+  background: #eaf2ff;
+  color: #3b82f6;
+}
+
+.yellowCircle {
+  background: #fff7df;
+  color: #f59e0b;
+}
+
+.recommendBox {
+  min-height: 160px;
+
+  padding: 20px;
+
+  border-radius: 16px;
+
+  background: #fff6f1;
+  border: 1px solid #e1ccc5;
+
+  margin-bottom: 22px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.recommendBox h4 {
+  margin: 0 0 10px;
+
+  color: #ff5a1f;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.recommendBox p {
+  margin: 0;
+
+  font-size: 14px;
+  line-height: 1.6;
+  color: #374151;
+}
+
+.generateButton {
+  width: 100%;
+  height: 40px;
+
+  border-radius: 999px;
+
+  border: 1px solid #d2a99a;
+  background: white;
+
+  color: #f15c22;
+
+  font-size: 14px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.generateButton:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 6px 12px rgba(0,0,0,0.06),
+    0 12px 32px rgba(0,0,0,0.08);
+
+  border-color: #f15c22;
+}
+
+.aiCard {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 650px;
+}
+
+.generateButton {
+  margin-top: auto;
+}
+
+
+
+
+
+.addAchievement {
+  width: 100%;
+  border: none;
+  border-top: 1px solid #e5e5e5;
+  background: transparent;
+
+  margin-top: 18px;
+  padding-top: 18px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  color: #f15c22;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(245, 245, 245, 0.72);
+  backdrop-filter: blur(6px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modalBox {
+  width: 460px;
+  background: #ffffff;
+
+  border: 1px solid #e8e8e8;
+  border-radius: 22px;
+
+  padding: 26px 28px 24px;
+
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.06),
+    0 2px 6px rgba(0, 0, 0, 0.04);
+
+  animation: popup 0.22s ease;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+
+  border-bottom: 1px solid #dedede;
+}
+
+.modalHeader span {
+  font-size: 24px;
+}
+
+.modalHeader h3 {
+  margin: 0;
+  font-size: 27px;
+  font-weight: 400;
+  color: #34343a;
+}
+
+.modalInput {
+  width: 100%;
+  height: 90px;
+
+  resize: none;
+  overflow-y: auto;
+
+  box-sizing: border-box;
+
+  border: 1px solid #e2e2e2;
+  border-radius: 18px;
+  background: #fafafa;
+
+  padding: 16px 18px;
+
+  font-size: 16px;
+  font-family: inherit;
+  line-height: 1.6;
+
+  color: #3f3f46;
+  outline: none;
+}
+
+.modalInput::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modalInput::-webkit-scrollbar-track {
+  background: transparent;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  margin: 8px 0;
+}
+
+.modalInput::-webkit-scrollbar-thumb {
+  background: #d4d4d8;
+  border-radius: 999px;
+}
+
+.modalInput::-webkit-scrollbar-thumb:hover {
+  background: #b8b8bf;
+}
+
+.modalInput:focus {
+  background: #ffffff;
+  border-color: #f15c22;
+  box-shadow: 0 0 0 4px rgba(241, 92, 34, 0.08);
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+
+  margin-top: 22px;
+}
+
+.cancelBtn,
+.addBtn {
+  border: none;
+  height: 38px;
+  padding: 0 20px;
+
+  border-radius: 999px;
+
+  font-size: 15px;
+  font-family: inherit;
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.cancelBtn {
+  background: #f2f2f3;
+  color: #56565f;
+}
+
+.cancelBtn:hover {
+  background: #e7e7e9;
+  transform: translateY(-1px);
+}
+
+.addBtn {
+  background: #f15c22;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 8px 18px rgba(241, 92, 34, 0.2);
+}
+
+.addBtn:hover {
+  background: #e65015;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 22px rgba(241,92,34,0.28);
+}
+
+.addBtn:active {
+  transform: translateY(0);
 }
