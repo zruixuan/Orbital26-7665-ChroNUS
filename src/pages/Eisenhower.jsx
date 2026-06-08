@@ -11,7 +11,7 @@ function Eisenhower() {
   const [tasks, setTasks] = useState([]);
   const [urgentDays, setUrgentDays] = useState(3);
   const [showUrgentMenu, setShowUrgentMenu] = useState(false);
-  const [expandedTaskId, setExpandedTaskId] = useState(null);
+  const [selectedTask, setSelectedTask] = useState(null);
   const [activeFilter, setActiveFilter] = useState("all");
 
   useEffect(() => {
@@ -126,9 +126,7 @@ function Eisenhower() {
     <div className={styles.taskWrapper} key={task.id}>
       <div
         className={styles.task}
-        onClick={() =>
-          setExpandedTaskId(expandedTaskId === task.id ? null : task.id)
-        }
+        onClick={() => setSelectedTask(task)}
       >
         <div className={styles.taskLeft}>
           <div className={dotClass}></div>
@@ -150,7 +148,7 @@ function Eisenhower() {
           className={styles.popoverClose}
           onClick={(e) => {
             e.stopPropagation();
-            setExpandedTaskId(null);
+            setSelectedTask(null);
           }}
         >
           ×
@@ -366,11 +364,6 @@ function Eisenhower() {
                 )}
               </div>
 
-              {importantUrgent.map(
-                (task) =>
-                  expandedTaskId === task.id && renderPopover(task)
-              )}
-
               <div className={styles.quadrantFooter}>
                 <span className={styles.redFooter}>
                   {importantUrgent.length} TASKS
@@ -398,11 +391,6 @@ function Eisenhower() {
                   renderTask(task, styles.greenDot)
                 )}
               </div>
-
-              {importantNotUrgent.map(
-                (task) =>
-                  expandedTaskId === task.id && renderPopover(task)
-              )}
 
               <div className={styles.quadrantFooter}>
                 <span className={styles.greenFooter}>
@@ -434,11 +422,6 @@ function Eisenhower() {
                 )}
               </div>
 
-              {notImportantUrgent.map(
-                (task) =>
-                  expandedTaskId === task.id && renderPopover(task)
-              )}
-
               <div className={styles.quadrantFooter}>
                 <span className={styles.blueFooter}>
                   {notImportantUrgent.length} TASKS
@@ -469,11 +452,6 @@ function Eisenhower() {
                 )}
               </div>
 
-              {notImportantNotUrgent.map(
-                (task) =>
-                  expandedTaskId === task.id && renderPopover(task)
-              )}
-
               <div className={styles.quadrantFooter}>
                 <span className={styles.orangeFooter}>
                   {notImportantNotUrgent.length} TASKS
@@ -485,6 +463,17 @@ function Eisenhower() {
             </div>
           </section>
         </div>
+
+         {selectedTask && (
+          <div
+            className={styles.modalOverlay}
+            onClick={() => setSelectedTask(null)}
+          >
+            <div onClick={(e) => e.stopPropagation()}>
+              {renderPopover(selectedTask)}
+            </div>
+          </div>
+        )}       
 
         <section className={styles.howItWorks}>
           <h2>How It Works</h2>
