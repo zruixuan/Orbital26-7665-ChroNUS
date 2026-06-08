@@ -76,7 +76,9 @@ function Eisenhower() {
   const displayImportance = (task) =>
     isImportant(task) ? "Important" : "Unimportant";
 
-  let filteredTasks = tasks;
+  let filteredTasks = tasks.filter(
+  (task) => !task.completed
+);
 
   if (activeFilter === "urgent") {
     filteredTasks = tasks.filter((task) => isUrgent(task));
@@ -110,9 +112,13 @@ function Eisenhower() {
     (task) => isUnimportant(task) && !isUrgent(task)
   );
 
-  const urgentTasks = tasks.filter((task) => isUrgent(task));
+  const urgentTasks = tasks.filter(
+    (task) => !task.completed && isUrgent(task)
+  );
 
-  const importantTasks = tasks.filter((task) => isImportant(task));
+  const importantTasks = tasks.filter(
+    (task) => !task.completed && isImportant(task)
+  );
 
   const overdueTasks = tasks.filter((task) => {
     const deadline = new Date(task.deadline);
@@ -120,7 +126,9 @@ function Eisenhower() {
     return deadline < today && !task.completed;
   });
 
-  const totalTasks = tasks.length;
+  const totalTasks = tasks.filter(
+    (task) => !task.completed
+  ).length;
 
   const renderTask = (task, dotClass) => (
     <div className={styles.taskWrapper} key={task.id}>

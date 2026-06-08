@@ -16,7 +16,19 @@ import {
 } from "react-icons/fi";
 import NavBar from "../components/NavBar";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import {
+  collection,
+  onSnapshot,
+  query,
+  where,
+  doc,
+  setDoc,
+  getDoc,
+} from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "../api/firebase";
 
 function WeeklyReflection() {
 const navigate = useNavigate();
@@ -41,139 +53,87 @@ const handleAnswerChange = (key, value) => {
   }
 };
 
-const handleAddAchievement = () => {
+const handleAddAchievement = async () => {
   if (!newAchievement.trim()) return;
 
-  setCustomAchievements([
+  if (!currentUser) {
+    alert("Please log in first.");
+    return;
+  }
+
+  const updatedAchievements = [
     ...customAchievements,
     newAchievement.trim(),
-  ]);
+  ];
 
+  setCustomAchievements(updatedAchievements);
   setNewAchievement("");
   setShowAchievementModal(false);
+
+  const weekKey = formatDateKey(currentWeekStart);
+  const reflectionId = `${currentUser.uid}_${weekKey}`;
+
+  try {
+    await setDoc(
+      doc(db, "weeklyReflections", reflectionId),
+      {
+        userId: currentUser.uid,
+        weekStart: weekKey,
+        customAchievements: updatedAchievements,
+        updatedAt: new Date(),
+      },
+      { merge: true }
+    );
+  } catch (error) {
+    console.error("Save achievement error:", error);
+    alert("Failed to save achievement.");
+  }
 };
 
-const activities = [
-  // Week 1: 1 Jun – 7 Jun
-  ...Array.from({ length: 5 }).map((_, i) => ({
-    title: `W1 Monday Task ${i + 1}`,
-    type: "task",
-    date: "2026-06-01",
-    completed: true,
-    important: i < 2,
-  })),
-  ...Array.from({ length: 2 }).map((_, i) => ({
-    title: `W1 Monday Event ${i + 1}`,
-    type: "event",
-    date: "2026-06-01",
-    completed: true,
-    important: false,
-  })),
-  ...Array.from({ length: 3 }).map((_, i) => ({
-    title: `W1 Wednesday Task ${i + 1}`,
-    type: "task",
-    date: "2026-06-03",
-    completed: true,
-    important: i < 1,
-  })),
-  ...Array.from({ length: 4 }).map((_, i) => ({
-    title: `W1 Friday Event ${i + 1}`,
-    type: "event",
-    date: "2026-06-05",
-    completed: true,
-    important: false,
-  })),
+const [activities, setActivities] = useState([]);
+const [currentUser, setCurrentUser] = useState(null);
 
-  // Week 2: 8 Jun – 14 Jun
-  ...Array.from({ length: 6 }).map((_, i) => ({
-    title: `W2 Tuesday Task ${i + 1}`,
-    type: "task",
-    date: "2026-06-09",
-    completed: true,
-    important: i < 3,
-  })),
-  ...Array.from({ length: 3 }).map((_, i) => ({
-    title: `W2 Tuesday Event ${i + 1}`,
-    type: "event",
-    date: "2026-06-09",
-    completed: true,
-    important: false,
-  })),
-  ...Array.from({ length: 2 }).map((_, i) => ({
-    title: `W2 Thursday Task ${i + 1}`,
-    type: "task",
-    date: "2026-06-11",
-    completed: false,
-    important: false,
-  })),
-  ...Array.from({ length: 5 }).map((_, i) => ({
-    title: `W2 Sunday Event ${i + 1}`,
-    type: "event",
-    date: "2026-06-14",
-    completed: true,
-    important: false,
-  })),
+useEffect(() => {
+  const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      setCurrentUser(null);
+      setActivities([]);
+      return;
+    }
 
-  // Week 3: 15 Jun – 21 Jun
-  ...Array.from({ length: 4 }).map((_, i) => ({
-    title: `W3 Monday Task ${i + 1}`,
-    type: "task",
-    date: "2026-06-15",
-    completed: true,
-    important: i < 1,
-  })),
-  ...Array.from({ length: 4 }).map((_, i) => ({
-    title: `W3 Monday Event ${i + 1}`,
-    type: "event",
-    date: "2026-06-15",
-    completed: true,
-    important: false,
-  })),
-  ...Array.from({ length: 8 }).map((_, i) => ({
-    title: `W3 Wednesday Task ${i + 1}`,
-    type: "task",
-    date: "2026-06-17",
-    completed: true,
-    important: i < 4,
-  })),
-  ...Array.from({ length: 1 }).map((_, i) => ({
-    title: `W3 Saturday Event ${i + 1}`,
-    type: "event",
-    date: "2026-06-20",
-    completed: false,
-    important: false,
-  })),
+    setCurrentUser(user);
 
-  // Week 4: 22 Jun – 28 Jun
-  ...Array.from({ length: 2 }).map((_, i) => ({
-    title: `W4 Monday Task ${i + 1}`,
-    type: "task",
-    date: "2026-06-22",
-    completed: true,
-    important: i < 1,
-  })),
-  ...Array.from({ length: 6 }).map((_, i) => ({
-    title: `W4 Thursday Event ${i + 1}`,
-    type: "event",
-    date: "2026-06-25",
-    completed: true,
-    important: false,
-  })),
-  ...Array.from({ length: 5 }).map((_, i) => ({
-    title: `W4 Friday Task ${i + 1}`,
-    type: "task",
-    date: "2026-06-26",
-    completed: true,
-    important: i < 2,
-  })),
-  ...Array.from({ length: 3 }).map((_, i) => ({
-    title: `W4 Sunday Event ${i + 1}`,
-    type: "event",
-    date: "2026-06-28",
-    completed: false,
-    important: false,
-  })),
-];
+    const activitiesQuery = query(
+      collection(db, "tasks"),
+      where("userId", "==", user.uid)
+    );
+
+    const unsubscribeActivities = onSnapshot(activitiesQuery, (snapshot) => {
+      const activityData = snapshot.docs.map((doc) => {
+        const data = doc.data();
+
+        return {
+          id: doc.id,
+          title: data.title,
+          detail: data.detail,
+          type: data.type,
+          date: data.type === "event" ? data.startTime : data.deadline,
+          completed: data.type === "event" ? true : data.completed,
+          important: data.importance?.toLowerCase() === "important",
+        };
+      });
+
+      console.log("Weekly activities:", activityData);
+
+      setActivities(activityData);
+    });
+
+    return () => unsubscribeActivities();
+  });
+
+  return () => unsubscribeAuth();
+}, []);
+
 const getStartOfWeek = (date) => {
   const d = new Date(date);
   const day = d.getDay();
@@ -203,10 +163,45 @@ const [currentWeekStart, setCurrentWeekStart] = useState(
   getStartOfWeek(new Date())
 );
 
+useEffect(() => {
+  const loadReflection = async () => {
+    setAnswers({
+      proud: "",
+      challenge: "",
+      goal: "",
+    });
+    setCustomAchievements([]);
+
+    if (!currentUser) return;
+
+    const weekKey = formatDateKey(currentWeekStart);
+    const reflectionId = `${currentUser.uid}_${weekKey}`;
+
+    const docSnap = await getDoc(
+      doc(db, "weeklyReflections", reflectionId)
+    );
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+
+      setAnswers({
+        proud: data.proud || "",
+        challenge: data.challenge || "",
+        goal: data.goal || "",
+      });
+
+      setCustomAchievements(data.customAchievements || []);
+    }
+  };
+
+  loadReflection();
+}, [currentUser, currentWeekStart]);
+
 const currentWeekEnd = addDays(currentWeekStart, 7);
 
 const currentWeekActivities = activities.filter((item) => {
-  const itemDate = new Date(item.date);
+  if (!item.date) return false;
+  const itemDate = new Date(item.date.replace(" ", "T"));
   return itemDate >= currentWeekStart && itemDate < currentWeekEnd;
 });
 
@@ -239,7 +234,7 @@ const formatWeekRange = (startDate) => {
 };
 
 const formatDueDate = (dateString) => {
-  const date = new Date(dateString);
+  const date = new Date(dateString.replace(" ", "T"));
 
   return date.toLocaleDateString("en-GB", {
     day: "numeric",
@@ -255,10 +250,14 @@ const weeklyAchievements = currentWeekActivities.filter(
 
 const nextWeekItems = activities
   .filter((item) => {
-    const itemDate = new Date(item.date);
+    const itemDate = new Date(item.date.replace(" ", "T"));
     return itemDate >= nextWeekStart && itemDate < nextWeekEnd;
   })
-  .sort((a, b) => new Date(a.date) - new Date(b.date))
+  .sort(
+    (a, b) =>
+      new Date(a.date.replace(" ", "T")) -
+      new Date(b.date.replace(" ", "T"))
+  )
   .slice(0, 3)
   .map((item) => ({
     title: item.title,
@@ -266,9 +265,8 @@ const nextWeekItems = activities
     type: item.type,
   }));
 
-const today = new Date();
-today.setHours(0, 0, 0, 0);
-
+const now = new Date();
+  
 const totalActivities = currentWeekActivities.length;
 
 const completedActivities = currentWeekActivities.filter(
@@ -280,7 +278,10 @@ const importantDone = currentWeekActivities.filter(
 ).length;
 
 const overdue = currentWeekActivities.filter(
-  (item) => !item.completed && new Date(item.date) < today
+  (item) =>
+    item.type === "task" &&
+    !item.completed &&
+    new Date(item.date.replace(" ", "T")) < now
 ).length;
 
 const completionRate =
@@ -311,7 +312,9 @@ const weekDays = Array.from({ length: 7 }).map((_, index) => {
 
 const activitiesByDay = weekDays.map((dayItem) => {
   const dayActivities = currentWeekActivities.filter(
-    (item) => item.date === dayItem.fullDate && item.completed
+    (item) =>
+      item.date?.split(" ")[0] === dayItem.fullDate &&
+      item.completed
   );
 
   const tasks = dayActivities.filter((item) => item.type === "task").length;
@@ -342,7 +345,39 @@ const recommendation =
   overdue > 0
     ? "Try starting urgent tasks earlier next week to reduce last-minute pressure and keep your schedule more balanced."
     : "Keep your current pace and continue reviewing your weekly priorities regularly.";
-    
+
+const saveReflection = async () => {
+  if (!currentUser) {
+    alert("Please log in first.");
+    return;
+  }
+
+  const weekKey = formatDateKey(currentWeekStart);
+  const reflectionId = `${currentUser.uid}_${weekKey}`;
+
+  try {
+    await setDoc(
+      doc(db, "weeklyReflections", reflectionId),
+      {
+        userId: currentUser.uid,
+        weekStart: weekKey,
+
+        proud: answers.proud,
+        challenge: answers.challenge,
+        goal: answers.goal,
+
+        updatedAt: new Date(),
+      },
+      { merge: true }
+    );
+
+    alert("Reflection saved!");
+  } catch (error) {
+    console.error("Save reflection error:", error);
+    alert("Failed to save reflection.");
+  }
+};
+
     return (
     <div className={styles.reflectionPage}>
       <div className={styles.reflectionShell}>
@@ -440,7 +475,7 @@ const recommendation =
 
                 <ul className={styles.achievementList}>
                   {weeklyAchievements.map((item) => (
-                    <li key={item.title}>
+                    <li key={item.id}>
                       <FiCheckCircle />
                       <span>Completed {item.title}</span>
                     </li>
@@ -623,9 +658,12 @@ const recommendation =
             <span>{answers.goal.length}/500</span>
             </div>
             
-              <button className={styles.saveButton}>
-                Save Reflection
-              </button>
+            <button
+              className={styles.saveButton}
+              onClick={saveReflection}
+            >
+              Save Reflection
+            </button>
             </div>
 
             <div className={`${styles.card} ${styles.aiCard}`}>
