@@ -378,6 +378,32 @@ const saveReflection = async () => {
   }
 };
 
+const getOverdueText = (dateString) => {
+  const deadline = new Date(dateString.replace(" ", "T"));
+  const diffMs = now - deadline;
+
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffMinutes < 60) {
+    return `❗ ${diffMinutes}m overdue`;
+  }
+
+  if (diffHours < 24) {
+    return `❗ ${diffHours}h overdue`;
+  }
+
+  return `❗ ${diffDays}d overdue`;
+};
+
+const overdueTasks = currentWeekActivities.filter(
+  (item) =>
+    item.type === "task" &&
+    !item.completed &&
+    new Date(item.date.replace(" ", "T")) < now
+);
+
     return (
     <div className={styles.reflectionPage}>
       <div className={styles.reflectionShell}>
@@ -606,6 +632,46 @@ const saveReflection = async () => {
             </div>
           </section>
 
+          <section className={`${styles.card} ${styles.overdueWeekCard}`}>
+            <div className={styles.cardTitle}>
+              <FiClock />
+              <h3>Overdue Tasks This Week</h3>
+            </div>
+
+            {overdueTasks.length === 0 ? (
+              <p className={styles.emptyOverdue}>No overdue tasks this week 🎉</p>
+            ) : (
+              <div className={styles.overdueScrollArea}>
+                {overdueTasks.length === 0 ? (
+                  <p className={styles.emptyOverdue}>
+                    No overdue tasks this week 🎉
+                  </p>
+                ) : (
+                <div className={styles.overdueList}>
+                  {overdueTasks.map((item) => (
+                    <div className={styles.overdueItem} key={item.id}>
+                      <div className={styles.overdueLeft}>
+                        <div className={styles.overdueBar}></div>
+                        <div className={styles.overdueIcon}>❗</div>
+                        <strong>{item.title}</strong>
+                      </div>
+
+                      <span className={styles.overdueBadge}>
+                        {getOverdueText(item.date)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                )}
+              </div>
+            )}
+
+              <div className={styles.overdueFooter}>
+                Overdue summary:
+                <strong>{overdueTasks.length} tasks</strong>
+              </div>
+          </section>
+        
           <section className={styles.bottomGrid}>
             <div className={styles.card}>
               <div className={styles.cardTitle}>

@@ -91,12 +91,6 @@ transition: all 0.2s ease;
   cursor: pointer;
 }
 
-.weekText {
-  font-size: 13.5px !important;
-  font-weight: 800 !important;
-  color: #374151 !important;
-}
-
 .weekSelector:hover {
   transform: translateY(-2px);
 
@@ -587,6 +581,145 @@ font-family: 'Inter', 'Nunito', sans-serif;
 
 .productiveDay strong {
   color: #ff5a1f;
+}
+
+.overdueWeekCard {
+  width: 1010px;
+  margin-bottom: 24px;
+  height: 350px;
+}
+
+.emptyOverdue {
+  flex: 1;
+  height: 215px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #6b7280;
+  font-size: 15px;
+}
+
+.overdueScrollArea {
+  height: 230px;
+  margin-top: -15px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.overdueScrollArea::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overdueScrollArea::-webkit-scrollbar-thumb {
+  background: #d6d6d6;
+  border-radius: 999px;
+}
+
+.overdueScrollArea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.overdueList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.overdueLeft {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.overdueBar {
+  width: 4px;
+  height: 42px;
+
+  background: #f15c22;
+  border-radius: 999px;
+}
+
+.overdueIcon {
+  width: 34px;
+  height: 34px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(241,92,34,0.12);
+
+  color: #f15c22;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.overdueItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 14px 0;
+}
+
+.overdueItem strong {
+  font-size: 15px;
+  font-weight: 800;
+  color: #2f3135;
+}
+
+.overdueBadge {
+  background: rgba(211, 47, 47, 0.12);
+  color: #d32f2f;
+
+  padding: 7px 14px;
+  border-radius: 90px !important;
+
+  font-size: 15px;
+  font-weight: 650;
+
+  white-space: nowrap;
+}
+
+.overdueItem span {
+  background: rgba(211, 47, 47, 0.12);
+  color: #d32f2f;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.emptyOverdue {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.overdueFooter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  margin-top: 8px;
+  padding-top: 8px;
+
+  border-top: 1px solid #dedcdc;
+
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.overdueFooter strong {
+  margin-left: 6px;
+
+  color: #f15c22;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .bottomGrid {

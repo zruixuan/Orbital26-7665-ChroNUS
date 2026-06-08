@@ -919,3 +919,13 @@
   background: rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(8px);
 }
+
+.overdueText {
+  color: #cb4f4d !important;
+  font-weight: 2000 !important;
+  font-size: 15px !important;
+}
+
+.task .overdueText {
+  font-weight: 1000 !important;
+}
