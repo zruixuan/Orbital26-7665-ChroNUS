@@ -265,13 +265,16 @@
 
   cursor: pointer;
 
-  transition: 0.2s;
+  transition: all 0.2s ease;
 }
 
 .register-button:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 
-  box-shadow: 0 8px 18px rgba(255, 122, 47, 0.25);
+  background: linear-gradient(to right, #ff8a3d, #ff6726);
+
+  box-shadow:
+    0 10px 24px rgba(255, 120, 45, 0.32);
 }
 
 
@@ -301,4 +304,118 @@
   color: #ff8a3d;
 
   text-decoration: underline;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  background: rgba(31, 18, 13, 0.22);
+  backdrop-filter: blur(5px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-box {
+  width: 390px;
+  padding: 34px 32px 28px;
+
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 170, 120, 0.35);
+  border-radius: 24px;
+
+  text-align: center;
+
+  box-shadow:
+    0 18px 45px rgba(31, 18, 13, 0.16),
+    0 4px 12px rgba(31, 18, 13, 0.08);
+
+  animation: modalPop 0.22s ease;
+
+  font-family: 'Inter', 'Nunito', sans-serif;
+}
+
+.modal-icon {
+  width: 66px;
+  height: 66px;
+
+  margin: 0 auto 18px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 34px;
+  font-weight: 800;
+}
+
+.modal-icon.success {
+  background: #fff0e6;
+  color: #f15c22;
+}
+
+.modal-icon.error {
+  background: #fff1f1;
+  color: #d94a38;
+}
+
+.modal-box h3 {
+  margin: 0 0 10px;
+  font-family: 'Inter', 'Nunito', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #2b1d16;
+}
+
+.modal-box p {
+  margin: 0;
+
+  font-size: 15px;
+  line-height: 1.5;
+  color: #6f5a50;
+  font-family: 'Inter', 'Nunito', sans-serif;
+}
+
+.modal-button {
+  width: 100%;
+
+  margin-top: 24px;
+  padding: 13px 0;
+
+  border: none;
+  border-radius: 14px;
+
+  background: linear-gradient(135deg, #ff8a3d, #f15c22);
+
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.modal-button:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 22px rgba(241, 92, 34, 0.28);
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }

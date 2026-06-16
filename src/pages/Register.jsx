@@ -21,26 +21,37 @@ function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
+  const [showModal, setShowModal] = useState(false);
+const [modalType, setModalType] = useState("");
+const [modalMessage, setModalMessage] = useState("");
+
   const handleRegister = async () => {
-    if (!email || !password || !confirmPassword) {
-      alert("Please fill in all fields");
-      return;
-    }
+  if (!email || !password || !confirmPassword) {
+    setModalType("error");
+    setModalMessage("Please fill in all fields");
+    setShowModal(true);
+    return;
+  }
 
-    if (password !== confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
+  if (password !== confirmPassword) {
+    setModalType("error");
+    setModalMessage("Passwords do not match");
+    setShowModal(true);
+    return;
+  }
 
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
 
-      alert("Register successful");
-      navigate("/");
-    } catch (error) {
-      alert(error.message);
-    }
-  };
+    setModalType("success");
+    setModalMessage("Your account has been created successfully.");
+    setShowModal(true);
+  } catch (error) {
+    setModalType("error");
+    setModalMessage(error.message);
+    setShowModal(true);
+  }
+};
 
   return (
     <div className="login-page">
@@ -111,6 +122,34 @@ function Register() {
             </p>
         </div>
       </div>
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <div className={`modal-icon ${modalType}`}>
+              {modalType === "success" ? "✓" : "!"}
+            </div>
+
+            <h3>
+              {modalType === "success" ? "Register Successful" : "Register Failed"}
+            </h3>
+
+            <p>{modalMessage}</p>
+
+            <button
+              className="modal-button"
+              onClick={() => {
+                setShowModal(false);
+
+                if (modalType === "success") {
+                  navigate("/");
+                }
+              }}
+            >
+              {modalType === "success" ? "Continue" : "Try Again"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

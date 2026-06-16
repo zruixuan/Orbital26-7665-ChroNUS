@@ -21,19 +21,28 @@ function LoginPage() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
+
   async function handleLogin() {
     if (email === "" || password === "") {
-      alert("Please enter both email and password");
+      setModalType("error");
+      setModalMessage("Please enter both email and password");
+      setShowModal(true);
       return;
     }
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
 
-      alert("Login successful! Navigating to dashboard...");
-      navigate("/dashboard");
+      setModalType("success");
+      setModalMessage("Welcome back! Redirecting to Dashboard...");
+      setShowModal(true);
     } catch (error) {
-      alert(error.message);
+      setModalType("error");
+      setModalMessage(error.message);
+      setShowModal(true);
     }
   }
 
@@ -86,6 +95,35 @@ function LoginPage() {
       <p className="bottom-text">
         Forgot password? <Link to="/forgot-password">Reset here</Link> 
       </p>
+
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <div className={`modal-icon ${modalType}`}>
+              {modalType === "success" ? "✓" : "!"}
+            </div>
+
+            <h3>
+              {modalType === "success" ? "Login Successful" : "Login Failed"}
+            </h3>
+
+            <p>{modalMessage}</p>
+
+            <button
+              className="modal-button"
+              onClick={() => {
+                setShowModal(false);
+
+                if (modalType === "success") {
+                  navigate("/dashboard");
+                }
+              }}
+            >
+              {modalType === "success" ? "Continue" : "Try Again"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
