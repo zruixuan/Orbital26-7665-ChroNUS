@@ -10,17 +10,27 @@ import { auth } from "../api/firebase";
 function ForgotPassword() {
   const [email, setEmail] = useState("");
 
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
+
   const handleReset = async () => {
     if (!email) {
-      alert("Please enter your email");
+      setModalType("error");
+      setModalMessage("Please enter your email");
+      setShowModal(true);
       return;
     }
 
     try {
       await sendPasswordResetEmail(auth, email);
-      alert("Password reset email sent. Please check your inbox.");
+      setModalType("success");
+      setModalMessage("Password reset email sent. Please check your inbox.");
+      setShowModal(true);
     } catch (error) {
-      alert(error.message);
+      setModalType("error");
+      setModalMessage(error.message);
+      setShowModal(true);
     }
   };
 
@@ -59,6 +69,35 @@ function ForgotPassword() {
           </p>
         </div>
       </div>
+            {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <div className={`modal-icon ${modalType}`}>
+              {modalType === "success" ? "✅" : "❌"}
+            </div>
+
+            <h3>
+              {modalType === "success" ? "Send Successful" : "Send Failed"}
+            </h3>
+
+            <p>{modalMessage}</p>
+
+            <button
+              className="modal-button"
+              onClick={() => {
+                setShowModal(false);
+
+                if (modalType === "success") {
+                  navigate("/dashboard");
+                }
+              }}
+            >
+              {modalType === "success" ? "Continue" : "Try Again"}
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
