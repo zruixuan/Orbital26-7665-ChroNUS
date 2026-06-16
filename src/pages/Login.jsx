@@ -25,6 +25,7 @@ function LoginPage() {
   const [modalType, setModalType] = useState("");
   const [modalMessage, setModalMessage] = useState("");
 
+  const [isLoading, setIsLoading] = useState(false);
   async function handleLogin() {
     if (email === "" || password === "") {
       setModalType("error");
@@ -33,16 +34,18 @@ function LoginPage() {
       return;
     }
 
+    setModalType("loading");
+    setModalMessage("Signing in to your account...");
+    setShowModal(true);
+
     try {
       await signInWithEmailAndPassword(auth, email, password);
 
       setModalType("success");
       setModalMessage("Welcome back! Redirecting to Dashboard...");
-      setShowModal(true);
     } catch (error) {
       setModalType("error");
       setModalMessage(error.message);
-      setShowModal(true);
     }
   }
 
@@ -84,8 +87,11 @@ function LoginPage() {
 
       <br />
 
-      <button className="login-button" onClick={handleLogin}>
-        Login
+      <button
+        className="login-button"
+        onClick={handleLogin}
+      >
+          Login
       </button>
 
       <p className="bottom-text">
@@ -100,27 +106,39 @@ function LoginPage() {
         <div className="modal-overlay">
           <div className="modal-box">
             <div className={`modal-icon ${modalType}`}>
-              {modalType === "success" ? "✅" : "❌"}
+              {modalType === "loading" ? (
+                <span className="modal-spinner"></span>
+              ) : modalType === "success" ? (
+                "✅"
+              ) : (
+                "❌"
+              )}
             </div>
 
             <h3>
-              {modalType === "success" ? "Login Successful" : "Login Failed"}
+              {modalType === "loading"
+                ? "Signing In"
+                : modalType === "success"
+                ? "Login Successful"
+                : "Login Failed"}
             </h3>
 
             <p>{modalMessage}</p>
 
-            <button
-              className="modal-button"
-              onClick={() => {
-                setShowModal(false);
+            {modalType !== "loading" && (
+              <button
+                className="modal-button"
+                onClick={() => {
+                  setShowModal(false);
 
-                if (modalType === "success") {
-                  navigate("/dashboard");
-                }
-              }}
-            >
-              {modalType === "success" ? "Continue" : "Try Again"}
-            </button>
+                  if (modalType === "success") {
+                    navigate("/dashboard");
+                  }
+                }}
+              >
+                {modalType === "success" ? "Continue" : "Try Again"}
+              </button>
+            )}
           </div>
         </div>
       )}

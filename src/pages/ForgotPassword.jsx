@@ -22,15 +22,20 @@ function ForgotPassword() {
       return;
     }
 
+    setModalType("loading");
+    setModalMessage("Sending password reset email...");
+    setShowModal(true);
+
     try {
       await sendPasswordResetEmail(auth, email);
+
       setModalType("success");
-      setModalMessage("Password reset email sent. Please check your inbox.");
-      setShowModal(true);
+      setModalMessage(
+        "Password reset email sent. Please check your inbox."
+      );
     } catch (error) {
       setModalType("error");
       setModalMessage(error.message);
-      setShowModal(true);
     }
   };
 
@@ -69,31 +74,39 @@ function ForgotPassword() {
           </p>
         </div>
       </div>
-            {showModal && (
+      {showModal && (
         <div className="modal-overlay">
           <div className="modal-box">
             <div className={`modal-icon ${modalType}`}>
-              {modalType === "success" ? "✅" : "❌"}
+              {modalType === "loading" ? (
+                <span className="modal-spinner"></span>
+              ) : modalType === "success" ? (
+                "✅"
+              ) : (
+                "❌"
+              )}
             </div>
 
             <h3>
-              {modalType === "success" ? "Send Successful" : "Send Failed"}
+              {modalType === "loading"
+                ? "Sending Email"
+                : modalType === "success"
+                ? "Email Sent"
+                : "Send Failed"}
             </h3>
 
             <p>{modalMessage}</p>
 
-            <button
-              className="modal-button"
-              onClick={() => {
-                setShowModal(false);
-
-                if (modalType === "success") {
-                  navigate("/dashboard");
-                }
-              }}
-            >
-              {modalType === "success" ? "Continue" : "Try Again"}
-            </button>
+            {modalType !== "loading" && (
+              <button
+                className="modal-button"
+                onClick={() => {
+                  setShowModal(false);
+                }}
+              >
+                {modalType === "success" ? "Got It" : "Try Again"}
+              </button>
+            )}
           </div>
         </div>
       )}

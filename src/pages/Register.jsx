@@ -25,33 +25,36 @@ function Register() {
 const [modalType, setModalType] = useState("");
 const [modalMessage, setModalMessage] = useState("");
 
+const [isLoading, setIsLoading] = useState(false);
   const handleRegister = async () => {
-  if (!email || !password || !confirmPassword) {
-    setModalType("error");
-    setModalMessage("Please fill in all fields");
-    setShowModal(true);
-    return;
-  }
+    if (!email || !password || !confirmPassword) {
+      setModalType("error");
+      setModalMessage("Please fill in all fields");
+      setShowModal(true);
+      return;
+    }
 
-  if (password !== confirmPassword) {
-    setModalType("error");
-    setModalMessage("Passwords do not match");
-    setShowModal(true);
-    return;
-  }
+    if (password !== confirmPassword) {
+      setModalType("error");
+      setModalMessage("Passwords do not match");
+      setShowModal(true);
+      return;
+    }
 
-  try {
-    await createUserWithEmailAndPassword(auth, email, password);
+    setModalType("loading");
+    setModalMessage("Creating your account...");
+    setShowModal(true);
 
-    setModalType("success");
-    setModalMessage("Your account has been created successfully.");
-    setShowModal(true);
-  } catch (error) {
-    setModalType("error");
-    setModalMessage(error.message);
-    setShowModal(true);
-  }
-};
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+
+      setModalType("success");
+      setModalMessage("Your account has been created successfully.");
+    } catch (error) {
+      setModalType("error");
+      setModalMessage(error.message);
+    }
+  };
 
   return (
     <div className="login-page">
@@ -126,27 +129,39 @@ const [modalMessage, setModalMessage] = useState("");
         <div className="modal-overlay">
           <div className="modal-box">
             <div className={`modal-icon ${modalType}`}>
-              {modalType === "success" ? "✅" : "❌"}
+              {modalType === "loading" ? (
+                <span className="modal-spinner"></span>
+              ) : modalType === "success" ? (
+                "✅"
+              ) : (
+                "❌"
+              )}
             </div>
 
             <h3>
-              {modalType === "success" ? "Register Successful" : "Register Failed"}
+              {modalType === "loading"
+                ? "Creating Account"
+                : modalType === "success"
+                ? "Register Successful"
+                : "Register Failed"}
             </h3>
 
             <p>{modalMessage}</p>
 
-            <button
-              className="modal-button"
-              onClick={() => {
-                setShowModal(false);
+            {modalType !== "loading" && (
+              <button
+                className="modal-button"
+                onClick={() => {
+                  setShowModal(false);
 
-                if (modalType === "success") {
-                  navigate("/");
-                }
-              }}
-            >
-              {modalType === "success" ? "Continue" : "Try Again"}
-            </button>
+                  if (modalType === "success") {
+                    navigate("/");
+                  }
+                }}
+              >
+                {modalType === "success" ? "Continue" : "Try Again"}
+              </button>
+            )}
           </div>
         </div>
       )}

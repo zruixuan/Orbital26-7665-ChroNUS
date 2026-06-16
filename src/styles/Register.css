@@ -419,3 +419,29 @@
     transform: scale(1) translateY(0);
   }
 }
+
+.modal-icon.loading {
+  background: #fff0e6;
+}
+
+.modal-spinner {
+  width: 30px;
+  height: 30px;
+
+  border: 3px solid rgba(241, 92, 34, 0.22);
+  border-top: 3px solid #f15c22;
+
+  border-radius: 50%;
+
+  animation: modalSpin 0.8s linear infinite;
+}
+
+@keyframes modalSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
