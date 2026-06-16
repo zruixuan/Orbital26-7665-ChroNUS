@@ -100,7 +100,7 @@ function LoginPage() {
         <div className="modal-overlay">
           <div className="modal-box">
             <div className={`modal-icon ${modalType}`}>
-              {modalType === "success" ? "✓" : "!"}
+              {modalType === "success" ? "✅" : "❌"}
             </div>
 
             <h3>
