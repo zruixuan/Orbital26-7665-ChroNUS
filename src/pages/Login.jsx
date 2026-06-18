@@ -9,7 +9,9 @@ import {
   FiLock,
   FiShield,
   FiEye,
-  FiEyeOff
+  FiEyeOff,
+  FiCheck,
+  FiX
 } from "react-icons/fi";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -109,9 +111,9 @@ function LoginPage() {
               {modalType === "loading" ? (
                 <span className="modal-spinner"></span>
               ) : modalType === "success" ? (
-                "✅"
+                <FiCheck />
               ) : (
-                "❌"
+                <FiX />
               )}
             </div>
 

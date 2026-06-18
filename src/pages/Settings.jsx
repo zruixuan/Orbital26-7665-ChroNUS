@@ -2,6 +2,10 @@ import styles from "./Settings.module.css";
 import NavBar from "../components/NavBar";
 import { useNavigate } from "react-router-dom";
 
+import { useState } from "react";
+import { signOut } from "firebase/auth";
+import { auth } from "../api/firebase";
+
 import {
   FiSettings,
   FiUser,
@@ -17,6 +21,36 @@ import {
 } from "react-icons/fi";
 
 function Settings() {
+    const navigate = useNavigate();
+
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const [logoutStatus, setLogoutStatus] = useState("confirm");
+    const [logoutMessage, setLogoutMessage] = useState(
+    "Are you sure you want to log out?"
+    );
+
+    const openLogoutModal = () => {
+    setLogoutStatus("confirm");
+    setLogoutMessage("Are you sure you want to log out?");
+    setShowLogoutModal(true);
+    };
+
+    const handleLogout = async () => {
+    setLogoutStatus("loading");
+    setLogoutMessage("Signing out from your account...");
+
+    try {
+        await signOut(auth);
+
+        navigate("/");
+    } catch (error) {
+        console.error("Logout error:", error);
+
+        setLogoutStatus("error");
+        setLogoutMessage("Failed to log out. Please try again.");
+    }
+    };
+
   return (
     <div className={styles.settingsPage}>
       <div className={styles.settingsShell}>
@@ -132,10 +166,11 @@ function Settings() {
                     <FiChevronRight className={styles.chevron} />
                   </button>
 
-                  <button
+                    <button
                     type="button"
                     className={`${styles.settingRow} ${styles.logoutRow}`}
-                  >
+                    onClick={openLogoutModal}
+                    >
                     <span className={styles.rowIcon}>
                       <FiLogOut />
                     </span>
@@ -247,6 +282,71 @@ function Settings() {
               </div>
             </div>
           </section>
+       {showLogoutModal && (
+        <div className={styles.modalOverlay}>
+            <div className={styles.modalBox}>
+            <div className={styles.modalIcon}>
+                {logoutStatus === "loading" ? (
+                <span className={styles.modalSpinner}></span>
+                ) : logoutStatus === "error" ? (
+                "❌"
+                ) : (
+                <FiLogOut />
+                )}
+            </div>
+
+            <h3>
+                {logoutStatus === "loading"
+                ? "Logging Out"
+                : logoutStatus === "error"
+                ? "Logout Failed"
+                : "Log Out"}
+            </h3>
+
+            <p>{logoutMessage}</p>
+
+            {logoutStatus === "confirm" && (
+                <div className={styles.modalActions}>
+                <button
+                    type="button"
+                    className={styles.cancelButton}
+                    onClick={() => setShowLogoutModal(false)}
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="button"
+                    className={styles.logoutButton}
+                    onClick={handleLogout}
+                >
+                    Log Out
+                </button>
+                </div>
+            )}
+
+            {logoutStatus === "error" && (
+                <div className={styles.modalActions}>
+                <button
+                    type="button"
+                    className={styles.cancelButton}
+                    onClick={() => setShowLogoutModal(false)}
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="button"
+                    className={styles.logoutButton}
+                    onClick={handleLogout}
+                >
+                    Try Again
+                </button>
+                </div>
+            )}
+            </div>
+        </div>
+        )}
         </main>
       </div>
     </div>

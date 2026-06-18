@@ -7,7 +7,9 @@ import {
   FiLock,
   FiShield,
   FiEye,
-  FiEyeOff
+  FiEyeOff,
+  FiCheck,
+  FiX
 } from "react-icons/fi";
 
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -132,9 +134,9 @@ const [isLoading, setIsLoading] = useState(false);
               {modalType === "loading" ? (
                 <span className="modal-spinner"></span>
               ) : modalType === "success" ? (
-                "✅"
+                <FiCheck />
               ) : (
-                "❌"
+                <FiX />
               )}
             </div>
 

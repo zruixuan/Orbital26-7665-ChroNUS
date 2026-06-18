@@ -2,7 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/ForgotPassword.css";
 
-import { FiMail } from "react-icons/fi";
+import { FiMail,
+  FiCheck,
+  FiX
+ } from "react-icons/fi";
 
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../api/firebase";
@@ -81,9 +84,9 @@ function ForgotPassword() {
               {modalType === "loading" ? (
                 <span className="modal-spinner"></span>
               ) : modalType === "success" ? (
-                "✅"
+                <FiCheck />
               ) : (
-                "❌"
+                <FiX />
               )}
             </div>
 
