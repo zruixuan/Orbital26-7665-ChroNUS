@@ -93,10 +93,10 @@ function TimelineItem({ item, index, isLast, isInactive, onToggle, onCardClick }
         )}
       </div>
 
-      {/* Right Column: 增加了 gap: "16px" 和 minWidth: 0，解决溢出和挤压问题 */}
+      {/* Right Column */}
       <div style={{ flex: 1, paddingBottom: "30px", paddingTop: "4px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "16px", minWidth: 0 }}>
         
-        {/* Text Container: 添加了 flex: 1 和 minWidth: 0 允许文本强制换行 */}
+        {/* Text Container */}
         <div style={{ color: textColor, textAlign: "left", flex: 1, minWidth: 0 }}>
           <h3 style={{ 
             margin: "0 0 4px 0", 
@@ -141,7 +141,7 @@ function TimelineItem({ item, index, isLast, isInactive, onToggle, onCardClick }
           </div>
         </div>
         
-        {/* Badge Container: 添加 flexShrink: 0 保证徽章不变形 */}
+        {/* Badge Container*/}
         <div style={{ flexShrink: 0 }}>{renderBadge()}</div>
       </div>
 

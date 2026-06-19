@@ -6,6 +6,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
 import Eisenhower from "./pages/Eisenhower";
 import WeeklyReflection from "./pages/WeeklyReflection";
+import Timer from './pages/Timer';
 import Settings from "./pages/Settings";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -45,6 +46,9 @@ function App() {
         }
       />
 
+      <Route path="/weekly-reflection" element={<WeeklyReflection />} />
+
+      <Route path="/timer" element={<Timer />} />
       <Route
         path="/settings"
         element={
