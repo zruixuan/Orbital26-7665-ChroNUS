@@ -7,6 +7,8 @@ import Dashboard from "./pages/Dashboard";
 import Eisenhower from "./pages/Eisenhower";
 import WeeklyReflection from "./pages/WeeklyReflection";
 import Timer from './pages/Timer';
+import Settings from "./pages/Settings";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -14,16 +16,47 @@ function App() {
       <Route path="/" element={<Login />} />
 
       <Route path="/register" element={<Register />} />
-      
+
       <Route path="/forgot-password" element={<ForgotPassword />} />
 
-      <Route path="/dashboard" element={<Dashboard />} />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
 
-      <Route path="/eisenhower" element={<Eisenhower />} />
+      <Route
+        path="/eisenhower"
+        element={
+          <ProtectedRoute>
+            <Eisenhower />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/weekly-reflection"
+        element={
+          <ProtectedRoute>
+            <WeeklyReflection />
+          </ProtectedRoute>
+        }
+      />
 
       <Route path="/weekly-reflection" element={<WeeklyReflection />} />
 
       <Route path="/timer" element={<Timer />} />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <Settings />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   )
 }

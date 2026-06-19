@@ -2,7 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/ForgotPassword.css";
 
-import { FiMail } from "react-icons/fi";
+import { FiMail,
+  FiCheck,
+  FiX
+ } from "react-icons/fi";
 
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../api/firebase";
@@ -10,17 +13,32 @@ import { auth } from "../api/firebase";
 function ForgotPassword() {
   const [email, setEmail] = useState("");
 
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
+
   const handleReset = async () => {
     if (!email) {
-      alert("Please enter your email");
+      setModalType("error");
+      setModalMessage("Please enter your email");
+      setShowModal(true);
       return;
     }
 
+    setModalType("loading");
+    setModalMessage("Sending password reset email...");
+    setShowModal(true);
+
     try {
       await sendPasswordResetEmail(auth, email);
-      alert("Password reset email sent. Please check your inbox.");
+
+      setModalType("success");
+      setModalMessage(
+        "Password reset email sent. Please check your inbox."
+      );
     } catch (error) {
-      alert(error.message);
+      setModalType("error");
+      setModalMessage(error.message);
     }
   };
 
@@ -59,6 +77,43 @@ function ForgotPassword() {
           </p>
         </div>
       </div>
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <div className={`modal-icon ${modalType}`}>
+              {modalType === "loading" ? (
+                <span className="modal-spinner"></span>
+              ) : modalType === "success" ? (
+                <FiCheck />
+              ) : (
+                <FiX />
+              )}
+            </div>
+
+            <h3>
+              {modalType === "loading"
+                ? "Sending Email"
+                : modalType === "success"
+                ? "Email Sent"
+                : "Send Failed"}
+            </h3>
+
+            <p>{modalMessage}</p>
+
+            {modalType !== "loading" && (
+              <button
+                className="modal-button"
+                onClick={() => {
+                  setShowModal(false);
+                }}
+              >
+                {modalType === "success" ? "Got It" : "Try Again"}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

@@ -7,7 +7,9 @@ import {
   FiLock,
   FiShield,
   FiEye,
-  FiEyeOff
+  FiEyeOff,
+  FiCheck,
+  FiX
 } from "react-icons/fi";
 
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -21,24 +23,38 @@ function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
+  const [showModal, setShowModal] = useState(false);
+const [modalType, setModalType] = useState("");
+const [modalMessage, setModalMessage] = useState("");
+
+const [isLoading, setIsLoading] = useState(false);
   const handleRegister = async () => {
     if (!email || !password || !confirmPassword) {
-      alert("Please fill in all fields");
+      setModalType("error");
+      setModalMessage("Please fill in all fields");
+      setShowModal(true);
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      setModalType("error");
+      setModalMessage("Passwords do not match");
+      setShowModal(true);
       return;
     }
+
+    setModalType("loading");
+    setModalMessage("Creating your account...");
+    setShowModal(true);
 
     try {
       await createUserWithEmailAndPassword(auth, email, password);
 
-      alert("Register successful");
-      navigate("/");
+      setModalType("success");
+      setModalMessage("Your account has been created successfully.");
     } catch (error) {
-      alert(error.message);
+      setModalType("error");
+      setModalMessage(error.message);
     }
   };
 
@@ -111,6 +127,46 @@ function Register() {
             </p>
         </div>
       </div>
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <div className={`modal-icon ${modalType}`}>
+              {modalType === "loading" ? (
+                <span className="modal-spinner"></span>
+              ) : modalType === "success" ? (
+                <FiCheck />
+              ) : (
+                <FiX />
+              )}
+            </div>
+
+            <h3>
+              {modalType === "loading"
+                ? "Creating Account"
+                : modalType === "success"
+                ? "Register Successful"
+                : "Register Failed"}
+            </h3>
+
+            <p>{modalMessage}</p>
+
+            {modalType !== "loading" && (
+              <button
+                className="modal-button"
+                onClick={() => {
+                  setShowModal(false);
+
+                  if (modalType === "success") {
+                    navigate("/");
+                  }
+                }}
+              >
+                {modalType === "success" ? "Continue" : "Try Again"}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
