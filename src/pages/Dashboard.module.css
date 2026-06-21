@@ -1,7 +1,6 @@
 /* src/pages/Dashboard.module.css */
 
 .pageWrapper {
-  background-color: #fafafc; 
   min-height: 100vh;
   display: flex;
   justify-content: center;
