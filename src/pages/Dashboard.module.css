@@ -70,10 +70,40 @@
 }
 
 .avatar {
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  min-height: 42px;
+
+  padding: 0;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   border-radius: 50%;
-  background: linear-gradient(135deg, #f15c22, #2c3e50);
+  background: #fff1eb;
+  border: 1px solid #f2e4de;
+
+  flex-shrink: 0;
+}
+
+.navAvatarImage {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+}
+
+.navAvatarInitial {
+  color: #f15c22;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 /* Main Content */

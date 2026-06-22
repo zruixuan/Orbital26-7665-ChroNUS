@@ -3,8 +3,39 @@
 import styles from "../pages/Dashboard.module.css";
 import logo from "../assets/icon.png";
 import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../api/firebase";
 
 function NavBar() {
+  const [photoURL, setPhotoURL] = useState("");
+  const [displayName, setDisplayName] = useState("");
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setPhotoURL(user?.photoURL || "");
+      setDisplayName(user?.displayName || "");
+    });
+
+    const handleProfileUpdated = (event) => {
+      setPhotoURL(event.detail?.photoURL || "");
+      setDisplayName(event.detail?.displayName || "");
+    };
+
+    window.addEventListener("profile-updated", handleProfileUpdated);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener(
+        "profile-updated",
+        handleProfileUpdated
+      );
+    };
+  }, []);
+
+  const userInitial =
+    displayName?.trim().charAt(0).toUpperCase() || "U";
+
   return (
     <header className={styles.header}>
       {/* Logo Section */}
@@ -118,7 +149,19 @@ function NavBar() {
         <svg style={{ cursor: "pointer" }} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6e6e73" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
         </svg>
-        <div className={styles.avatar}></div>
+          <div className={styles.avatar}>
+            {photoURL ? (
+              <img
+                src={photoURL}
+                alt="User profile"
+                className={styles.navAvatarImage}
+              />
+            ) : (
+              <span className={styles.navAvatarInitial}>
+                {userInitial}
+              </span>
+            )}
+          </div>
       </div>
     </header>
   );

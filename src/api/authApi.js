@@ -19,7 +19,7 @@ export async function loginApi(email, password) {
   }
 
   return data;
-}
+} 
 
 export async function registerApi(username, email, password) {
   const response = await fetch(`${API_BASE_URL}/api/auth/register`, {

@@ -184,6 +184,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow:hidden;
 
   background:
     linear-gradient(
@@ -312,7 +313,7 @@
   display: flex;
   justify-content: flex-end;
 
-  padding-top: 18px;
+  padding-top: 10px;
 
   border-top: 1px solid #d8d7d7;
 }
@@ -665,5 +666,1085 @@
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+.avatarPreview {
+  width: 150px;
+  height: 150px;
+  min-width: 150px;
+  min-height: 150px;
+  aspect-ratio: 1 / 1;
+
+  padding: 0;
+  border-radius: 50%;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f7f7f7;
+  border: 1px solid #eeeeee;
+
+  flex-shrink: 0;
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  display: block;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+.avatarSection {
+  position: relative;
+}
+
+.avatarPicker {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  z-index: 30;
+
+  width: 278px;
+  padding: 16px;
+  transform: translateX(-50%);
+
+  background: #ffffff;
+  border: 1px solid #ececec;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(31, 41, 55, 0.12);
+}
+
+.avatarPickerTitle {
+  margin: 0 0 12px;
+  color: #555b66;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.avatarGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.avatarOption {
+  width: 72px;
+  height: 72px;
+  padding: 4px;
+
+  background: #f8f8f8;
+  border: 2px solid transparent;
+  border-radius: 50%;
+
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.avatarOption img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.avatarOption:hover {
+  transform: translateY(-2px);
+  border-color: #f5a27f;
+  box-shadow: 0 6px 14px rgba(241, 92, 34, 0.14);
+}
+
+.selectedAvatar {
+  border-color: #f15c22;
+  box-shadow: 0 0 0 3px rgba(241, 92, 34, 0.12);
+}
+
+@media (max-width: 600px) {
+  .avatarPicker {
+    left: 0;
+    width: 250px;
+    transform: none;
+  }
+
+  .avatarOption {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+.profileModalBox {
+  width: 380px;
+  padding: 34px 32px 30px;
+
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 22px;
+
+  text-align: center;
+
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.05);
+
+  animation: profileModalAppear 0.22s ease;
+}
+
+.profileModalBox h3 {
+  margin: 18px 0 8px;
+
+  color: #35343d;
+  font-size: 21px;
+  font-weight: 600;
+}
+
+.profileModalBox p {
+  margin: 0;
+
+  color: #7a7883;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.profileModalIcon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  font-size: 27px;
+}
+
+.profileModalIcon svg {
+  width: 27px;
+  height: 27px;
+}
+
+.profileModalLoading {
+  color: #f15c22;
+  background: #fff3ed;
+}
+
+.profileModalSuccess {
+  color: #2d9d67;
+  background: #edf9f2;
+}
+
+.profileModalError {
+  color: #db4b4b;
+  background: #fff0f0;
+}
+
+.profileModalButton {
+  min-width: 120px;
+  margin-top: 24px;
+  padding: 11px 26px;
+
+  color: #ffffff;
+  background: #f15c22;
+  border: none;
+  border-radius: 12px;
+
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+
+  box-shadow: 0 7px 18px rgba(241, 92, 34, 0.2);
+
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.profileModalButton:hover {
+  background: #dc4e19;
+  transform: translateY(-1px);
+  box-shadow: 0 9px 22px rgba(241, 92, 34, 0.26);
+}
+
+.profileModalButton:active {
+  transform: translateY(0);
+}
+
+@keyframes profileModalAppear {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.passwordModalBox {
+  width: 460px;
+  max-width: calc(100vw - 32px);
+  padding: 0;
+
+  overflow: hidden;
+
+  background: #ffffff;
+  border: 1px solid #ececec;
+  border-radius: 22px;
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.14),
+    0 4px 14px rgba(0, 0, 0, 0.05);
+
+  animation: passwordModalAppear 0.22s ease;
+}
+
+.passwordModalHeader {
+  padding: 26px 28px 22px;
+
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  border-bottom: 1px solid #eeeeee;
+}
+
+.passwordModalIcon {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #f15c22;
+  background: #fff2ec;
+  border-radius: 14px;
+}
+
+.passwordModalIcon svg {
+  width: 21px;
+  height: 21px;
+}
+
+.passwordModalHeader h3 {
+  margin: 0 0 4px;
+
+  color: #35343d;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.passwordModalHeader p {
+  margin: 0;
+
+  color: #92909a;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.passwordForm {
+  padding: 24px 28px 4px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.passwordField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.passwordField label {
+  color: #4c4a53;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.passwordField input {
+  width: 100%;
+  height: 48px;
+  box-sizing: border-box;
+  padding: 0 15px;
+
+  color: #3f3d46;
+  background: #ffffff;
+  border: 1px solid #dedee3;
+  border-radius: 12px;
+  outline: none;
+
+  font-family: inherit;
+  font-size: 14px;
+
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.passwordField input::placeholder {
+  color: #aaa8b1;
+}
+
+.passwordField input:focus {
+  border-color: #f15c22;
+  box-shadow: 0 0 0 3px rgba(241, 92, 34, 0.1);
+}
+
+.passwordField input:disabled {
+  cursor: not-allowed;
+  background: #f6f6f7;
+}
+
+.passwordField small {
+  color: #a09ea7;
+  font-size: 12px;
+}
+
+.passwordMessage {
+  margin: 16px 28px 0;
+  padding: 11px 13px;
+
+  border-radius: 10px;
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.passwordErrorMessage {
+  color: #c94b4b;
+  background: #fff1f1;
+  border: 1px solid #f6d4d4;
+}
+
+.passwordLoadingMessage {
+  color: #d85a28;
+  background: #fff4ee;
+  border: 1px solid #f8ddd0;
+}
+
+.passwordModalActions {
+  margin-top: 24px;
+  padding: 20px 28px 26px;
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+
+  border-top: 1px solid #eeeeee;
+}
+
+.passwordCancelButton,
+.passwordPrimaryButton {
+  min-width: 112px;
+  height: 44px;
+  padding: 0 20px;
+
+  border-radius: 11px;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.passwordCancelButton {
+  color: #66636d;
+  background: #ffffff;
+  border: 1px solid #dedde2;
+}
+
+.passwordCancelButton:hover {
+  background: #f7f7f8;
+}
+
+.passwordPrimaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  color: #ffffff;
+  background: #f15c22;
+  border: none;
+
+  box-shadow: 0 7px 16px rgba(241, 92, 34, 0.2);
+}
+
+.passwordPrimaryButton:hover {
+  background: #df4f19;
+  transform: translateY(-1px);
+}
+
+.passwordPrimaryButton:disabled,
+.passwordCancelButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+}
+
+.passwordButtonSpinner {
+  width: 15px;
+  height: 15px;
+
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+
+  animation: passwordSpin 0.75s linear infinite;
+}
+
+.passwordResult {
+  padding: 36px 30px 30px;
+  text-align: center;
+}
+
+.passwordSuccessIcon {
+  width: 62px;
+  height: 62px;
+  margin: 0 auto 17px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #279766;
+  background: #eaf8f1;
+  border-radius: 50%;
+
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.passwordResult h3 {
+  margin: 0 0 8px;
+
+  color: #383640;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.passwordResult p {
+  margin: 0 0 24px;
+
+  color: #85828d;
+  font-size: 14px;
+}
+
+@keyframes passwordSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes passwordModalAppear {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =========================
+   Help Centre Modal
+   ========================= */
+
+.helpModalBox {
+  width: min(760px, calc(100vw - 48px));
+  height: min(820px, calc(100vh - 36px));
+  max-height: calc(100vh - 36px);
+
+  background: #ffffff;
+  border: 1px solid #ece8e4;
+  border-radius: 28px;
+
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.1),
+    0 10px 24px rgba(0, 0, 0, 0.05);
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  animation: helpModalPopup 0.24s ease;
+}
+
+/* =========================
+   Header
+   ========================= */
+
+.helpModalHeader {
+  position: relative;
+  flex-shrink: 0;
+
+  padding: 26px 74px 24px 34px;
+
+  border-bottom: 1px solid #f0ece8;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.helpModalTitle {
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 18px;
+
+  text-align: left;
+}
+
+.helpModalIcon {
+  width: 58px;
+  height: 58px;
+  flex: 0 0 58px;
+
+  margin: 0;
+
+  border-radius: 50%;
+
+  background: #fff3ec;
+  color: #f15c22;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 28px;
+
+  box-shadow: 0 8px 18px rgba(241, 92, 34, 0.12);
+}
+
+.helpModalTitleText {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+
+  text-align: left;
+}
+
+.helpModalTitleText h3 {
+  margin: 0;
+
+  color: #3a342f;
+
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.2px;
+}
+
+.helpModalTitleText p {
+  margin: 6px 0 0;
+
+  color: #98929b;
+
+  font-size: 15px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+/* =========================
+   Close Button
+   ========================= */
+
+.helpCloseButton {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+
+  width: 42px;
+  height: 42px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: transparent;
+  color: #a09aa2;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 24px;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.helpCloseButton:hover {
+  background: #fff3ec;
+  color: #f15c22;
+
+  transform: translateY(-1px);
+}
+
+/* =========================
+   Body
+   ========================= */
+
+.helpModalBody {
+  flex: 1;
+  min-height: 0;
+
+  padding: 24px 34px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  background: #fcfbfa;
+
+  scrollbar-width: thin;
+  scrollbar-color: #ddd7d2 transparent;
+}
+
+.helpModalBody::-webkit-scrollbar {
+  width: 8px;
+}
+
+.helpModalBody::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.helpModalBody::-webkit-scrollbar-thumb {
+  background: #ddd7d2;
+  border-radius: 999px;
+}
+
+.helpModalBody::-webkit-scrollbar-thumb:hover {
+  background: #cfc7c1;
+}
+
+/* =========================
+   FAQ Card
+   ========================= */
+
+.helpItem {
+  flex: 0 0 auto;
+
+  width: 100%;
+  max-width: 100%;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  border: 1px solid #efebe7;
+  border-radius: 18px;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+
+  overflow: hidden;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.helpItem:hover {
+  transform: translateY(-2px);
+
+  border-color: #f4d8cb;
+
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
+}
+
+.helpItemOpen {
+  border-color: #f6c9b3;
+
+  box-shadow: 0 12px 24px rgba(241, 92, 34, 0.08);
+}
+
+/* =========================
+   Question Row
+   ========================= */
+
+.helpQuestion {
+  width: 100%;
+  min-height: 66px;
+
+  padding: 18px 22px;
+
+  border: none;
+  background: transparent;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+
+  color: #4a444d;
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.45;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.helpQuestion > span:first-child {
+  flex: 1;
+  min-width: 0;
+
+  display: block;
+
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.helpQuestion:hover {
+  color: #f15c22;
+  background: #fffdfc;
+}
+
+.helpItemOpen .helpQuestion {
+  color: #f15c22;
+}
+
+/* =========================
+   Arrow
+   ========================= */
+
+.helpQuestionIcon {
+  flex-shrink: 0;
+
+  color: #b1abb3;
+
+  font-size: 20px;
+
+  transition:
+    transform 0.22s ease,
+    color 0.22s ease;
+}
+
+.helpQuestionIconOpen {
+  color: #f15c22;
+
+  transform: rotate(180deg);
+}
+
+/* =========================
+   Answer
+   ========================= */
+
+.helpAnswer {
+  padding: 0 22px 20px;
+
+  color: #746e77;
+
+  font-size: 14px;
+  line-height: 1.7;
+  text-align: left;
+
+  animation: helpAnswerOpen 0.22s ease;
+}
+
+.helpAnswer::before {
+  content: "";
+
+  display: block;
+
+  width: 100%;
+  height: 1px;
+
+  margin-bottom: 16px;
+
+  background: #f0ebe7;
+}
+
+/* Paragraphs */
+
+.helpAnswer p {
+  margin: 0 0 12px;
+}
+
+.helpAnswer p:last-child {
+  margin-bottom: 0;
+}
+
+/* Strong Text */
+
+.helpAnswer strong {
+  color: #4a434c;
+  font-weight: 700;
+}
+
+/* Lists */
+
+.helpAnswer ul,
+.helpAnswer ol {
+  margin: 8px 0 14px;
+  padding-left: 22px;
+}
+
+.helpAnswer li {
+  margin-bottom: 7px;
+  padding-left: 3px;
+}
+
+.helpAnswer li:last-child {
+  margin-bottom: 0;
+}
+
+.helpAnswer li::marker {
+  color: #f15c22;
+}
+
+/* Optional Note Box */
+
+.helpAnswerNote {
+  margin-top: 14px !important;
+
+  padding: 11px 14px;
+
+  border-left: 3px solid #f15c22;
+  border-radius: 0 10px 10px 0;
+
+  background: #fff6f1;
+  color: #6f686f;
+}
+
+/* =========================
+   Footer
+   ========================= */
+
+.helpModalFooter {
+  flex-shrink: 0;
+
+  padding: 16px 34px;
+
+  border-top: 1px solid #f0ece8;
+
+  background: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.helpModalFooter p {
+  margin: 0;
+
+  color: #98919a;
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* =========================
+   Done Button
+   ========================= */
+
+.helpDoneButton {
+  width: auto;
+  min-width: 112px;
+  height: 42px;
+
+  padding: 0 24px;
+
+  border: none;
+  border-radius: 13px;
+
+  background: #f15c22;
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow: 0 7px 16px rgba(241, 92, 34, 0.2);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.helpDoneButton:hover {
+  background: #df501b;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 10px 20px rgba(241, 92, 34, 0.26);
+}
+
+.helpDoneButton:active {
+  transform: translateY(0);
+
+  box-shadow: 0 5px 12px rgba(241, 92, 34, 0.18);
+}
+
+/* =========================
+   Animations
+   ========================= */
+
+@keyframes helpModalPopup {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes helpAnswerOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   Mobile
+   ========================= */
+
+@media (max-width: 640px) {
+  .helpModalBox {
+    width: calc(100vw - 20px);
+    height: calc(100vh - 20px);
+    max-height: calc(100vh - 20px);
+
+    border-radius: 22px;
+  }
+
+  .helpModalHeader {
+    padding: 20px 54px 18px 18px;
+  }
+
+  .helpModalTitle {
+    gap: 12px;
+  }
+
+  .helpModalIcon {
+    width: 48px;
+    height: 48px;
+    flex-basis: 48px;
+
+    font-size: 23px;
+  }
+
+  .helpModalTitleText h3 {
+    font-size: 20px;
+  }
+
+  .helpModalTitleText p {
+    margin-top: 4px;
+
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .helpCloseButton {
+    top: 12px;
+    right: 12px;
+
+    width: 36px;
+    height: 36px;
+
+    font-size: 21px;
+  }
+
+  .helpModalBody {
+    padding: 18px;
+
+    gap: 12px;
+  }
+
+  .helpQuestion {
+    min-height: 60px;
+
+    padding: 15px 18px;
+
+    font-size: 14px;
+  }
+
+  .helpAnswer {
+    padding: 0 18px 18px;
+
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  .helpAnswer::before {
+    margin-bottom: 14px;
+  }
+
+  .helpAnswer ul,
+  .helpAnswer ol {
+    padding-left: 20px;
+  }
+
+  .helpModalFooter {
+    padding: 14px 18px;
+
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 12px;
+  }
+
+  .helpDoneButton {
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+
+    font-size: 15px;
   }
 }
