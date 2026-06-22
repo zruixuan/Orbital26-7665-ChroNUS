@@ -7,6 +7,8 @@ import NavBar from "../components/NavBar";
 import { collection, addDoc, onSnapshot, query, where, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db, auth } from "../api/firebase"; 
 import { onAuthStateChanged } from "firebase/auth";
+import { useRef } from "react";
+
 
 const getLocalDateString = (dateObj) => {
   const year = dateObj.getFullYear();
@@ -54,9 +56,55 @@ function Dashboard() {
     });
   };
 
-  // Go To Today Button 
+    // Go To Today Button 
   const goToToday = () => setSelectedDate(new Date());
   const isCurrentlyToday = selectedDateStr === getLocalDateString(now);
+
+    // --- 新增: Jump To 逻辑 ---
+  const [jumpDate, setJumpDate] = useState("");
+  const isJumpDateValid = (() => {
+
+    const reg = /^\d{4}-\d{2}-\d{2}$/;
+
+    if (!reg.test(jumpDate)) return false;
+
+    const [y, m, d] = jumpDate.split("-").map(Number);
+
+    const date = new Date(y, m - 1, d);
+
+    return (
+        date.getFullYear() === y &&
+        date.getMonth() === m - 1 &&
+        date.getDate() === d
+    );
+
+})();
+
+  const handleJumpChange = (e) => {
+
+    let value = e.target.value.replace(/\D/g, "");
+
+    if (value.length > 8)
+        value = value.slice(0, 8);
+
+    if (value.length > 4)
+        value = value.slice(0, 4) + "-" + value.slice(4);
+
+    if (value.length > 7)
+        value = value.slice(0, 7) + "-" + value.slice(7);
+
+    setJumpDate(value);
+};
+
+  const hiddenDateRef = useRef(null);
+
+  const handleJumpConfirm = () => {
+    if (!isJumpDateValid)
+        return;
+    const [y, m, d] = jumpDate.split("-").map(Number);
+    setSelectedDate(new Date(y, m - 1, d));
+    setJumpDate("");
+};
 
   // Mock Data 
   const tutorialTasks = [
@@ -273,25 +321,90 @@ function Dashboard() {
         <main className={styles.mainContent}>
           
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
+            {/* 左侧标题 */}
             <div className={styles.sectionTitle} style={{ margin: 0 }}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f15c22" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
               Timeline
             </div>
 
-            <button 
-              onClick={goToToday}
-              disabled={isCurrentlyToday} 
-              style={{
-                padding: "6px 14px", borderRadius: "12px", border: "none",
-                background: isCurrentlyToday ? "transparent" : "rgba(241, 92, 34, 0.1)",
-                color: isCurrentlyToday ? "transparent" : "#f15c22", 
-                fontWeight: "700", fontSize: "0.85rem",
-                cursor: isCurrentlyToday ? "default" : "pointer",
-                transition: "all 0.3s ease", pointerEvents: isCurrentlyToday ? "none" : "auto"
-              }}
-            >
-              Today
-            </button>
+            {/* 右侧操作区 */}
+            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+              
+              {/* Jump To 模块 */}
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "#f5f5f7", padding: "6px 12px", borderRadius: "12px", border: "1px solid #eaeaea" }}>
+                <span style={{ fontSize: "0.85rem", color: "#86868b", fontWeight: "600" }}>Jump To:</span>
+                <input
+                  type="text"
+                  placeholder="YYYY-MM-DD"
+                  value={jumpDate}
+                  onChange={handleJumpChange}
+                  style={{
+                    border:"none",
+                    background:"transparent",
+                    outline:"none",
+                    fontSize:"0.85rem",
+                    width:"110px"
+                  }}
+                />
+
+                <button
+    type="button"
+    onClick={() => hiddenDateRef.current?.showPicker()}
+    style={{
+        border: "none",
+        background: "transparent",
+        cursor: "pointer",
+        fontSize: "18px",
+        padding: "0 4px"
+    }}
+>
+    📅
+</button>
+
+<input
+    ref={hiddenDateRef}
+    type="date"
+    style={{ display: "none" }}
+    onChange={(e) => setJumpDate(e.target.value)}
+/>
+  
+                {/* 移除条件渲染，改为常驻显示并根据状态变换颜色 */}
+                <button 
+                  onClick={handleJumpConfirm}
+                  disabled={!isJumpDateValid}
+                  style={{ 
+                    background: isJumpDateValid ? "#f15c22" : "#d1d1d6", 
+                    color: "white", 
+                    border: "none", 
+                    borderRadius: "6px", 
+                    padding: "4px 10px", 
+                    fontSize: "0.8rem", 
+                    fontWeight: "600", 
+                    cursor: isJumpDateValid ? "pointer" : "not-allowed",
+                    transition: "all 0.2s ease"
+                  }}
+                >
+                  Confirm
+                </button>
+              </div>
+
+              {/* Today 按钮 */}
+              <button 
+                onClick={goToToday}
+                disabled={isCurrentlyToday} 
+                style={{
+                  padding: "6px 14px", borderRadius: "12px", border: "none",
+                  background: isCurrentlyToday ? "transparent" : "rgba(241, 92, 34, 0.1)",
+                  color: isCurrentlyToday ? "transparent" : "#f15c22", 
+                  fontWeight: "700", fontSize: "0.85rem",
+                  cursor: isCurrentlyToday ? "default" : "pointer",
+                  transition: "all 0.3s ease", pointerEvents: isCurrentlyToday ? "none" : "auto"
+                }}
+              >
+                Today
+              </button>
+
+            </div>
           </div>
 
           <div className={styles.dateCarousel}>
@@ -319,12 +432,10 @@ function Dashboard() {
 
           <div className={styles.timelineCard}>
             {displayTasks.length > 0 ? (
-              displayTasks.map((item, index) => (
+              displayTasks.map((item) => (
                 <TimelineItem 
                   key={item.id} 
                   item={item}
-                  index={index}
-                  isLast={index === displayTasks.length - 1}
                   isInactive={checkIsInactive(item)}
                   onToggle={() => handleToggleCompletion(item.id, item.completed)}
                   onCardClick={() => handleCardClick(item)}
