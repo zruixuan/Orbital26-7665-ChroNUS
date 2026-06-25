@@ -1,0 +1,154 @@
+/* src/components/TimerHistoryModal.module.css */
+.modalOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+.modalContent {
+    background: #ffffff;
+    width: 90%;
+    max-width: 540px;
+    max-height: 85vh;
+    border-radius: 24px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.modalHeader h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1d1d1f;
+}
+
+.closeBtn {
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    line-height: 1;
+    color: #86868b;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.closeBtn:hover { color: #f15c22; }
+
+.totalSummary {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #fff4ed;
+    border: 1px solid #fbc6b0;
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+}
+
+.totalIcon { font-size: 2.5rem; }
+
+.totalLabel {
+    font-size: 0.9rem;
+    color: #f15c22;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.totalValue {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1d1d1f;
+    line-height: 1;
+    margin-top: 4px;
+}
+
+.totalValue span {
+    font-size: 1rem;
+    color: #86868b;
+    font-weight: 600;
+}
+
+.historyList {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-right: 8px; /* 留出滚动条空间 */
+}
+
+/* 隐藏自带滚动条或美化 */
+.historyList::-webkit-scrollbar { width: 6px; }
+.historyList::-webkit-scrollbar-thumb { background: #d1d1d6; border-radius: 10px; }
+
+.historyItem {
+    background: #f9f9fb;
+    border: 1px solid #eaeaea;
+    padding: 16px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.itemMain {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.itemType {
+    font-weight: 700;
+    color: #1d1d1f;
+    font-size: 0.95rem;
+}
+
+.itemDate {
+    font-size: 0.85rem;
+    color: #86868b;
+    font-weight: 500;
+}
+
+.itemDetails {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed #d1d1d6;
+    padding-top: 12px;
+}
+
+.durationBadge {
+    background: #1d1d1f;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.taskDone { color: #34c759; font-size: 0.85rem; font-weight: 600; }
+.noTask { color: #8e8e93; font-size: 0.85rem; font-style: italic; }
+
+.emptyState {
+    text-align: center;
+    color: #86868b;
+    margin-top: 20px;
+    font-weight: 500;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

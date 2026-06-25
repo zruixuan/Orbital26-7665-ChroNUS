@@ -1,0 +1,102 @@
+/* src/components/AchievementBoard.module.css */
+
+.boardContainer {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #eaeaea;
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.boardTitle {
+    margin: 0 0 24px 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1d1d1f;
+    letter-spacing: -0.02em;
+}
+
+/* 响应式网格布局 (Responsive Grid Layout) */
+.grid {
+    display: grid;
+    /* 务实设置：根据屏幕宽度自动排列，最小卡片宽度 280px */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* 成就卡片基础样式 (Base Card Style) */
+.achievementCard {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #f9f9fb;
+    border: 1px solid #eaeaea;
+    border-radius: 16px;
+    padding: 16px;
+    transition: all 0.2s ease;
+}
+
+/* 悬停微交互 (Hover Micro-interaction) */
+.achievementCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* 已解锁状态的特殊高亮 (Unlocked State) */
+.unlocked {
+    background: #fff4ed; /* 品牌色的浅色背景 */
+    border-color: #fbc6b0;
+}
+
+/* 未解锁状态的视觉弱化 (Locked State) */
+.locked {
+    background: #fafafc;
+    opacity: 0.85;
+}
+
+.iconWrapper {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    background: #ffffff;
+    border-radius: 50%; /* 圆形图标底板 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+}
+
+.iconImage {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    transition: filter 0.3s ease; /* 配合你 JSX 里的灰度滤镜平滑过渡 */
+}
+
+.infoWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.achTitle {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1d1d1f;
+}
+
+/* 如果是未解锁状态，标题颜色变灰 */
+.locked .achTitle {
+    color: #86868b;
+}
+
+.achDesc {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #86868b;
+    line-height: 1.3;
+}
