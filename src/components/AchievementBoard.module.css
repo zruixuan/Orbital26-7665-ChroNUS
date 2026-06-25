@@ -1,0 +1,95 @@
+/* src/components/AchievementBoard.module.css */
+
+.boardContainer {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #eaeaea;
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.boardTitle {
+    margin: 0 0 24px 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1d1d1f;
+    letter-spacing: -0.02em;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.achievementCard {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #f9f9fb;
+    border: 1px solid #eaeaea;
+    border-radius: 16px;
+    padding: 16px;
+    transition: all 0.2s ease;
+}
+
+.achievementCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.04);
+}
+
+.unlocked {
+    background: #fff4ed;
+    border-color: #fbc6b0;
+}
+
+.locked {
+    background: #fafafc;
+    opacity: 0.85;
+}
+
+.iconWrapper {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    background: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+}
+
+.iconImage {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    transition: filter 0.3s ease;
+}
+
+.infoWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.achTitle {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1d1d1f;
+}
+
+.locked .achTitle {
+    color: #86868b;
+}
+
+.achDesc {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #86868b;
+    line-height: 1.3;
+}

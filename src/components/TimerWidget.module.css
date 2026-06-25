@@ -1,90 +1,161 @@
 /* src/components/TimerWidget.module.css */
 
+.timerWidgetContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
+}
+
 .widgetLayout {
-  display: flex;
-  gap: 32px;
-  align-items: stretch;
+    display: flex;
+    gap: 32px;
+    align-items: stretch;
+}
+
+.statsSection {
+    width: 100%;
 }
 
 .timerCard {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #ffffff;
-  border-radius: 20px;
-  border: 1px solid #eaeaea;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-  padding: 48px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    padding: 48px;
 }
 
-.togglePill {
-  display: flex;
-  background: #f5f5f7;
-  border-radius:999px;
-  padding: 5px;
-  margin-bottom: 40px;
+.sessionNavHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 8px;
+    margin-bottom: 24px;
 }
 
-.activePill {
-  background: white;
-  border: none;
-  border-radius: 999px;
-  padding: 10px 24px;
-  font-size:.9rem;
-  font-weight: 600;
-  color: #f15c22;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+.sessionTitleWrapper {
+    flex: 1;
+    text-align: center;
+    padding: 0 16px;
 }
 
-.inactivePill {
-  background: transparent;
-  border: none;
-  padding: 10px 24px;
-  color: #86868b;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
+.sessionTitleInput {
+    background: transparent;
+    border: none;
+    border-bottom: 2px dashed #d1d1d6;
+    color: #1d1d1f;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-align: center;
+    outline: none;
+    width: 100%;
+    padding: 6px;
+    transition: all 0.2s ease;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.sessionTitleInput:focus {
+    border-bottom-style: solid;
+    border-bottom-color: #f15c22;
+}
+
+.sessionTitleInput::placeholder {
+    color: #d1d1d6;
+    font-weight: 500;
+}
+
+.iconButton {
+    background: transparent;
+    border: none;
+    color: #86868b;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.iconButton:hover {
+    background: #f5f5f7;
+    color: #f15c22;
+    transform: scale(1.05);
+}
+
+.iconButton:active {
+    transform: scale(0.95);
+}
+
+.sessionTitleInput {
+    background: transparent;
+    border: none;
+    border-bottom: 2px dashed #d1d1d6;
+    color: #1d1d1f;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-align: center;
+    outline: none;
+    width: 80%;
+    padding: 6px;
+    transition: all 0.2s ease;
+}
+
+.sessionTitleInput:focus {
+    border-bottom-style: solid;
+    border-bottom-color: #f15c22;
+}
+
+.sessionTitleInput::placeholder {
+    color: #d1d1d6;
+    font-weight: 500;
 }
 
 .circleWrapper {
-  position: relative;
-  width: 320px;
-  height: 320px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 30px;
+    position: relative;
+    width: 320px;
+    height: 320px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
 }
 
-.svgRing{
-    position:absolute;
+.svgRing {
+    position: absolute;
     stroke-width: 10;
-    inset:0;
+    inset: 0;
 }
 
 .circleContent {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  transform: translateY(-6px);
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transform: translateY(-6px);
 }
 
-.statusText{
-    font-size:.95rem;
-    font-weight:600;
-    color:#8e8e93;
-    text-transform:uppercase;
-    letter-spacing:.12em;
-    margin-bottom:16px;
+.statusText {
+    font-size: .95rem;
+    font-weight: 600;
+    color: #8e8e93;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    margin-bottom: 16px;
 }
 
-.timeDisplay{
+.timeDisplay {
     font-family:
         "SF Pro Display",
         "Inter",
@@ -95,152 +166,280 @@
     line-height: .95;
     letter-spacing: -.05em;
     font-variant-numeric: tabular-nums;
-    color:#1d1d1f;
-    margin:10px 0 12px;
+    color: #1d1d1f;
+    margin: 10px 0 12px;
 }
 
 .readyText {
-  font-size: 0.95rem;
-  color: #f15c22;
-  font-weight: 600;
-  background: #fff4ed;
-  padding: 4px 12px;
-  border-radius: 12px;
-  display: inline-block;
-  margin-top: 8px;
+    font-size: 0.95rem;
+    color: #f15c22;
+    font-weight: 600;
+    background: #fff4ed;
+    padding: 4px 12px;
+    border-radius: 12px;
+    display: inline-block;
+    margin-top: 8px;
 }
 
 .actionRow {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    /* 务必确保容器级别垂直居中 */
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
 }
 
 .startButton {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #f15c22;
-  color: white;
-  border: none;
-  padding: 16px 36px;
-  border-radius: 18px;
-  font-size: 1.1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #f15c22;
+    color: white;
+    border: none;
+    height: 52px;
+    padding: 0 36px;
+    border-radius: 18px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
 }
 
-.startButton:hover { 
+.startButton:hover {
     background: #d94e19;
-    transform:translateY(-1px);
+    transform: translateY(-1px);
 }
 
-.startButton:active{
-    transform:scale(.98);
+.startButton:active {
+    transform: scale(0.98);
 }
 
 .resetButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  background: #f5f5f7;
-  color: #1d1d1f;
-  border: 1px solid #eaeaea;
-  border-radius: 18px;
-  cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    background: #f5f5f7;
+    color: #1d1d1f;
+    border: 1px solid #eaeaea;
+    border-radius: 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.resetButton:hover:not(:disabled) {
+    background: #e5e5ea;
+    color: #f15c22;
 }
 
 .sessionDots {
-  display: flex;
-  align-items: center;  
-  margin-top:10px;
-  gap:8px;
-  font-size: 0.85rem;
-  color: #86868b;
-  font-weight: 500;
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: #86868b;
+    font-weight: 500;
 }
 
-.dotActive { width: 8px; height: 8px; border-radius: 50%; background: #f15c22; }
-.dot { width: 8px; height: 8px; border-radius: 50%; border: 2px solid #d1d1d6; }
+.dotActive {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #f15c22;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 2px solid #d1d1d6;
+}
 
 .settingsCard {
-  width: 360px;
-  background: #ffffff;
-  border-radius: 20px;
-  border: 1px solid #eaeaea;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 60px;
+    width: 360px;
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
 }
 
 .settingBlock label {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #1d1d1f;
-  margin-bottom: 12px;
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin-bottom: 12px;
 }
 
 .buttonGroup {
-  display: flex;
-  gap: 8px;
+    display: flex;
+    gap: 8px;
 }
 
-.modeBtn, .durationBtn {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  background: white;
-  border: 1px solid #eaeaea;
-  padding: 10px;
-  border-radius: 10px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #6e6e73;
-  cursor: pointer;
+.modeBtn,
+.durationBtn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: white;
+    border: 1px solid #eaeaea;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6e6e73;
+    cursor: pointer;
 }
 
-.modeBtnActive { border-color: #f15c22; color: #f15c22; background: #fff4ed; }
-.durationBtnActive { border-color: #f15c22; color: #f15c22; }
+.modeBtnActive {
+    border-color: #f15c22;
+    color: #f15c22;
+    background: #fff4ed;
+}
+
+.durationBtnActive {
+    border-color: #f15c22;
+    color: #f15c22;
+}
 
 .menuList {
-  background: white;
-  border: 1px solid #eaeaea;
-  border-radius: 12px;
-  overflow: hidden;
+    background: white;
+    border: 1px solid #eaeaea;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 .menuItem {
-  display: flex;
-  justify-content: space-between;
-  padding: 14px 16px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #1d1d1f;
-  border-bottom: 1px solid #eaeaea;
-  cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #1d1d1f;
+    border-bottom: 1px solid #eaeaea;
+    cursor: pointer;
 }
-.menuItem:last-child { border-bottom: none; }
 
-.menuRight { color: #86868b; display: flex; align-items: center; gap: 8px; }
-.arrow { font-size: 1.2rem; line-height: 1; }
+.menuItem:last-child {
+    border-bottom: none;
+}
+
+.menuRight {
+    color: #86868b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.arrow {
+    font-size: 1.2rem;
+    line-height: 1;
+}
 
 .tipBox {
-  display: flex;
-  gap: 12px;
-  background: #fff9e6;
-  border: 1px solid #ffe8b3;
-  padding: 16px;
-  border-radius: 12px;
-  font-size: 0.85rem;
-  color: #926b00;
-  line-height: 1.4;
+    display: flex;
+    gap: 12px;
+    background: #fff9e6;
+    border: 1px solid #ffe8b3;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    color: #926b00;
+    line-height: 1.4;
 }
-.bulb { font-size: 1.2rem; }
+
+.bulb {
+    font-size: 1.2rem;
+}
+
+.statsAndFocusContainer {
+  display: flex;
+  gap: 32px;
+  align-items: stretch; 
+  width: 100%;
+}
+
+.statsWrapper {
+  flex: 6; 
+}
+
+.focusingWrapper {
+  flex: 4; 
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #eaeaea;
+  padding: 32px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+  display: flex;
+  flex-direction: column;
+}
+
+.focusingTitle {
+  margin: 0 0 20px 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1d1d1f;
+}
+
+.focusingList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  max-height: 200px;
+  padding-right: 8px; 
+}
+
+.focusingList::-webkit-scrollbar {
+  width: 4px;
+}
+.focusingList::-webkit-scrollbar-thumb {
+  background-color: #d1d1d6;
+  border-radius: 4px;
+}
+
+.focusingItem {
+  background: #fff4ed;
+  border-left: 4px solid #f15c22;
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.focusingItem:hover {
+  transform: translateX(4px);
+}
+
+.focusingItemTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.focusingItemTime {
+  font-size: 0.8rem;
+  color: #f15c22;
+  font-weight: 600;
+}
+
+.focusingEmpty {
+  color: #86868b;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  margin-top: 20px;
+}

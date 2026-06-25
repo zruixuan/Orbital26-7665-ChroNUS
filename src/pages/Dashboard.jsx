@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import styles from "./Dashboard.module.css";
 import TimelineItem from "../components/TimelineItem";
-import NavBar from "../components/NavBar"; 
+import NavBar from "../components/NavBar";
 import { collection, addDoc, onSnapshot, query, where, doc, updateDoc, deleteDoc } from "firebase/firestore";
-import { db, auth } from "../api/firebase"; 
+import { db, auth } from "../api/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRef } from "react";
 
@@ -29,10 +29,10 @@ function Dashboard() {
   const laterHours = String(later.getHours()).padStart(2, '0');
   const laterMinutes = String(later.getMinutes()).padStart(2, '0');
   const timePlusOneHourStr = `${laterHours}:${laterMinutes}`;
-  
+
   const [selectedDate, setSelectedDate] = useState(new Date());
   const selectedDateStr = getLocalDateString(selectedDate);
-  
+
   // Carousel Dates
   const generateCarouselDates = (centerDate) => {
     const dates = [];
@@ -56,101 +56,90 @@ function Dashboard() {
     });
   };
 
-    // Go To Today Button 
+  // Go To Today  
   const goToToday = () => setSelectedDate(new Date());
   const isCurrentlyToday = selectedDateStr === getLocalDateString(now);
 
-    // --- 新增: Jump To 逻辑 ---
+  // Jump To
   const [jumpDate, setJumpDate] = useState("");
   const isJumpDateValid = (() => {
-
     const reg = /^\d{4}-\d{2}-\d{2}$/;
-
     if (!reg.test(jumpDate)) return false;
-
     const [y, m, d] = jumpDate.split("-").map(Number);
-
     const date = new Date(y, m - 1, d);
-
     return (
-        date.getFullYear() === y &&
-        date.getMonth() === m - 1 &&
-        date.getDate() === d
+      date.getFullYear() === y &&
+      date.getMonth() === m - 1 &&
+      date.getDate() === d
     );
-
-})();
+  })();
 
   const handleJumpChange = (e) => {
-
     let value = e.target.value.replace(/\D/g, "");
-
     if (value.length > 8)
-        value = value.slice(0, 8);
-
+      value = value.slice(0, 8);
     if (value.length > 4)
-        value = value.slice(0, 4) + "-" + value.slice(4);
-
+      value = value.slice(0, 4) + "-" + value.slice(4);
     if (value.length > 7)
-        value = value.slice(0, 7) + "-" + value.slice(7);
-
+      value = value.slice(0, 7) + "-" + value.slice(7);
     setJumpDate(value);
-};
+  };
 
   const hiddenDateRef = useRef(null);
 
   const handleJumpConfirm = () => {
     if (!isJumpDateValid)
-        return;
+      return;
     const [y, m, d] = jumpDate.split("-").map(Number);
     setSelectedDate(new Date(y, m - 1, d));
     setJumpDate("");
-};
+  };
 
   // Mock Data 
   const tutorialTasks = [
-    { 
-      id: 1, type: "event", 
-      title: "CP2106 Orbital Mission Control #2", 
+    {
+      id: 1, type: "event",
+      title: "CP2106 Orbital Mission Control #2",
       detail: "Discuss core features with teammate",
-      startTime: `${getLocalDateString(now)} 10:00`, 
+      startTime: `${getLocalDateString(now)} 10:00`,
       endTime: `${getLocalDateString(now)} 12:00`,
       importance: "Important"
     },
-    { 
-      id: 2, type: "task", 
-      title: "CS2040 Lecture Review", 
+    {
+      id: 2, type: "task",
+      title: "CS2040 Lecture Review",
       detail: "Review graph traversal algorithms",
-      deadline: `${getLocalDateString(now)} 14:00`, 
+      deadline: `${getLocalDateString(now)} 14:00`,
       completed: false,
       importance: "Unimportant"
     },
-    { 
-      id: 3, type: "task", 
-      title: "CP2106 Orbital Web app development: Implement Dashboard feature", 
+    {
+      id: 3, type: "task",
+      title: "CP2106 Orbital Web app development: Implement Dashboard feature",
       detail: "Refactor data schema and UI components",
-      deadline: `${getLocalDateString(now)} 16:00`, 
+      deadline: `${getLocalDateString(now)} 16:00`,
       completed: false,
-      importance: "Important" 
+      importance: "Important"
     },
-    { 
-      id: 4, type: "task", 
-      title: "Finish CS2040S PS6", 
+    {
+      id: 4, type: "task",
+      title: "Finish CS2040S PS6",
       detail: "Implement amortized analysis for Union-Find",
-      deadline: `${getLocalDateString(now)} 23:59`, 
+      deadline: `${getLocalDateString(now)} 23:59`,
       completed: true,
-      importance: "Important" 
+      importance: "Important"
     },
-    { 
-      id: 5, type: "event", 
-      title: "Night walk", 
+    {
+      id: 5, type: "event",
+      title: "Night walk",
       detail: "Take your time and have a rest",
-      startTime: `${getLocalDateString(now)} 23:00`, 
+      startTime: `${getLocalDateString(now)} 23:00`,
       endTime: `${getLocalDateString(now)} 23:59`,
-      importance: "Unimportant" 
+      importance: "Unimportant"
     }
   ];
 
-  const [tasks, setTasks] = useState(tutorialTasks); 
+  const [tasks, setTasks] = useState(tutorialTasks);
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
@@ -161,7 +150,7 @@ function Dashboard() {
           querySnapshot.forEach((doc) => {
             firebaseTasks.push({ id: doc.id, ...doc.data() });
           });
-          setTasks([...tutorialTasks, ...firebaseTasks]); 
+          setTasks([...tutorialTasks, ...firebaseTasks]);
         });
         return () => unsubscribeSnapshot();
       } else {
@@ -170,7 +159,7 @@ function Dashboard() {
     });
 
     return () => unsubscribeAuth();
-  }, []); 
+  }, []);
 
   // Filtering and Sorting 
   const displayTasks = tasks
@@ -186,9 +175,9 @@ function Dashboard() {
     });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingItemId, setEditingItemId] = useState(null); 
+  const [editingItemId, setEditingItemId] = useState(null);
   const [formData, setFormData] = useState({
-    type: "task", 
+    type: "task",
     title: "",
     detail: "",
     importance: "Unimportant",
@@ -224,7 +213,7 @@ function Dashboard() {
   const handleCardClick = (item) => {
     try {
       setEditingItemId(item.id);
-      
+
       const deadline = item.deadline || `${selectedDateStr} ${currentTimeStr}`;
       const startTime = item.startTime || `${selectedDateStr} ${currentTimeStr}`;
       const endTime = item.endTime || `${selectedDateStr} ${timePlusOneHourStr}`;
@@ -247,28 +236,29 @@ function Dashboard() {
   const handleDeleteItem = async () => {
     if (!editingItemId) return;
 
-    setTasks(prev => prev.filter(t => t.id !== editingItemId));
+    const idToDelete = editingItemId;
+    setIsModalOpen(false);
+    setEditingItemId(null);
 
-    if (typeof editingItemId === "string") {
+    setTasks(prev => prev.filter(t => t.id !== idToDelete));
+
+    if (typeof idToDelete === "string") {
       try {
-        const itemRef = doc(db, "tasks", editingItemId);
+        const itemRef = doc(db, "tasks", idToDelete);
         await deleteDoc(itemRef);
       } catch (error) {
         console.error("Firebase Delete Error: ", error);
       }
     }
-
-    setIsModalOpen(false);
-    setEditingItemId(null);
   };
 
   const handleSaveItem = async () => {
-    if (!formData.title.trim()) return alert("Title cannot be empty!"); 
+    if (!formData.title.trim()) return alert("Title cannot be empty!");
 
     const itemData = {
-      type: formData.type, 
-      title: formData.title, 
-      detail: formData.detail, 
+      type: formData.type,
+      title: formData.title,
+      detail: formData.detail,
       importance: formData.importance,
     };
 
@@ -285,32 +275,32 @@ function Dashboard() {
       itemData.endTime = `${formData.date} ${formData.time2}`;
     }
 
+    const currentEditingId = editingItemId;
+    setIsModalOpen(false);
+    setEditingItemId(null);
+
     try {
-      if (editingItemId) {
-        if (typeof editingItemId === "string") {
-          const itemRef = doc(db, "tasks", editingItemId);
+      if (currentEditingId) {
+        if (typeof currentEditingId === "string") {
+          const itemRef = doc(db, "tasks", currentEditingId);
           await updateDoc(itemRef, itemData);
         } else {
-          setTasks(prev => prev.map(t => t.id === editingItemId ? { ...itemData, id: t.id } : t));
+          setTasks(prev => prev.map(t => t.id === currentEditingId ? { ...itemData, id: t.id } : t));
         }
       } else {
         if (auth.currentUser) {
-           await addDoc(collection(db, "tasks"), itemData);
+          await addDoc(collection(db, "tasks"), itemData);
         } else {
-           setTasks(prev => [...prev, { ...itemData, id: Date.now() }]);
+          setTasks(prev => [...prev, { ...itemData, id: Date.now() }]);
         }
       }
-      
-      setIsModalOpen(false);
-      setEditingItemId(null);
     } catch (error) {
       console.error("Error saving document: ", error);
     }
   };
-
   const checkIsInactive = (item) => {
     if (item.type === "task") return item.completed;
-    if (item.type === "event" && item.endTime) return item.endTime <= currentFullTime; 
+    if (item.type === "event" && item.endTime) return item.endTime <= currentFullTime;
     return false;
   };
 
@@ -319,18 +309,16 @@ function Dashboard() {
       <div className={styles.dashboardContainer}>
         <NavBar />
         <main className={styles.mainContent}>
-          
+
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
-            {/* 左侧标题 */}
             <div className={styles.sectionTitle} style={{ margin: 0 }}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f15c22" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
               Timeline
             </div>
 
-            {/* 右侧操作区 */}
             <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-              
-              {/* Jump To 模块 */}
+
+              {/* Jump To */}
               <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "#f5f5f7", padding: "6px 12px", borderRadius: "12px", border: "1px solid #eaeaea" }}>
                 <span style={{ fontSize: "0.85rem", color: "#86868b", fontWeight: "600" }}>Jump To:</span>
                 <input
@@ -339,47 +327,46 @@ function Dashboard() {
                   value={jumpDate}
                   onChange={handleJumpChange}
                   style={{
-                    border:"none",
-                    background:"transparent",
-                    outline:"none",
-                    fontSize:"0.85rem",
-                    width:"110px"
+                    border: "none",
+                    background: "transparent",
+                    outline: "none",
+                    fontSize: "0.85rem",
+                    width: "110px"
                   }}
                 />
 
                 <button
-    type="button"
-    onClick={() => hiddenDateRef.current?.showPicker()}
-    style={{
-        border: "none",
-        background: "transparent",
-        cursor: "pointer",
-        fontSize: "18px",
-        padding: "0 4px"
-    }}
->
-    📅
-</button>
+                  type="button"
+                  onClick={() => hiddenDateRef.current?.showPicker()}
+                  style={{
+                    border: "none",
+                    background: "transparent",
+                    cursor: "pointer",
+                    fontSize: "18px",
+                    padding: "0 4px"
+                  }}
+                >
+                  📅
+                </button>
 
-<input
-    ref={hiddenDateRef}
-    type="date"
-    style={{ display: "none" }}
-    onChange={(e) => setJumpDate(e.target.value)}
-/>
-  
-                {/* 移除条件渲染，改为常驻显示并根据状态变换颜色 */}
-                <button 
+                <input
+                  ref={hiddenDateRef}
+                  type="date"
+                  style={{ display: "none" }}
+                  onChange={(e) => setJumpDate(e.target.value)}
+                />
+
+                <button
                   onClick={handleJumpConfirm}
                   disabled={!isJumpDateValid}
-                  style={{ 
-                    background: isJumpDateValid ? "#f15c22" : "#d1d1d6", 
-                    color: "white", 
-                    border: "none", 
-                    borderRadius: "6px", 
-                    padding: "4px 10px", 
-                    fontSize: "0.8rem", 
-                    fontWeight: "600", 
+                  style={{
+                    background: isJumpDateValid ? "#f15c22" : "#d1d1d6",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "6px",
+                    padding: "4px 10px",
+                    fontSize: "0.8rem",
+                    fontWeight: "600",
                     cursor: isJumpDateValid ? "pointer" : "not-allowed",
                     transition: "all 0.2s ease"
                   }}
@@ -388,14 +375,14 @@ function Dashboard() {
                 </button>
               </div>
 
-              {/* Today 按钮 */}
-              <button 
+              {/* Today button */}
+              <button
                 onClick={goToToday}
-                disabled={isCurrentlyToday} 
+                disabled={isCurrentlyToday}
                 style={{
                   padding: "6px 14px", borderRadius: "12px", border: "none",
                   background: isCurrentlyToday ? "transparent" : "rgba(241, 92, 34, 0.1)",
-                  color: isCurrentlyToday ? "transparent" : "#f15c22", 
+                  color: isCurrentlyToday ? "transparent" : "#f15c22",
                   fontWeight: "700", fontSize: "0.85rem",
                   cursor: isCurrentlyToday ? "default" : "pointer",
                   transition: "all 0.3s ease", pointerEvents: isCurrentlyToday ? "none" : "auto"
@@ -433,8 +420,8 @@ function Dashboard() {
           <div className={styles.timelineCard}>
             {displayTasks.length > 0 ? (
               displayTasks.map((item) => (
-                <TimelineItem 
-                  key={item.id} 
+                <TimelineItem
+                  key={item.id}
                   item={item}
                   isInactive={checkIsInactive(item)}
                   onToggle={() => handleToggleCompletion(item.id, item.completed)}
@@ -473,7 +460,7 @@ function Dashboard() {
 
             <input name="title" placeholder="Title" value={formData.title} onChange={handleInputChange} style={{ width: "100%", padding: "12px", marginBottom: "12px", borderRadius: "12px", border: "1px solid #ddd", boxSizing: "border-box" }} />
             <input name="detail" placeholder="Details or Subtasks" value={formData.detail} onChange={handleInputChange} style={{ width: "100%", padding: "12px", marginBottom: "12px", borderRadius: "12px", border: "1px solid #ddd", boxSizing: "border-box" }} />
-            
+
             <div style={{ display: "flex", gap: "10px", marginBottom: "15px" }}>
               <input type="date" name="date" value={formData.date} onChange={handleInputChange} style={{ flex: 1, padding: "12px", borderRadius: "12px", border: "1px solid #ddd" }} />
               <select name="importance" value={formData.importance} onChange={handleInputChange} style={{ flex: 1, padding: "12px", borderRadius: "12px", border: "1px solid #ddd", background: "white" }}>

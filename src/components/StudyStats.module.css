@@ -1,0 +1,78 @@
+.statsContainer {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #eaeaea;
+    padding: 24px 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.statsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.statsTitle {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1d1d1f;
+}
+
+.timeSelect {
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid #d1d1d6;
+    background: #f5f5f7;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1d1d1f;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.timeSelect:focus {
+    border-color: #f15c22;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.statCard {
+    background: #f9f9fb;
+    border: 1px solid #eaeaea;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.statCard:hover {
+    transform: translateY(-2px);
+}
+
+.statLabel {
+    font-size: 0.8rem;
+    color: #86868b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+}
+
+.statValue {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #f15c22;
+    /* 延续你之前的品牌主题色 */
+    line-height: 1;
+}
