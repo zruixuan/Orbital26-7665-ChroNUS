@@ -1,10 +1,8 @@
 import styles from './LandmarkCard.module.css';
 
 function LandmarkCard({ title, subtitle, currentHours, targetHours, isUnlocked, imageGradient }) {
-  // 计算进度百分比 (Calculate progress percentage)
   const progressPercent = Math.min((currentHours / targetHours) * 100, 100);
 
-  // 将传入的 currentHours (可能为小数) 转换为小时和分钟 (Convert decimal hours to h & m)
   const displayHours = Math.floor(currentHours);
   const decimalPart = currentHours - displayHours;
   const displayMinutes = Math.round(decimalPart * 60);

@@ -7,16 +7,15 @@ import AchievementBoard from '../components/AchievementBoard';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db, auth } from '../api/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import TimerHistoryModal from '../components/TimerHistoryModal'; // 🌟 引入刚写的弹窗
+import TimerHistoryModal from '../components/TimerHistoryModal';
 
 function Timer() {
     const [unlockedIds, setUnlockedIds] = useState([]);
-    const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false); // 🌟 弹窗状态控制
+    const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
 
     useEffect(() => {
         let unsubscribeSnapshot = null;
 
-        // 监听认证状态 (Auth State Listener)
         const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
             if (unsubscribeSnapshot) {
                 unsubscribeSnapshot();
@@ -25,7 +24,6 @@ function Timer() {
 
             if (user) {
                 const userRef = doc(db, "users", user.uid);
-                // 实时监听用户数据 (Real-time Database Listener)
                 unsubscribeSnapshot = onSnapshot(userRef, (docSnap) => {
                     if (docSnap.exists()) {
                         const data = docSnap.data();
@@ -37,14 +35,13 @@ function Timer() {
             }
         });
 
-        // 清理函数 (Cleanup Function)
         return () => {
             unsubscribeAuth();
             if (unsubscribeSnapshot) unsubscribeSnapshot();
         };
     }, []);
 
-    // 预留历史记录处理逻辑 (Placeholder for future feature)
+    // Placeholder for future implementation
     const handleViewHistory = () => {
         console.log("History modal or navigation will be triggered here.");
     };
@@ -56,7 +53,6 @@ function Timer() {
                 <main className={styles.content}>
                     <header className={styles.header}>
                         <div>
-                            {/* 标题部分保持不变 */}
                             <div className={styles.titleRow}>
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f15c22" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <circle cx="12" cy="12" r="10"></circle>
@@ -66,7 +62,6 @@ function Timer() {
                             <p className={styles.subtitle}>Focus better. Achieve more.</p>
                         </div>
 
-                        {/* 🌟 绑定点击事件，打开弹窗 */}
                         <button
                             className={styles.historyBtn}
                             onClick={() => setIsHistoryModalOpen(true)}
@@ -88,7 +83,6 @@ function Timer() {
                 </main>
             </div>
 
-            {/* 🌟 渲染弹窗 */}
             <TimerHistoryModal
                 isOpen={isHistoryModalOpen}
                 onClose={() => setIsHistoryModalOpen(false)}

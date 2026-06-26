@@ -22,7 +22,6 @@
     color: #1d1d1f;
 }
 
-/* 下拉菜单样式 */
 .timeSelect {
     padding: 8px 12px;
     border-radius: 10px;
@@ -40,16 +39,12 @@
     border-color: #f15c22;
 }
 
-/* 核心：CSS Grid 2x2 布局 */
 .statsGrid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    /* 强制两列等宽 */
     gap: 16px;
-    /* 卡片之间的间距 */
 }
 
-/* 数据小卡片 */
 .statCard {
     background: #f9f9fb;
     border: 1px solid #eaeaea;
@@ -78,6 +73,5 @@
     font-size: 1.8rem;
     font-weight: 700;
     color: #f15c22;
-    /* 延续你之前的品牌主题色 */
     line-height: 1;
 }

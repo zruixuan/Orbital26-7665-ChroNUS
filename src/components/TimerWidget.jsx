@@ -2,12 +2,10 @@ import { useState, useEffect } from 'react';
 import styles from './TimerWidget.module.css';
 import StudyStats from './StudyStats';
 
-// 引入我们的两个强力外援 (Custom Hooks)
 import { useTimerEngine } from '../hooks/useTimerEngine';
 import { useFocusTasks } from '../hooks/useFocusTasks';
 
 function TimerWidget() {
-    // 1. 挂载计时器引擎：直接解构出所有需要的状态和方法 (Destructuring)
     const {
         sessions, currentIndex, timerMode, setTimerMode, 
         focusDuration, shortBreak, longBreak,
@@ -17,10 +15,8 @@ function TimerWidget() {
         handlePrev, handleNext, handleTitleChange
     } = useTimerEngine();
     
-    // 2. 挂载任务数据流
     const { currentlyFocusingItems } = useFocusTasks();
 
-    // UI 纯渲染辅助 (Pure UI Helpers)
     const formatTime = (seconds) => {
         const m = Math.floor(seconds / 60).toString().padStart(2, '0');
         const s = (seconds % 60).toString().padStart(2, '0');
@@ -31,16 +27,13 @@ function TimerWidget() {
     const center = size / 2;
     const radius = 132;
     const circumference = 2 * Math.PI * radius;
-    // 使用解构出来的 progressRatio
     const strokeDashoffset = circumference - (progressRatio * circumference);
 
     return (
         <div className={styles.timerWidgetContainer}>
 
-            {/* --- 上半部分：计时器与设置 (Top Layout: Timer & Settings) --- */}
             <div className={styles.widgetLayout}>
 
-                {/* 左侧：计时器 */}
                 <div className={styles.timerCard}>
                     <div className={styles.sessionNavHeader}>
                         <button className={styles.iconButton} onClick={handlePrev}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
@@ -77,7 +70,6 @@ function TimerWidget() {
                     </div>
                 </div>
 
-                {/* 右侧：设置面板 */}
                 <div className={styles.settingsCard}>
                     <div className={styles.settingBlock}>
                         <label>Timer Mode</label>
@@ -123,15 +115,12 @@ function TimerWidget() {
 
             </div>
 
-            {/* --- 下半部分：全新的 6:4 真实数据看板 (Bottom 6:4 Layout) --- */}
             <div className={styles.statsAndFocusContainer}>
 
-                {/* 左侧 60%：宏观学习统计 */}
                 <div className={styles.statsWrapper}>
                     <StudyStats />
                 </div>
 
-                {/* 右侧 40%：微观当前焦点 */}
                 <div className={styles.focusingWrapper}>
                     <h2 className={styles.focusingTitle}>🎯 Currently Focusing On</h2>
 

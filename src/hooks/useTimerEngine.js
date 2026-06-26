@@ -1,8 +1,8 @@
 // src/hooks/useTimerEngine.js
 import { useState, useEffect } from 'react';
 import { checkAndUnlockAchievements } from '../services/achievementEngine';
-import { auth, db } from "../api/firebase"; // 确保引入了 db
-import { collection, addDoc } from 'firebase/firestore'; // 新增
+import { auth, db } from "../api/firebase";
+import { collection, addDoc } from 'firebase/firestore';
 
 export const useTimerEngine = () => {
     const [sessions, setSessions] = useState([
@@ -36,7 +36,6 @@ export const useTimerEngine = () => {
             setIsActive(false);
             setHasStarted(false);
 
-            // 务实的异步处理，使用 IIFE (立即执行函数) 包装
             (async () => {
                 const endTime = new Date();
                 const startTime = new Date(endTime.getTime() - focusDuration * 60000);
@@ -47,22 +46,18 @@ export const useTimerEngine = () => {
                     timerMode: timerMode,
                     startTime: startTime,
                     endTime: endTime,
-                    // 预留字段：目前暂时为空数组。
-                    // 未来如果需要在计时期间勾选 task，可以将已完成的 task/event ID 推入这里
                     completedTasks: [], 
                     completedEvents: []
                 };
 
                 if (auth.currentUser) {
                     try {
-                        // 🌟 核心新增：将本次专注记录存入独立的 sessions 集合
                         await addDoc(collection(db, "sessions"), {
                             ...sessionData,
                             userId: auth.currentUser.uid,
                             createdAt: new Date()
                         });
 
-                        // 调用成就引擎
                         const newlyUnlocked = await checkAndUnlockAchievements(auth.currentUser.uid, sessionData);
                         if (newlyUnlocked.length > 0) {
                             alert(`Session completed! 🎉 You unlocked ${newlyUnlocked.length} new achievement(s)!`);

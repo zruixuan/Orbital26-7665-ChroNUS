@@ -4,7 +4,6 @@ import { collection, query, where, onSnapshot, doc } from 'firebase/firestore';
 import { db, auth } from '../api/firebase';
 import styles from './TimerHistoryModal.module.css';
 
-// 日期格式化：如果跨天，只取 startTime 作为归属日
 const formatDate = (dateObj) => {
     if (!dateObj) return '';
     const d = typeof dateObj.toDate === 'function' ? dateObj.toDate() : new Date(dateObj);
@@ -24,7 +23,6 @@ function TimerHistoryModal({ isOpen, onClose }) {
     useEffect(() => {
         if (!isOpen || !auth.currentUser) return;
 
-        // 1. 获取用户的总专注时长
         const userRef = doc(db, "users", auth.currentUser.uid);
         const unsubUser = onSnapshot(userRef, (docSnap) => {
             if (docSnap.exists()) {
@@ -32,13 +30,11 @@ function TimerHistoryModal({ isOpen, onClose }) {
             }
         });
 
-        // 2. 获取所有的专注历史记录
         const q = query(collection(db, "sessions"), where("userId", "==", auth.currentUser.uid));
         const unsubSessions = onSnapshot(q, (snapshot) => {
             const fetched = [];
             snapshot.forEach(doc => fetched.push({ id: doc.id, ...doc.data() }));
             
-            // 前端倒序排列 (最新的排前面)
             fetched.sort((a, b) => b.startTime.toDate() - a.startTime.toDate());
             setSessions(fetched);
         });
@@ -57,7 +53,6 @@ function TimerHistoryModal({ isOpen, onClose }) {
                     <button className={styles.closeBtn} onClick={onClose}>&times;</button>
                 </div>
 
-                {/* 顶部：总计专注时间 */}
                 <div className={styles.totalSummary}>
                     <div className={styles.totalIcon}>🔥</div>
                     <div>
@@ -66,7 +61,6 @@ function TimerHistoryModal({ isOpen, onClose }) {
                     </div>
                 </div>
 
-                {/* 历史记录列表 */}
                 <div className={styles.historyList}>
                     {sessions.length === 0 ? (
                         <p className={styles.emptyState}>No study sessions yet. Time to start focusing!</p>
@@ -86,7 +80,6 @@ function TimerHistoryModal({ isOpen, onClose }) {
                                         {session.duration} min
                                     </div>
                                     <div className={styles.linkedTasks}>
-                                        {/* 目前为预留：后续可以在这里 map 渲染 session.completedEvents 和 tasks */}
                                         {(session.completedTasks?.length > 0 || session.completedEvents?.length > 0) ? 
                                             <span className={styles.taskDone}>✓ Tasks/Events completed</span> : 
                                             <span className={styles.noTask}>No tasks linked</span>

@@ -18,15 +18,12 @@
     letter-spacing: -0.02em;
 }
 
-/* 响应式网格布局 (Responsive Grid Layout) */
 .grid {
     display: grid;
-    /* 务实设置：根据屏幕宽度自动排列，最小卡片宽度 280px */
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
 }
 
-/* 成就卡片基础样式 (Base Card Style) */
 .achievementCard {
     display: flex;
     align-items: center;
@@ -38,19 +35,16 @@
     transition: all 0.2s ease;
 }
 
-/* 悬停微交互 (Hover Micro-interaction) */
 .achievementCard:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.04);
 }
 
-/* 已解锁状态的特殊高亮 (Unlocked State) */
 .unlocked {
-    background: #fff4ed; /* 品牌色的浅色背景 */
+    background: #fff4ed;
     border-color: #fbc6b0;
 }
 
-/* 未解锁状态的视觉弱化 (Locked State) */
 .locked {
     background: #fafafc;
     opacity: 0.85;
@@ -61,7 +55,7 @@
     width: 56px;
     height: 56px;
     background: #ffffff;
-    border-radius: 50%; /* 圆形图标底板 */
+    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -73,7 +67,7 @@
     width: 36px;
     height: 36px;
     object-fit: contain;
-    transition: filter 0.3s ease; /* 配合你 JSX 里的灰度滤镜平滑过渡 */
+    transition: filter 0.3s ease;
 }
 
 .infoWrapper {
@@ -89,7 +83,6 @@
     color: #1d1d1f;
 }
 
-/* 如果是未解锁状态，标题颜色变灰 */
 .locked .achTitle {
     color: #86868b;
 }

@@ -1,11 +1,9 @@
 import { useState } from 'react';
-import styles from './StudyStats.module.css'; // 请确保路径正确
+import styles from './StudyStats.module.css';
 
 function StudyStats() {
-  // 1. 下拉菜单状态 (Dropdown State)
   const [timeframe, setTimeframe] = useState("today");
 
-  // 2. 模拟数据联动 (Mock Data Mapping)
   const statsData = {
     today: { focusTime: "2.5h", sessions: 4, streak: "1 day", tasks: 3 },
     week: { focusTime: "18h", sessions: 28, streak: "5 days", tasks: 15 },
@@ -18,7 +16,6 @@ function StudyStats() {
   return (
     <div className={styles.statsContainer}>
       
-      {/* 头部与下拉菜单 (Header & Dropdown) */}
       <div className={styles.statsHeader}>
         <h2 className={styles.statsTitle}>Study Stats</h2>
         <select 
@@ -33,7 +30,6 @@ function StudyStats() {
         </select>
       </div>
 
-      {/* 2x2 数据网格 (2x2 Data Grid) */}
       <div className={styles.statsGrid}>
         <div className={styles.statCard}>
           <div className={styles.statLabel}>Focus Time</div>
