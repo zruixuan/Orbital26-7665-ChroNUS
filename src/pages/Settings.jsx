@@ -336,6 +336,14 @@ function Settings() {
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [openHelpItem, setOpenHelpItem] = useState("create-entry");
 
+  const [showSupportModal, setShowSupportModal] = useState(false);
+  const [supportType, setSupportType] = useState("feedback");
+  const [feedbackCategory, setFeedbackCategory] = useState("General Feedback");
+  const [supportSubject, setSupportSubject] = useState("");
+  const [supportMessage, setSupportMessage] = useState("");
+  const [supportStatus, setSupportStatus] = useState("idle");
+  const [supportStatusMessage, setSupportStatusMessage] = useState("");
+
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [logoutStatus, setLogoutStatus] = useState("confirm");
   const [logoutMessage, setLogoutMessage] = useState(
@@ -527,6 +535,99 @@ function Settings() {
     }
   };
 
+  const openSupportModal = (type) => {
+    setSupportType(type);
+    setFeedbackCategory(
+      type === "feedback" ? "General Feedback" : "Technical Problem"
+    );
+    setSupportSubject("");
+    setSupportMessage("");
+    setSupportStatus("idle");
+    setSupportStatusMessage("");
+    setShowSupportModal(true);
+  };
+
+  const closeSupportModal = () => {
+    if (supportStatus === "submitting") {
+      return;
+    }
+
+    setShowSupportModal(false);
+    setSupportStatus("idle");
+    setSupportStatusMessage("");
+    setSupportSubject("");
+    setSupportMessage("");
+  };
+
+  const handleSupportSubmit = async () => {
+    const trimmedSubject = supportSubject.trim();
+    const trimmedMessage = supportMessage.trim();
+
+    if (!trimmedSubject) {
+      setSupportStatus("error");
+      setSupportStatusMessage(
+        supportType === "feedback"
+          ? "Please enter a feedback title."
+          : "Please enter a short problem title."
+      );
+      return;
+    }
+
+    if (!trimmedMessage) {
+      setSupportStatus("error");
+      setSupportStatusMessage(
+        supportType === "feedback"
+          ? "Please enter your feedback."
+          : "Please describe the problem you encountered."
+      );
+      return;
+    }
+
+    if (trimmedMessage.length < 10) {
+      setSupportStatus("error");
+      setSupportStatusMessage(
+        "Please provide at least 10 characters so that we can understand your message."
+      );
+      return;
+    }
+
+    setSupportStatus("submitting");
+    setSupportStatusMessage(
+      supportType === "feedback"
+        ? "Submitting your feedback..."
+        : "Submitting your problem report..."
+    );
+
+    try {
+      const supportSubmission = {
+        type: supportType,
+        category: feedbackCategory,
+        subject: trimmedSubject,
+        message: trimmedMessage,
+        userId: currentUser?.uid || "",
+        userEmail: currentUser?.email || "",
+        createdAt: new Date().toISOString(),
+      };
+
+      console.log("Support submission:", supportSubmission);
+
+      await new Promise((resolve) => setTimeout(resolve, 700));
+
+      setSupportStatus("success");
+      setSupportStatusMessage(
+        supportType === "feedback"
+          ? "Thank you! Your feedback has been submitted successfully."
+          : "Your problem report has been submitted successfully. Thank you for letting us know."
+      );
+    } catch (error) {
+      console.error("Support submission error:", error);
+      setSupportStatus("error");
+      setSupportStatusMessage(
+        "Something went wrong while submitting your message. Please try again."
+      );
+    }
+  };
+
   const openHelpCentre = () => {
     setOpenHelpItem("create-entry");
     setShowHelpModal(true);
@@ -561,6 +662,46 @@ function Settings() {
       setLogoutStatus("error");
       setLogoutMessage("Failed to log out. Please try again.");
     }
+  };
+  
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [emailCopied, setEmailCopied] = useState(false);
+
+  const SUPPORT_EMAIL = "zhangruixuan23@gmail.com";
+
+  const openContactModal = () => {
+  setEmailCopied(false);
+  setShowContactModal(true);
+  };
+
+  const closeContactModal = () => {
+    setEmailCopied(false);
+    setShowContactModal(false);
+  };
+
+  const handleCopySupportEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(SUPPORT_EMAIL);
+      setEmailCopied(true);
+
+      setTimeout(() => {
+        setEmailCopied(false);
+      }, 2000);
+    } catch (error) {
+      console.error("Failed to copy support email:", error);
+    }
+  };
+
+  const handleOpenEmailApp = () => {
+    const subject = encodeURIComponent("ChroNUS Support Request");
+
+    const body = encodeURIComponent(
+      `Hello ChroNUS Team,\n\nI would like to ask for help with:\n\n\n\nAccount email: ${
+        currentUser?.email || ""
+      }`
+    );
+
+    window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
   };
 
   return (
@@ -820,6 +961,7 @@ function Settings() {
                   <button
                     type="button"
                     className={styles.settingRow}
+                    onClick={() => openSupportModal("feedback")}
                   >
                     <span className={styles.rowIcon}>
                       <FiMessageSquare />
@@ -837,6 +979,7 @@ function Settings() {
                   <button
                     type="button"
                     className={styles.settingRow}
+                    onClick={() => openSupportModal("problem")}
                   >
                     <span className={styles.rowIcon}>
                       <FiAlertTriangle />
@@ -856,6 +999,7 @@ function Settings() {
                   <button
                     type="button"
                     className={styles.settingRow}
+                    onClick={openContactModal}
                   >
                     <span className={styles.rowIcon}>
                       <FiMail />
@@ -894,6 +1038,255 @@ function Settings() {
               </div>
             </div>
           </section>
+
+          {showSupportModal && (
+            <div
+              className={styles.modalOverlay}
+              onMouseDown={(event) => {
+                if (event.target === event.currentTarget) {
+                  closeSupportModal();
+                }
+              }}
+            >
+              <div
+                className={styles.supportModalBox}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="support-modal-title"
+              >
+                {supportStatus === "success" ? (
+                  <div className={styles.supportSuccess}>
+                    <div className={styles.supportSuccessIcon}>✓</div>
+
+                    <h3>
+                      {supportType === "feedback"
+                        ? "Feedback Submitted"
+                        : "Problem Reported"}
+                    </h3>
+
+                    <p>{supportStatusMessage}</p>
+
+                    <button
+                      type="button"
+                      className={styles.supportPrimaryButton}
+                      onClick={closeSupportModal}
+                    >
+                      Done
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <div className={styles.supportModalHeader}>
+                      <div className={styles.supportModalTitle}>
+                        <div
+                          className={`${styles.supportModalIcon} ${
+                            supportType === "problem"
+                              ? styles.problemModalIcon
+                              : ""
+                          }`}
+                        >
+                          {supportType === "feedback" ? (
+                            <FiMessageSquare />
+                          ) : (
+                            <FiAlertTriangle />
+                          )}
+                        </div>
+
+                        <div className={styles.supportModalTitleText}>
+                          <h3 id="support-modal-title">
+                            {supportType === "feedback"
+                              ? "Send Feedback"
+                              : "Report a Problem"}
+                          </h3>
+
+                          <p>
+                            {supportType === "feedback"
+                              ? "Tell us what you think about ChroNUS."
+                              : "Describe what happened so we can investigate it."}
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        className={styles.supportCloseButton}
+                        onClick={closeSupportModal}
+                        disabled={supportStatus === "submitting"}
+                        aria-label="Close support form"
+                      >
+                        <FiX />
+                      </button>
+                    </div>
+
+                    <div className={styles.supportModalBody}>
+                      <div className={styles.supportField}>
+                        <label htmlFor="supportCategory">
+                          {supportType === "feedback"
+                            ? "Feedback Category"
+                            : "Problem Category"}
+                        </label>
+
+                        <select
+                          id="supportCategory"
+                          value={feedbackCategory}
+                          onChange={(event) => {
+                            setFeedbackCategory(event.target.value);
+                            setSupportStatus("idle");
+                            setSupportStatusMessage("");
+                          }}
+                          disabled={supportStatus === "submitting"}
+                        >
+                          {supportType === "feedback" ? (
+                            <>
+                              <option value="General Feedback">
+                                General Feedback
+                              </option>
+                              <option value="Feature Suggestion">
+                                Feature Suggestion
+                              </option>
+                              <option value="User Experience">
+                                User Experience
+                              </option>
+                              <option value="Other">Other</option>
+                            </>
+                          ) : (
+                            <>
+                              <option value="Technical Problem">
+                                Technical Problem
+                              </option>
+                              <option value="Login or Account">
+                                Login or Account
+                              </option>
+                              <option value="Task or Event">
+                                Task or Event
+                              </option>
+                              <option value="Eisenhower Matrix">
+                                Eisenhower Matrix
+                              </option>
+                              <option value="Weekly Reflection">
+                                Weekly Reflection
+                              </option>
+                              <option value="Other">Other</option>
+                            </>
+                          )}
+                        </select>
+                      </div>
+
+                      <div className={styles.supportField}>
+                        <label htmlFor="supportSubject">
+                          {supportType === "feedback"
+                            ? "Feedback Title"
+                            : "Problem Title"}
+                        </label>
+
+                        <input
+                          id="supportSubject"
+                          type="text"
+                          value={supportSubject}
+                          maxLength={80}
+                          placeholder={
+                            supportType === "feedback"
+                              ? "Give your feedback a short title"
+                              : "Briefly describe the problem"
+                          }
+                          onChange={(event) => {
+                            setSupportSubject(event.target.value);
+                            setSupportStatus("idle");
+                            setSupportStatusMessage("");
+                          }}
+                          disabled={supportStatus === "submitting"}
+                        />
+
+                        <span className={styles.supportCharacterCount}>
+                          {supportSubject.length}/80
+                        </span>
+                      </div>
+
+                      <div className={styles.supportField}>
+                        <label htmlFor="supportMessage">
+                          {supportType === "feedback"
+                            ? "Your Feedback"
+                            : "Problem Description"}
+                        </label>
+
+                        <textarea
+                          id="supportMessage"
+                          value={supportMessage}
+                          maxLength={1000}
+                          placeholder={
+                            supportType === "feedback"
+                              ? "Share your thoughts, suggestions, or ideas..."
+                              : "Tell us what happened, what you expected, and how we can reproduce the problem..."
+                          }
+                          onChange={(event) => {
+                            setSupportMessage(event.target.value);
+                            setSupportStatus("idle");
+                            setSupportStatusMessage("");
+                          }}
+                          disabled={supportStatus === "submitting"}
+                        />
+
+                        <span className={styles.supportCharacterCount}>
+                          {supportMessage.length}/1000
+                        </span>
+                      </div>
+
+                      <div className={styles.supportEmailNotice}>
+                        <FiMail />
+                        <p>
+                          Your account email, <strong>{email || "your registered email"}</strong>,
+                          will be included so the ChroNUS team can contact you
+                          when necessary.
+                        </p>
+                      </div>
+
+                      {supportStatusMessage && (
+                        <p
+                          className={`${styles.supportMessage} ${
+                            supportStatus === "error"
+                              ? styles.supportErrorMessage
+                              : styles.supportLoadingMessage
+                          }`}
+                        >
+                          {supportStatus === "submitting" && (
+                            <span className={styles.supportInlineSpinner}></span>
+                          )}
+                          {supportStatusMessage}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className={styles.supportModalActions}>
+                      <button
+                        type="button"
+                        className={styles.supportCancelButton}
+                        onClick={closeSupportModal}
+                        disabled={supportStatus === "submitting"}
+                      >
+                        Cancel
+                      </button>
+
+                      <button
+                        type="button"
+                        className={styles.supportPrimaryButton}
+                        onClick={handleSupportSubmit}
+                        disabled={supportStatus === "submitting"}
+                      >
+                        {supportStatus === "submitting" ? (
+                          <>
+                            <span className={styles.supportButtonSpinner}></span>
+                            Submitting...
+                          </>
+                        ) : (
+                          "Submit"
+                        )}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
 
           {showHelpModal && (
             <div
@@ -1329,6 +1722,120 @@ function Settings() {
                       : "Close"}
                   </button>
                 )}
+              </div>
+            </div>
+          )}
+
+          {showContactModal && (
+            <div
+              className={styles.modalOverlay}
+              onMouseDown={(event) => {
+                if (event.target === event.currentTarget) {
+                  closeContactModal();
+                }
+              }}
+            >
+              <div
+                className={styles.contactModalBox}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="contact-modal-title"
+              >
+                <div className={styles.contactModalHeader}>
+                  <div className={styles.contactModalTitle}>
+                    <div className={styles.contactModalIcon}>
+                      <FiMail />
+                    </div>
+
+                    <div className={styles.contactModalTitleText}>
+                      <h3 id="contact-modal-title">
+                        Contact Us
+                      </h3>
+
+                      <p>
+                        Get in touch with the ChroNUS support team.
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    className={styles.contactCloseButton}
+                    onClick={closeContactModal}
+                    aria-label="Close Contact Us"
+                  >
+                    <FiX />
+                  </button>
+                </div>
+
+                <div className={styles.contactModalBody}>
+                  <div className={styles.contactIntro}>
+                    <h4>How can we help?</h4>
+
+                    <p>
+                      For questions about your account, tasks, events,
+                      the Eisenhower Matrix, or Weekly Reflection,
+                      contact us using the email below.
+                    </p>
+                  </div>
+
+                  <div className={styles.contactEmailCard}>
+                    <div className={styles.contactEmailIcon}>
+                      <FiMail />
+                    </div>
+
+                    <div className={styles.contactEmailContent}>
+                      <span>Support Email</span>
+
+                      <strong>{SUPPORT_EMAIL}</strong>
+                    </div>
+
+                    <button
+                      type="button"
+                      className={styles.copyEmailButton}
+                      onClick={handleCopySupportEmail}
+                    >
+                      {emailCopied ? "Copied!" : "Copy"}
+                    </button>
+                  </div>
+
+                  <div className={styles.contactInfoBox}>
+                    <FiInfo />
+
+                    <p>
+                      Please include a clear description of your question
+                      or problem. Screenshots may also help us understand
+                      technical issues more quickly.
+                    </p>
+                  </div>
+
+                  <div className={styles.contactAccountDetails}>
+                    <span>Your account email</span>
+
+                    <strong>
+                      {email || "No account email available"}
+                    </strong>
+                  </div>
+                </div>
+
+                <div className={styles.contactModalActions}>
+                  <button
+                    type="button"
+                    className={styles.contactCancelButton}
+                    onClick={closeContactModal}
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="button"
+                    className={styles.contactPrimaryButton}
+                    onClick={handleOpenEmailApp}
+                  >
+                    <FiMail />
+                    Open Email App
+                  </button>
+                </div>
               </div>
             </div>
           )}

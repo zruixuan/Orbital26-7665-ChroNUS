@@ -1748,3 +1748,907 @@
     font-size: 15px;
   }
 }
+
+/* ========================================
+   Feedback and problem report modal
+======================================== */
+
+.supportModalBox {
+  width: min(560px, calc(100vw - 36px));
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 22px;
+  box-shadow:
+    0 24px 70px rgba(31, 35, 48, 0.16),
+    0 6px 20px rgba(31, 35, 48, 0.08);
+  overflow: hidden;
+  animation: supportModalPopup 0.22s ease;
+}
+
+@keyframes supportModalPopup {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.supportModalHeader {
+  padding: 24px 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  border-bottom: 1px solid #eeeeee;
+}
+
+.supportModalTitle {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  flex: 1;
+  min-width: 0;
+}
+
+.supportModalIcon {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #f15c22;
+  font-size: 21px;
+
+  background: #fff0e9;
+  border-radius: 50%;
+}
+
+.problemModalIcon {
+  color: #f15c22;
+  background: #fff0e9;
+}
+
+.supportModalTitleText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  text-align: left;
+}
+
+.supportModalTitleText h3 {
+  margin: 0 0 5px;
+
+  color: #36363d;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.25;
+
+  text-align: left;
+}
+
+.supportModalTitleText p {
+  margin: 0;
+
+  color: #92929c;
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.5;
+
+  text-align: left;
+}
+
+
+.supportCloseButton {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  color: #92929c;
+  font-size: 20px;
+
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.supportCloseButton:hover:not(:disabled) {
+  color: #f15c22;
+  background: #fff1eb;
+  transform: translateY(-1px);
+}
+
+.supportCloseButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.supportModalBody {
+  padding: 23px 26px 5px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #f2b49d transparent;
+}
+
+.supportModalBody::-webkit-scrollbar {
+  width: 6px;
+}
+
+.supportModalBody::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.supportModalBody::-webkit-scrollbar-thumb {
+  background: #f2b49d;
+  border-radius: 999px;
+}
+
+.supportModalBody::-webkit-scrollbar-thumb:hover {
+  background: #f15c22;
+}
+
+.supportField {
+  position: relative;
+  margin-bottom: 19px;
+}
+
+.supportField label {
+  display: block;
+  margin-bottom: 8px;
+  color: #4a4a52;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.supportField input,
+.supportField select,
+.supportField textarea {
+  width: 100%;
+  box-sizing: border-box;
+  color: #3e3e45;
+  font-family: inherit;
+  font-size: 14px;
+  background: #ffffff;
+  border: 1px solid #dddddf;
+  border-radius: 12px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.supportField input,
+.supportField select {
+  height: 45px;
+  padding: 0 14px;
+}
+
+.supportField select {
+  cursor: pointer;
+}
+
+.supportField textarea {
+  min-height: 132px;
+  max-height: 230px;
+  padding: 13px 14px 28px;
+  line-height: 1.6;
+  resize: vertical;
+  scrollbar-width: thin;
+  scrollbar-color: #f2b49d transparent;
+}
+
+.supportField textarea::-webkit-scrollbar {
+  width: 5px;
+}
+
+.supportField textarea::-webkit-scrollbar-thumb {
+  background: #f2b49d;
+  border-radius: 999px;
+}
+
+.supportField input:focus,
+.supportField select:focus,
+.supportField textarea:focus {
+  border-color: #f15c22;
+  box-shadow: 0 0 0 3px rgba(241, 92, 34, 0.1);
+}
+
+.supportField input:disabled,
+.supportField select:disabled,
+.supportField textarea:disabled {
+  color: #9b9ba3;
+  background: #f7f7f8;
+  cursor: not-allowed;
+}
+
+.supportField input::placeholder,
+.supportField textarea::placeholder {
+  color: #aaaab1;
+}
+
+.supportCharacterCount {
+  position: absolute;
+  right: 11px;
+  bottom: 8px;
+  color: #aaaab2;
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.supportEmailNotice {
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #777780;
+  background: #fafafa;
+  border: 1px solid #ebebec;
+  border-radius: 12px;
+}
+
+.supportEmailNotice svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: #f15c22;
+  font-size: 17px;
+}
+
+.supportEmailNotice p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.supportEmailNotice strong {
+  color: #55555d;
+  font-weight: 600;
+}
+
+.supportMessage {
+  min-height: 20px;
+  margin: 0 0 17px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.supportErrorMessage {
+  color: #d94032;
+}
+
+.supportLoadingMessage {
+  color: #777780;
+}
+
+.supportInlineSpinner,
+.supportButtonSpinner {
+  display: inline-block;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: supportSpin 0.7s linear infinite;
+}
+
+.supportInlineSpinner {
+  width: 13px;
+  height: 13px;
+  border-color: rgba(241, 92, 34, 0.2);
+  border-top-color: #f15c22;
+}
+
+.supportButtonSpinner {
+  width: 14px;
+  height: 14px;
+}
+
+@keyframes supportSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.supportModalActions {
+  padding: 18px 26px 22px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 11px;
+  border-top: 1px solid #eeeeee;
+}
+
+.supportCancelButton,
+.supportPrimaryButton {
+  min-width: 102px;
+  height: 42px;
+  padding: 0 19px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 11px;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.supportCancelButton {
+  color: #65656d;
+  background: #ffffff;
+  border: 1px solid #dddddf;
+}
+
+.supportCancelButton:hover:not(:disabled) {
+  color: #3f3f46;
+  background: #f7f7f8;
+  border-color: #ceced2;
+  transform: translateY(-2px);
+}
+
+.supportPrimaryButton {
+  color: #ffffff;
+  background: #f15c22;
+  border: 1px solid #f15c22;
+  box-shadow: 0 7px 16px rgba(241, 92, 34, 0.19);
+}
+
+.supportPrimaryButton:hover:not(:disabled) {
+  background: #dc4e18;
+  border-color: #dc4e18;
+  box-shadow: 0 10px 20px rgba(241, 92, 34, 0.26);
+  transform: translateY(-2px);
+}
+
+.supportCancelButton:disabled,
+.supportPrimaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+  transform: none;
+  box-shadow: none;
+}
+
+.supportSuccess {
+  padding: 42px 34px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.supportSuccessIcon {
+  width: 62px;
+  height: 62px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 27px;
+  font-weight: 700;
+  background: #f15c22;
+  border-radius: 50%;
+  box-shadow: 0 10px 24px rgba(241, 92, 34, 0.22);
+}
+
+.supportSuccess h3 {
+  margin: 0 0 10px;
+  color: #37373e;
+  font-size: 21px;
+  font-weight: 650;
+}
+
+.supportSuccess p {
+  max-width: 390px;
+  margin: 0 0 25px;
+  color: #85858e;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .supportModalBox {
+    max-height: calc(100vh - 28px);
+  }
+
+  .supportModalHeader {
+    padding: 20px 20px 17px;
+  }
+
+  .supportModalBody {
+    padding: 20px 20px 4px;
+  }
+
+  .supportModalActions {
+    padding: 16px 20px 20px;
+  }
+
+  .supportCancelButton,
+  .supportPrimaryButton {
+    flex: 1;
+  }
+}
+
+/* ========================================
+   Contact Us Modal
+======================================== */
+
+.contactModalBox {
+  width: min(560px, calc(100vw - 36px));
+  max-height: calc(100vh - 48px);
+
+  display: flex;
+  flex-direction: column;
+
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 22px;
+
+  box-shadow:
+    0 24px 70px rgba(31, 35, 48, 0.16),
+    0 6px 20px rgba(31, 35, 48, 0.08);
+
+  overflow: hidden;
+  animation: contactModalPopup 0.22s ease;
+}
+
+@keyframes contactModalPopup {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.contactModalHeader {
+  padding: 24px 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  border-bottom: 1px solid #eeeeee;
+}
+
+.contactModalTitle {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  flex: 1;
+  min-width: 0;
+}
+
+.contactModalIcon {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #f15c22;
+  font-size: 21px;
+
+  background: #fff0e9;
+  border-radius: 50%;
+}
+
+.contactModalTitleText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  text-align: left;
+}
+
+.contactModalTitleText h3 {
+  margin: 0 0 5px;
+
+  color: #36363d;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.contactModalTitleText p {
+  margin: 0;
+
+  color: #92929c;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.contactCloseButton {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  color: #92929c;
+  font-size: 20px;
+
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.contactCloseButton:hover {
+  color: #f15c22;
+  background: #fff1eb;
+  transform: translateY(-1px);
+}
+
+.contactModalBody {
+  padding: 26px 32px 8px;
+}
+
+.contactIntro {
+  margin-bottom: 22px;
+  text-align: left;
+}
+
+.contactIntro h4 {
+  margin: 0 0 8px;
+
+  color: #414148;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.contactIntro p {
+  margin: 0;
+
+  color: #85858e;
+  font-size: 13.5px;
+  line-height: 1.65;
+}
+
+.contactEmailCard {
+  padding: 16px;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  background: #fffaf7;
+  border: 1px solid #f5d9cc;
+  border-radius: 14px;
+}
+
+.contactEmailIcon {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #f15c22;
+  font-size: 19px;
+
+  background: #ffffff;
+  border: 1px solid #f3ded5;
+  border-radius: 12px;
+}
+
+.contactEmailContent {
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+
+  text-align: left;
+}
+
+.contactEmailContent span {
+  color: #92929b;
+  font-size: 12px;
+}
+
+.contactEmailContent strong {
+  max-width: 100%;
+
+  color: #45454c;
+  font-size: 14px;
+  font-weight: 600;
+
+  overflow-wrap: anywhere;
+}
+
+.copyEmailButton {
+  min-width: 70px;
+  height: 36px;
+  padding: 0 14px;
+
+  color: #f15c22;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+
+  background: #ffffff;
+  border: 1px solid #f2c9b8;
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.copyEmailButton:hover {
+  color: #ffffff;
+  background: #f15c22;
+  border-color: #f15c22;
+
+  box-shadow: 0 6px 14px rgba(241, 92, 34, 0.18);
+  transform: translateY(-1px);
+}
+
+.contactInfoBox {
+  margin-top: 18px;
+  padding: 13px 15px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+
+  color: #74747d;
+  background: #fafafa;
+  border: 1px solid #ebebec;
+  border-radius: 12px;
+
+  text-align: left;
+}
+
+.contactInfoBox svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+
+  color: #f15c22;
+  font-size: 17px;
+}
+
+.contactInfoBox p {
+  margin: 0;
+
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.contactAccountDetails {
+  margin-top: 18px;
+  padding: 14px 0 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  border-top: 1px solid #eeeeee;
+}
+
+.contactAccountDetails span {
+  color: #8e8e97;
+  font-size: 13px;
+}
+
+.contactAccountDetails strong {
+  color: #505058;
+  font-size: 13px;
+  font-weight: 600;
+
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.contactModalActions {
+  padding: 18px 32px 22px;
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 11px;
+
+  border-top: 1px solid #eeeeee;
+}
+
+.contactCancelButton,
+.contactPrimaryButton {
+  min-width: 105px;
+  height: 42px;
+  padding: 0 19px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+
+  border-radius: 11px;
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.contactCancelButton {
+  color: #65656d;
+  background: #ffffff;
+  border: 1px solid #dddddf;
+}
+
+.contactCancelButton:hover {
+  color: #3f3f46;
+  background: #f7f7f8;
+  border-color: #ceced2;
+
+  transform: translateY(-2px);
+}
+
+.contactPrimaryButton {
+  color: #ffffff;
+  background: #f15c22;
+  border: 1px solid #f15c22;
+
+  box-shadow: 0 7px 16px rgba(241, 92, 34, 0.19);
+}
+
+.contactPrimaryButton:hover {
+  background: #dc4e18;
+  border-color: #dc4e18;
+
+  box-shadow: 0 10px 20px rgba(241, 92, 34, 0.26);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+  .contactModalHeader {
+    padding: 20px;
+  }
+
+  .contactModalBody {
+    padding: 22px 20px 6px;
+  }
+
+  .contactModalActions {
+    padding: 16px 20px 20px;
+  }
+
+  .contactEmailCard {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .copyEmailButton {
+    margin-left: 56px;
+  }
+
+  .contactAccountDetails {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .contactAccountDetails strong {
+    text-align: left;
+  }
+
+  .contactCancelButton,
+  .contactPrimaryButton {
+    flex: 1;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+.modalOverlay {
+  position: fixed !important;
+  inset: 0 !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 24px;
+  box-sizing: border-box;
+
+  background: rgba(31, 35, 48, 0.28) !important;
+  backdrop-filter: blur(3px);
+
+  z-index: 99999 !important;
+}
+
+.contactModalBox {
+  position: relative !important;
+  z-index: 100000 !important;
+
+  width: min(560px, calc(100vw - 40px)) !important;
+  max-height: calc(100vh - 48px);
+
+  display: flex !important;
+  flex-direction: column;
+
+  background: #ffffff !important;
+  border: 1px solid #e8e8e8;
+  border-radius: 22px;
+
+  box-shadow:
+    0 24px 70px rgba(31, 35, 48, 0.18),
+    0 6px 20px rgba(31, 35, 48, 0.1);
+
+  overflow: hidden;
+}
