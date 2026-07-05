@@ -182,7 +182,55 @@ function Dashboard() {
     setJumpDate(value);
   };
 
-  const hiddenDateRef = useRef(null);
+const jumpCalendarRef = useRef(null);
+const [showJumpCalendar, setShowJumpCalendar] = useState(false);
+const [jumpCalendarMonth, setJumpCalendarMonth] = useState(new Date());
+
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (
+      jumpCalendarRef.current &&
+      !jumpCalendarRef.current.contains(event.target)
+    ) {
+      setShowJumpCalendar(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
+
+const getJumpCalendarDays = () => {
+  const year = jumpCalendarMonth.getFullYear();
+  const month = jumpCalendarMonth.getMonth();
+
+  const firstDay = new Date(year, month, 1);
+  const startOffset = (firstDay.getDay() + 6) % 7;
+
+  const startDate = new Date(year, month, 1 - startOffset);
+
+  return Array.from({ length: 42 }, (_, index) => {
+    const date = new Date(startDate);
+    date.setDate(startDate.getDate() + index);
+    return date;
+  });
+};
+
+const shiftJumpCalendarMonth = (monthOffset) => {
+  setJumpCalendarMonth((prev) => {
+    const next = new Date(prev);
+    next.setMonth(prev.getMonth() + monthOffset);
+    return next;
+  });
+};
+
+const handleCalendarDateClick = (dateObj) => {
+  setJumpDate(getLocalDateString(dateObj));
+  setShowJumpCalendar(false);
+};
 
   const handleJumpConfirm = () => {
     if (!isJumpDateValid)
@@ -523,7 +571,7 @@ function Dashboard() {
 
               const eventData = {
                 type: "event",
-                title: `${mod.moduleCode} ${lesson.lessonType}`,
+                title: `${mod.moduleCode} ${lesson.lessonType}${lesson.classNo ? ` [${lesson.classNo}]` : ""}`,
                 detail: `${moduleInfo.title || ""}${
                   lesson.venue ? ` · ${lesson.venue}` : ""
                 }`,
@@ -576,219 +624,379 @@ function Dashboard() {
     <div className={styles.pageWrapper}>
       <div className={styles.dashboardContainer}>
         <NavBar />
-        <main className={styles.mainContent}>
+          <main className={styles.mainContent}>
 
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
-            <div className={styles.sectionTitle} style={{ margin: 0 }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f15c22" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-              Timeline
+            <div className={styles.timelineHeaderRow}>
+              <div className={styles.sectionTitle} style={{ margin: 0 }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f15c22" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                Timeline
+              </div>
+
+              <div className={styles.timelineHeaderActions}>
+
+                <button
+                  onClick={goToToday}
+                  disabled={isCurrentlyToday}
+                  className={styles.todayButton}
+                >
+                  <span className={styles.todayIcon}>
+                    <svg
+                    style={{ transform: "translateY(2px)", marginRight: "5px" }}
+                      width="17"
+                      height="17"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 12a9 9 0 0 1 15.5-6.2" />
+                      <path d="M19 3v5h-5" />
+                      <path d="M21 12a9 9 0 0 1-15.5 6.2" />
+                      <path d="M5 21v-5h5" />
+                    </svg>
+                  </span>
+                  Go to Today
+                </button>
+
+                <div className={styles.jumpActionGroup} ref={jumpCalendarRef}>
+                  <div className={styles.jumpBox}>
+                    <span className={styles.buttonIcon}></span>
+
+                    <input
+                      type="text"
+                      placeholder="YYYY-MM-DD"
+                      value={jumpDate}
+                      onChange={handleJumpChange}
+                      className={styles.jumpInput}
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => setShowJumpCalendar((prev) => !prev)}
+                      className={styles.calendarIconButton}
+                    >
+                      📅
+                    </button>
+
+                    {showJumpCalendar && (
+                      <div className={styles.jumpCalendarPanel}>
+                        <div className={styles.jumpCalendarHeader}>
+                          <button
+                            type="button"
+                            onClick={() => shiftJumpCalendarMonth(-1)}
+                            className={styles.calendarMonthButton}
+                          >
+                            &lt;
+                          </button>
+
+                          <span className={styles.jumpCalendarTitle}>
+                            {new Intl.DateTimeFormat("en-US", {
+                              month: "long",
+                              year: "numeric",
+                            }).format(jumpCalendarMonth)}
+                          </span>
+
+                          <button
+                            type="button"
+                            onClick={() => shiftJumpCalendarMonth(1)}
+                            className={styles.calendarMonthButton}
+                          >
+                            &gt;
+                          </button>
+                        </div>
+
+                        <div className={styles.jumpCalendarWeekdays}>
+                          {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
+                            <span key={day}>{day}</span>
+                          ))}
+                        </div>
+
+                        <div className={styles.jumpCalendarGrid}>
+                          {getJumpCalendarDays().map((dateObj) => {
+                            const dateString = getLocalDateString(dateObj);
+                            const isCurrentMonth =
+                              dateObj.getMonth() === jumpCalendarMonth.getMonth();
+                            const isToday = dateString === getLocalDateString(new Date());
+                            const isSelected = dateString === jumpDate;
+
+                            return (
+                              <button
+                                key={dateString}
+                                type="button"
+                                onClick={() => handleCalendarDateClick(dateObj)}
+                                className={`${styles.jumpCalendarDay} ${
+                                  !isCurrentMonth ? styles.outsideMonthDay : ""
+                                } ${isToday ? styles.todayCalendarDay : ""} ${
+                                  isSelected ? styles.selectedCalendarDay : ""
+                                }`}
+                              >
+                                {dateObj.getDate()}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        <div className={styles.jumpCalendarFooter}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setJumpDate("");
+                              setShowJumpCalendar(false);
+                            }}
+                            className={styles.calendarClearButton}
+                          >
+                            Clear
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setShowJumpCalendar(false)}
+                            className={styles.calendarConfirmButton}
+                          >
+                            Confirm
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={handleJumpConfirm}
+                    disabled={!isJumpDateValid}
+                    className={styles.confirmButton}
+                  >
+                    Jump
+                  </button>
+                </div>
+
+              </div>
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <div className={styles.dateCarousel}>
+              <button
+                onClick={() => shiftDate(-1)}
+                className={styles.carouselArrowButton}
+              >
+                &lt;
+              </button>
 
-              {/* Jump To */}
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "#f5f5f7", padding: "6px 12px", borderRadius: "12px", border: "1px solid #eaeaea" }}>
-                <span style={{ fontSize: "0.85rem", color: "#86868b", fontWeight: "600" }}>Jump To:</span>
+              {carouselDates.map((dateObj, index) => {
+                const isSelected = dateObj.toDateString() === selectedDate.toDateString();
+                const shortDay = new Intl.DateTimeFormat('en-US', { weekday: 'short' }).format(dateObj).toUpperCase();
+                const dateNum = dateObj.getDate();
+                const shortMonth = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(dateObj);
+
+                return (
+                  <div
+                    key={index}
+                    onClick={() => setSelectedDate(dateObj)}
+                    className={`${styles.dateItem} ${isSelected ? styles.active : ''}`}
+                  >
+                    <span style={{ fontSize: "0.8rem", color: isSelected ? "#f15c22" : "#86868b", marginBottom: "4px", fontWeight: isSelected ? "600" : "normal" }}>
+                      {shortDay}
+                    </span>
+
+                    <span style={{ fontSize: isSelected ? "1.8rem" : "1.4rem", fontWeight: isSelected ? "700" : "600" }}>
+                      {dateNum}
+                    </span>
+
+                    <span style={{ fontSize: "0.8rem", color: isSelected ? "#f15c22" : "#86868b" }}>
+                      {shortMonth}
+                    </span>
+                  </div>
+                );
+              })}
+
+              <button
+                onClick={() => shiftDate(1)}
+                className={styles.carouselArrowButton}
+              >
+                &gt;
+              </button>
+            </div>
+
+            <div className={styles.selectedDateText}>
+              {formattedSelectedText}
+            </div>
+
+            <div className={styles.timelineCard}>
+              {displayTasks.length > 0 ? (
+                displayTasks.map((item) => (
+                  <TimelineItem
+                    key={item.id}
+                    item={item}
+                    isInactive={checkIsInactive(item)}
+                    onToggle={() => handleToggleCompletion(item.id, item.completed)}
+                    onCardClick={() => handleCardClick(item)}
+                  />
+                ))
+              ) : (
+                <div className={styles.emptyTimelineText}>
+                  No tasks or events scheduled. Time to relax! ☕️
+                </div>
+              )}
+            </div>
+
+            <div className={styles.importCard}>
+              <div>
+                <h3>Import from NUSMods</h3>
+                <p>Paste your NUSMods share link to import the whole semester timetable.</p>
+              </div>
+
+              <div className={styles.importInputRow}>
                 <input
-                  type="text"
-                  placeholder="YYYY-MM-DD"
-                  value={jumpDate}
-                  onChange={handleJumpChange}
-                  style={{
-                    border: "none",
-                    background: "transparent",
-                    outline: "none",
-                    fontSize: "0.85rem",
-                    width: "110px"
-                  }}
+                  value={nusmodsUrl}
+                  onChange={(e) => setNusmodsUrl(e.target.value)}
+                  placeholder="Paste NUSMods share link here..."
+                  className={styles.importInput}
                 />
 
                 <button
                   type="button"
-                  onClick={() => hiddenDateRef.current?.showPicker()}
-                  style={{
-                    border: "none",
-                    background: "transparent",
-                    cursor: "pointer",
-                    fontSize: "18px",
-                    padding: "0 4px"
-                  }}
+                  onClick={handleImportNusmods}
+                  disabled={isImporting}
+                  className={styles.importButton}
                 >
-                  📅
-                </button>
-
-                <input
-                  ref={hiddenDateRef}
-                  type="date"
-                  style={{ display: "none" }}
-                  onChange={(e) => setJumpDate(e.target.value)}
-                />
-
-                <button
-                  onClick={handleJumpConfirm}
-                  disabled={!isJumpDateValid}
-                  style={{
-                    background: isJumpDateValid ? "#f15c22" : "#d1d1d6",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "6px",
-                    padding: "4px 10px",
-                    fontSize: "0.8rem",
-                    fontWeight: "600",
-                    cursor: isJumpDateValid ? "pointer" : "not-allowed",
-                    transition: "all 0.2s ease"
-                  }}
-                >
-                  Confirm
+                  {isImporting ? "Importing..." : "Import"}
                 </button>
               </div>
 
-              {/* Today button */}
-              <button
-                onClick={goToToday}
-                disabled={isCurrentlyToday}
-                style={{
-                  padding: "6px 14px", borderRadius: "12px", border: "none",
-                  background: isCurrentlyToday ? "transparent" : "rgba(241, 92, 34, 0.1)",
-                  color: isCurrentlyToday ? "transparent" : "#f15c22",
-                  fontWeight: "700", fontSize: "0.85rem",
-                  cursor: isCurrentlyToday ? "default" : "pointer",
-                  transition: "all 0.3s ease", pointerEvents: isCurrentlyToday ? "none" : "auto"
-                }}
-              >
-                Today
-              </button>
-
-            </div>
-          </div>
-
-          <div className={styles.dateCarousel}>
-            <button onClick={() => shiftDate(-1)} style={{ border: "1px solid #eaeaea", background: "white", borderRadius: "50%", width: "32px", height: "32px", cursor: "pointer", color: "#f15c22", transition: "all 0.2s" }}>&lt;</button>
-            {carouselDates.map((dateObj, index) => {
-              const isSelected = dateObj.toDateString() === selectedDate.toDateString();
-              const shortDay = new Intl.DateTimeFormat('en-US', { weekday: 'short' }).format(dateObj).toUpperCase();
-              const dateNum = dateObj.getDate();
-              const shortMonth = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(dateObj);
-
-              return (
-                <div key={index} onClick={() => setSelectedDate(dateObj)} className={`${styles.dateItem} ${isSelected ? styles.active : ''}`} style={{ cursor: "pointer", transition: "all 0.3s ease" }}>
-                  <span style={{ fontSize: "0.8rem", color: isSelected ? "#f15c22" : "#86868b", marginBottom: "4px", fontWeight: isSelected ? "600" : "normal" }}>{shortDay}</span>
-                  <span style={{ fontSize: isSelected ? "1.8rem" : "1.4rem", fontWeight: isSelected ? "700" : "600" }}>{dateNum}</span>
-                  <span style={{ fontSize: "0.8rem", color: isSelected ? "#f15c22" : "#86868b" }}>{shortMonth}</span>
-                </div>
-              );
-            })}
-            <button onClick={() => shiftDate(1)} style={{ border: "1px solid #eaeaea", background: "white", borderRadius: "50%", width: "32px", height: "32px", cursor: "pointer", color: "#f15c22", transition: "all 0.2s" }}>&gt;</button>
-          </div>
-
-          <div style={{ textAlign: "center", margin: "20px 0 30px 0", color: "#1d1d1f", fontWeight: "600", fontSize: "1.1rem" }}>
-            {formattedSelectedText}
-          </div>
-
-          <div className={styles.timelineCard}>
-            {displayTasks.length > 0 ? (
-              displayTasks.map((item) => (
-                <TimelineItem
-                  key={item.id}
-                  item={item}
-                  isInactive={checkIsInactive(item)}
-                  onToggle={() => handleToggleCompletion(item.id, item.completed)}
-                  onCardClick={() => handleCardClick(item)}
-                />
-              ))
-            ) : (
-              <div style={{ textAlign: "center", padding: "40px 0", color: "#86868b" }}>
-                No tasks or events scheduled. Time to relax! ☕️
-              </div>
-            )}
-          </div>
-
-          <div className={styles.importCard}>
-            <div>
-              <h3>Import from NUSMods</h3>
-              <p>Paste your NUSMods share link to import the whole semester timetable.</p>
+              {importStatus && (
+                <p className={styles.importStatus}>{importStatus}</p>
+              )}
             </div>
 
-            <div className={styles.importInputRow}>
-              <input
-                value={nusmodsUrl}
-                onChange={(e) => setNusmodsUrl(e.target.value)}
-                placeholder="Paste NUSMods share link here..."
-                className={styles.importInput}
-              />
-
-              <button
-                type="button"
-                onClick={handleImportNusmods}
-                disabled={isImporting}
-                className={styles.importButton}
-              >
-                {isImporting ? "Importing..." : "Import"}
-              </button>
-            </div>
-
-            {importStatus && (
-              <p className={styles.importStatus}>{importStatus}</p>
-            )}
-          </div>
-
-          <button className={styles.addButton} onClick={handleOpenModal}>
-            <span style={{ fontSize: "1.2rem" }}>+</span> Add Task / Event
-          </button>
-        </main>
+            <button className={styles.addButton} onClick={handleOpenModal}>
+              <span style={{ fontSize: "1.2rem" }}>+</span> Add Task / Event
+            </button>
+          </main>
       </div>
 
       {isModalOpen && (
-        <div style={{
-          position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000,
-          backgroundColor: "rgba(0, 0, 0, 0.4)", backdropFilter: "blur(6px)",
-          display: "flex", justifyContent: "center", alignItems: "center"
-        }}>
-          <div style={{
-            background: "rgba(255, 255, 255, 0.95)", padding: "30px", borderRadius: "24px",
-            width: "90%", maxWidth: "400px", boxShadow: "0 20px 40px rgba(0,0,0,0.1)", fontFamily: "'Nunito', sans-serif"
-          }}>
-            <h2 style={{ margin: "0 0 20px 0", color: "#2b1d16", fontWeight: "800" }}>
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalBox}>
+            <h2 className={styles.modalTitle}>
               {editingItemId ? "Edit Entry" : "New Entry"}
             </h2>
 
-            <div style={{ display: "flex", gap: "10px", marginBottom: "15px" }}>
-              <button onClick={() => setFormData({ ...formData, type: "task" })} style={{ flex: 1, padding: "10px", borderRadius: "10px", border: "none", cursor: "pointer", fontWeight: "600", background: formData.type === "task" ? "#f15c22" : "#f0f0f5", color: formData.type === "task" ? "white" : "#86868b" }}>Task</button>
-              <button onClick={() => setFormData({ ...formData, type: "event" })} style={{ flex: 1, padding: "10px", borderRadius: "10px", border: "none", cursor: "pointer", fontWeight: "600", background: formData.type === "event" ? "#f15c22" : "#f0f0f5", color: formData.type === "event" ? "white" : "#86868b" }}>Event</button>
+            <div className={styles.modalTypeRow}>
+              <button
+                onClick={() => setFormData({ ...formData, type: "task" })}
+                className={`${styles.modalTypeButton} ${
+                  formData.type === "task" ? styles.modalTypeButtonActive : ""
+                }`}
+              >
+                Task
+              </button>
+
+              <button
+                onClick={() => setFormData({ ...formData, type: "event" })}
+                className={`${styles.modalTypeButton} ${
+                  formData.type === "event" ? styles.modalTypeButtonActive : ""
+                }`}
+              >
+                Event
+              </button>
             </div>
 
-            <input name="title" placeholder="Title" value={formData.title} onChange={handleInputChange} style={{ width: "100%", padding: "12px", marginBottom: "12px", borderRadius: "12px", border: "1px solid #ddd", boxSizing: "border-box" }} />
-            <input name="detail" placeholder="Details or Subtasks" value={formData.detail} onChange={handleInputChange} style={{ width: "100%", padding: "12px", marginBottom: "12px", borderRadius: "12px", border: "1px solid #ddd", boxSizing: "border-box" }} />
+            <input
+              name="title"
+              placeholder="Title"
+              value={formData.title}
+              onChange={handleInputChange}
+              className={styles.modalInput}
+            />
 
-            <div style={{ display: "flex", gap: "10px", marginBottom: "15px" }}>
-              <input type="date" name="date" value={formData.date} onChange={handleInputChange} style={{ flex: 1, padding: "12px", borderRadius: "12px", border: "1px solid #ddd" }} />
-              <select name="importance" value={formData.importance} onChange={handleInputChange} style={{ flex: 1, padding: "12px", borderRadius: "12px", border: "1px solid #ddd", background: "white" }}>
+            <input
+              name="detail"
+              placeholder="Details or Subtasks"
+              value={formData.detail}
+              onChange={handleInputChange}
+              className={styles.modalInput}
+            />
+
+            <div className={styles.modalTwoColumnRow}>
+              <input
+                type="date"
+                name="date"
+                value={formData.date}
+                onChange={handleInputChange}
+                className={styles.modalInput}
+              />
+
+              <select
+                name="importance"
+                value={formData.importance}
+                onChange={handleInputChange}
+                className={styles.modalInput}
+              >
                 <option value="Important">Important</option>
                 <option value="Unimportant">Unimportant</option>
               </select>
             </div>
 
-            <div style={{ display: "flex", gap: "10px", marginBottom: "25px", alignItems: "center" }}>
-              <div style={{ flex: 1 }}>
-                <label style={{ fontSize: "0.8rem", color: "#86868b", marginLeft: "4px" }}>{formData.type === "task" ? "Deadline" : "Start Time"}</label>
-                <input type="time" name="time1" value={formData.time1} onChange={handleInputChange} style={{ width: "100%", padding: "12px", borderRadius: "12px", border: "1px solid #ddd", boxSizing: "border-box" }} />
+            <div className={styles.modalTimeRow}>
+              <div className={styles.modalField}>
+                <label className={styles.modalLabel}>
+                  {formData.type === "task" ? "Deadline" : "Start Time"}
+                </label>
+
+                <input
+                  type="time"
+                  name="time1"
+                  value={formData.time1}
+                  onChange={handleInputChange}
+                  className={styles.modalInput}
+                />
               </div>
+
               {formData.type === "event" && (
-                <div style={{ flex: 1 }}>
-                  <label style={{ fontSize: "0.8rem", color: "#86868b", marginLeft: "4px" }}>End Time</label>
-                  <input type="time" name="time2" value={formData.time2} onChange={handleInputChange} style={{ width: "100%", padding: "12px", borderRadius: "12px", border: "1px solid #ddd", boxSizing: "border-box" }} />
+                <div className={styles.modalField}>
+                  <label className={styles.modalLabel}>End Time</label>
+
+                  <input
+                    type="time"
+                    name="time2"
+                    value={formData.time2}
+                    onChange={handleInputChange}
+                    className={styles.modalInput}
+                  />
                 </div>
               )}
             </div>
 
-            <div style={{ display: "flex", gap: "10px" }}>
+            <div className={styles.modalButtonRow}>
               {editingItemId && (
-                <button onClick={handleDeleteItem} className={styles.deleteButton} style={{ flex: 1, padding: "12px", borderRadius: "12px", border: "none", fontWeight: "700", cursor: "pointer" }}>
+                <button
+                  onClick={handleDeleteItem}
+                  className={styles.deleteButton}
+                  style={{ flex: 1, padding: "12px", borderRadius: "12px", border: "none", fontWeight: "700", cursor: "pointer" }}
+                >
                   Remove
                 </button>
               )}
-              <button onClick={() => { setIsModalOpen(false); setEditingItemId(null); }} style={{ flex: 1, padding: "12px", borderRadius: "12px", border: "none", background: "#f0f0f5", color: "#86868b", fontWeight: "700", cursor: "pointer" }}>Cancel</button>
-              <button onClick={handleSaveItem} style={{ flex: 1, padding: "12px", borderRadius: "12px", border: "none", background: "#2b1d16", color: "white", fontWeight: "700", cursor: "pointer" }}>Save</button>
+
+              <button
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setEditingItemId(null);
+                }}
+                className={styles.modalSecondaryButton}
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleSaveItem}
+                className={styles.modalSaveButton}
+              >
+                Save
+              </button>
             </div>
           </div>
         </div>

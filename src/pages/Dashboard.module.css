@@ -52,8 +52,25 @@
   cursor: pointer;
   padding: 8px 16px;
   border-radius: 8px;
-  transition: all 0.2s;
+  transition:
+    transform 0.22s ease,
+    background-color 0.22s ease,
+    color 0.22s ease,
+    box-shadow 0.22s ease;
   text-decoration: none;
+}
+
+.navItem:hover {
+  transform: translateY(-3px);
+  background-color: #fff7f2;
+  color: #f15c22;
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.04),
+    0 12px 26px rgba(241, 92, 34, 0.08);
+}
+
+.navItem:active {
+  transform: translateY(-1px);
 }
 
 .navItem.active {
@@ -86,6 +103,22 @@
   border: 1px solid #f2e4de;
 
   flex-shrink: 0;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.avatar:hover {
+  transform: translateY(-3px);
+  border-color: #f3c7b4;
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.05),
+    0 12px 26px rgba(241, 92, 34, 0.1);
+}
+
+.avatar:active {
+  transform: translateY(-1px);
 }
 
 .navAvatarImage {
@@ -140,12 +173,38 @@
   padding: 12px 24px;
   border-radius: 24px;
   cursor: pointer;
+  transition:
+    transform 0.22s ease,
+    background-color 0.22s ease,
+    color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.dateItem:hover {
+  transform: translateY(-4px);
+  background-color: #fff7f2;
+  color: #f15c22;
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.04),
+    0 12px 26px rgba(241, 92, 34, 0.08);
+}
+
+.dateItem:active {
+  transform: translateY(-1px);
 }
 
 .dateItem.active {
   background-color: #fff4ed;
   color: #f15c22;
   position: relative;
+}
+
+.dateItem.active:hover {
+  transform: translateY(-4px);
+  background-color: #fff4ed;
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.05),
+    0 16px 34px rgba(241, 92, 34, 0.12);
 }
 
 .dateItem.active::after {
@@ -167,6 +226,7 @@
   box-shadow: 0 2px 10px rgba(0,0,0,0.02);
 }
 
+/* Add Task / Event Button */
 .addButton {
   display: flex;
   align-items: center;
@@ -194,13 +254,19 @@
     0 4px 12px rgba(0, 0, 0, 0.04),
     0 12px 30px rgba(241, 92, 34, 0.08);
 
-  transition: all 0.22s ease;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    background 0.22s ease,
+    border-color 0.22s ease,
+    color 0.22s ease;
 }
 
 .addButton:hover {
   transform: translateY(-4px);
   background: #fff7f2;
   border-color: #f15c22;
+  color: #f15c22;
 
   box-shadow:
     0 8px 18px rgba(0, 0, 0, 0.06),
@@ -209,44 +275,73 @@
 
 .addButton:active {
   transform: translateY(-1px);
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.05),
+    0 10px 22px rgba(241, 92, 34, 0.12);
 }
 
 /* Interactive Elements for TimelineItem */
 .itemCard {
   border-radius: 12px;
   padding: 8px 12px;
-  margin-left: -12px; 
+  margin-left: -12px;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+
+  transition:
+    transform 0.22s ease,
+    background-color 0.22s ease,
+    box-shadow 0.22s ease;
 }
 
 .itemCard:hover {
-  background-color: #f9fafb;
+  background-color: #fffaf7;
+  transform: translateY(-3px);
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.04),
+    0 12px 26px rgba(241, 92, 34, 0.08);
 }
 
 .itemCard:active {
-  transform: scale(0.99); 
+  transform: translateY(-1px) scale(0.99);
 }
 
 .interactiveDot {
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease;
+  transition:
+    transform 0.22s ease,
+    background-color 0.22s ease,
+    box-shadow 0.22s ease;
 }
 
 .interactiveDot:hover {
-  transform: scale(1.2); 
+  transform: translateY(-2px) scale(1.18);
+  box-shadow:
+    0 4px 10px rgba(241, 92, 34, 0.18);
 }
 
 /* Delete Button Styles */
 .deleteButton {
   background-color: #ff3b30;
   color: white;
-  transition: background-color 0.2s ease;
+  transition:
+    transform 0.22s ease,
+    background-color 0.22s ease,
+    box-shadow 0.22s ease;
 }
 
 .deleteButton:hover {
   background-color: #e03126;
+  transform: translateY(-3px);
+  box-shadow:
+    0 8px 18px rgba(255, 59, 48, 0.2);
 }
 
+.deleteButton:active {
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 10px rgba(255, 59, 48, 0.14);
+}
+
+/* NUSMods Import Card */
 .importCard {
   margin: 30px auto 0;
   padding: 22px 24px;
@@ -262,11 +357,13 @@
   transition:
     transform 0.22s ease,
     box-shadow 0.22s ease,
-    border-color 0.22s ease;
+    border-color 0.22s ease,
+    background 0.22s ease;
 }
 
 .importCard:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px);
+  background: #ffffff;
   border-color: #f3c7b4;
 
   box-shadow:
@@ -305,16 +402,33 @@
   font-size: 14px;
 
   outline: none;
+
   transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    background 0.22s ease;
+}
+
+.importInput:hover {
+  transform: translateY(-2px);
+  border-color: #f3c7b4;
+  background: #fffdfb;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.03),
+    0 8px 18px rgba(241, 92, 34, 0.06);
 }
 
 .importInput:focus {
+  transform: translateY(-2px);
   border-color: #f15c22;
-  box-shadow: 0 0 0 4px rgba(241, 92, 34, 0.1);
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(241, 92, 34, 0.1),
+    0 8px 18px rgba(241, 92, 34, 0.08);
 }
 
+/* Import Button */
 .importButton {
   padding: 0 22px;
 
@@ -330,18 +444,36 @@
   cursor: pointer;
 
   transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    background 0.2s ease;
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    background 0.22s ease;
 }
 
 .importButton:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
   background: #e94f17;
-  box-shadow: 0 10px 22px rgba(241, 92, 34, 0.22);
+  color: #ffffff;
+
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.06),
+    0 18px 38px rgba(241, 92, 34, 0.16);
+}
+
+.importButton:active {
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.05),
+    0 10px 22px rgba(241, 92, 34, 0.12);
 }
 
 .importButton:disabled {
+  background: #d1d1d6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.importButton:disabled:hover {
   background: #d1d1d6;
   cursor: not-allowed;
   transform: none;
@@ -353,4 +485,909 @@
   color: #f15c22 !important;
   font-size: 13px !important;
   font-weight: 700;
+}
+
+/* ===== Dashboard Inline Style Replacement ===== */
+
+.timelineHeaderRow {
+  position: relative;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 24px;
+}
+
+.timelineHeaderActions {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  z-index: 30;
+}
+
+/* Jump To whole box */
+
+
+.jumpLabel {
+  flex-shrink: 0;
+
+  font-size: 16px;
+  font-weight: 700;
+  color: #2b1d16;
+
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.jumpInput {
+  flex: 1;
+  min-width: 0;
+
+  border: none;
+  outline: none;
+  background: transparent;
+
+  color: #2b1d16;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.jumpInput::placeholder {
+  color: #9b9ba3;
+  font-weight: 700;
+}
+
+.jumpBox:hover {
+  transform: translateY(-3px);
+  background: #fffdfb;
+
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.05),
+    0 22px 44px rgba(241, 92, 34, 0.12);
+}
+
+.jumpBox:focus-within {
+  border-color: #f15c22;
+  box-shadow:
+    0 0 0 4px rgba(241, 92, 34, 0.1),
+    0 18px 40px rgba(241, 92, 34, 0.12);
+}
+
+/* Jump To text */
+.jumpLabel {
+  flex-shrink: 0;
+
+  font-size: 18px;
+  font-weight: 700;
+  color: #2b1d16;
+
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* Date input */
+
+.jumpInput::placeholder {
+  color: #9b9ba3;
+  font-weight: 700;
+}
+
+/* Today button */
+.todayButton {
+  font-family: inherit;
+  height: 40px;
+  min-width: 118px;
+
+  padding: 0 24px;
+
+  border: 1px solid #f0e5df;
+  border-radius: 18px;
+
+  background: #ffffff;
+  color: #2b1d16;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.035),
+    0 14px 30px rgba(241, 92, 34, 0.08);
+}
+
+.todayButton:disabled {
+  color: #b8b8c0;
+  background: #f7f7f9;
+  cursor: not-allowed;
+}
+
+.todayButton:hover {
+  transform: translateY(-3px);
+
+  background: #fff4ed;
+  border-color: #f3c7b4;
+  color: #f15c22;
+
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.05),
+    0 22px 44px rgba(241, 92, 34, 0.12);
+}
+
+.todayButton:active {
+  transform: translateY(-1px);
+}
+
+.todayButton:disabled:hover {
+  color: #b8b8c0;
+  background: #f7f7f9;
+  border-color: #eeeeee;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Current selected date display */
+.currentDatePill {
+  height: 48px;
+  min-width: 260px;
+  padding: 0 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  border: 1px solid #f0e5df;
+  border-radius: 16px;
+
+  background: #ffffff;
+  color: #2b1d16;
+
+  font-size: 14px;
+  font-weight: 800;
+
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.04),
+    0 12px 30px rgba(241, 92, 34, 0.05);
+}
+
+.buttonIcon {
+  color: #f15c22;
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Jump input + button group */
+.jumpActionGroup {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.jumpBox {
+  position: relative;
+
+  width: 250px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 0 12px;
+
+  background: #ffffff;
+  border: 1px solid #f3c7b4;
+  border-radius: 16px;
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.04),
+    0 12px 30px rgba(241, 92, 34, 0.06);
+
+  transition:
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    background 0.22s ease;
+}
+
+.jumpBox:hover {
+  transform: translateY(-4px);
+  background: #fffdfb;
+  border-color: #f15c22;
+
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.05),
+    0 18px 38px rgba(241, 92, 34, 0.12);
+}
+
+.jumpBox:focus-within {
+  transform: translateY(-3px);
+  border-color: #f15c22;
+  box-shadow:
+    0 0 0 4px rgba(241, 92, 34, 0.1),
+    0 12px 28px rgba(241, 92, 34, 0.12);
+}
+
+
+.jumpInput::placeholder {
+  color: #9b9ba3;
+  font-weight: 700;
+}
+
+.calendarIconButton {
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #fdfaf7;
+  color: #f15c22;
+
+  cursor: pointer;
+  font-size: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition:
+    transform 0.22s ease,
+    background 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.calendarIconButton:hover {
+  transform: translateY(-1px);
+  background: #fdfaf7;
+
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.04),
+    0 12px 26px rgba(241, 92, 34, 0.14);
+}
+
+.calendarIconButton:active {
+  transform: translateY(-1px);
+}
+
+/* Main Jump button */
+.confirmButton {
+  height: 40px;
+  min-width: 118px;
+
+  padding: 0 26px;
+
+  border: 1px solid #f0e5df;
+  border-radius: 20px;
+
+  background: #ffffff;
+  color: #2b1d16;
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.035),
+    0 14px 30px rgba(241, 92, 34, 0.08);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.confirmButton:hover {
+  transform: translateY(-2px);
+  background: #fff4ed;
+  border-color: #f3c7b4;
+  color: #f15c22;
+
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.05),
+    0 18px 36px rgba(241, 92, 34, 0.12);
+}
+
+.confirmButton:active {
+  transform: translateY(0);
+}
+
+.confirmButton:disabled {
+  background: #f2f2f5;
+  border-color: #eeeeee;
+  color: #a8a8b0;
+
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.confirmButton:disabled:hover {
+  background: #f2f2f5;
+  border-color: #eeeeee;
+  color: #a8a8b0;
+
+  transform: none;
+  box-shadow: none;
+}
+
+/* Calendar popup */
+.jumpCalendarPanel {
+  position: absolute;
+
+  top: 58px;
+  right: 0;
+
+  z-index: 999999;
+
+  width: 280px;
+  padding: 14px;
+
+  background: #ffffff;
+  border: 1px solid #f0e5df;
+  border-radius: 18px;
+
+  box-shadow:
+    0 14px 32px rgba(0, 0, 0, 0.1),
+    0 24px 48px rgba(241, 92, 34, 0.14);
+
+  animation: calendarPopup 0.18s ease;
+}
+
+.jumpCalendarPanel::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 54px;
+
+  width: 16px;
+  height: 16px;
+
+  background: #ffffff;
+  border-left: 1px solid #f0e5df;
+  border-top: 1px solid #f0e5df;
+
+  transform: rotate(45deg);
+}
+
+@keyframes calendarPopup {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.jumpCalendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 16px;
+}
+
+.jumpCalendarTitle {
+  color: #2b1d16;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.calendarMonthButton {
+  width: 32px;
+  height: 32px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: transparent;
+  color: #9b9ba3;
+
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 900;
+
+  transition:
+    transform 0.22s ease,
+    background 0.22s ease,
+    color 0.22s ease;
+}
+
+.calendarMonthButton:hover {
+  transform: translateY(-3px);
+  background: #fff4ed;
+  color: #f15c22;
+}
+
+.calendarMonthButton:active {
+  transform: translateY(-1px);
+}
+
+.jumpCalendarWeekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+
+  margin-bottom: 6px;
+}
+
+
+.jumpCalendarWeekdays span {
+  text-align: center;
+  color: #8f8f98;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.jumpCalendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.jumpCalendarDay {
+  height: 30px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: transparent;
+  color: #2b1d16;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.jumpCalendarDay:hover {
+  transform: translateY(-3px);
+  background: #fff4ed;
+  color: #f15c22;
+
+  box-shadow:
+    0 5px 12px rgba(0, 0, 0, 0.04),
+    0 10px 22px rgba(241, 92, 34, 0.1);
+}
+
+.jumpCalendarDay:active {
+  transform: translateY(-1px);
+}
+
+.outsideMonthDay {
+  color: #c4c4cc;
+}
+
+.todayCalendarDay {
+  color: #f15c22;
+  background: #fff4ed;
+}
+
+.selectedCalendarDay {
+  background: linear-gradient(135deg, #ff9b6e, #f15c22);
+  color: #ffffff;
+  box-shadow:
+    0 6px 14px rgba(241, 92, 34, 0.22);
+}
+
+.selectedCalendarDay:hover {
+  background: linear-gradient(135deg, #ff9b6e, #f15c22);
+  color: #ffffff;
+}
+
+.jumpCalendarFooter {
+  display: flex;
+  gap: 12px;
+
+  margin-top: 18px;
+  padding-top: 16px;
+
+  border-top: 1px solid #f3eee9;
+}
+
+.calendarClearButton,
+.calendarConfirmButton {
+  flex: 1;
+  height: 40px;
+
+  border-radius: 12px;
+
+  font-size: 13px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.22s ease,
+    background 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.calendarClearButton {
+  border: 1px solid #f15c22;
+  background: #ffffff;
+  color: #f15c22;
+}
+
+.calendarClearButton:hover {
+  transform: translateY(-3px);
+  background: #fff4ed;
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.04),
+    0 12px 26px rgba(241, 92, 34, 0.1);
+}
+
+.calendarConfirmButton {
+  border: none;
+  background: linear-gradient(135deg, #ff9b6e, #f15c22);
+  color: #ffffff;
+}
+
+.calendarConfirmButton:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.06),
+    0 18px 38px rgba(241, 92, 34, 0.18);
+}
+
+.calendarClearButton:active,
+.calendarConfirmButton:active {
+  transform: translateY(-1px);
+}
+
+.carouselArrowButton {
+  border: 1px solid #eaeaea;
+  background: white;
+  border-radius: 50%;
+
+  width: 32px;
+  height: 32px;
+
+  cursor: pointer;
+  color: #f15c22;
+
+  transition:
+    transform 0.22s ease,
+    background 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.carouselArrowButton:hover {
+  transform: translateY(-3px);
+  background: #fff7f2;
+  border-color: #f15c22;
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.05),
+    0 12px 26px rgba(241, 92, 34, 0.12);
+}
+
+.carouselArrowButton:active {
+  transform: translateY(-1px);
+}
+
+.selectedDateText {
+  text-align: center;
+  margin: 20px 0 30px 0;
+  color: #1d1d1f;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.emptyTimelineText {
+  text-align: center;
+  padding: 40px 0;
+  color: #86868b;
+}
+
+/* ===== Modal styles ===== */
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalBox {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 24px;
+
+  width: 90%;
+  max-width: 400px;
+
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  font-family: 'Nunito', sans-serif;
+}
+
+.modalTitle {
+  margin: 0 0 20px 0;
+  color: #2b1d16;
+  font-weight: 800;
+}
+
+.modalTypeRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.modalTypeButton {
+  flex: 1;
+  padding: 10px;
+
+  border-radius: 10px;
+  border: none;
+
+  cursor: pointer;
+  font-weight: 700;
+
+  background: #f0f0f5;
+  color: #86868b;
+
+  transition:
+    transform 0.22s ease,
+    background 0.22s ease,
+    color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.modalTypeButton:hover {
+  transform: translateY(-3px);
+  background: #fff4ed;
+  color: #f15c22;
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.04),
+    0 12px 26px rgba(241, 92, 34, 0.1);
+}
+
+.modalTypeButton:active {
+  transform: translateY(-1px);
+}
+
+.modalTypeButtonActive {
+  background: #f15c22;
+  color: white;
+}
+
+.modalTypeButtonActive:hover {
+  background: #e94f17;
+  color: white;
+}
+
+.modalInput {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+
+  outline: none;
+
+  transition:
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    background 0.22s ease;
+}
+
+.modalInput:hover {
+  transform: translateY(-2px);
+  border-color: #f3c7b4;
+  background: #fffdfb;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.03),
+    0 8px 18px rgba(241, 92, 34, 0.06);
+}
+
+.modalInput:focus {
+  transform: translateY(-2px);
+  border-color: #f15c22;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(241, 92, 34, 0.1),
+    0 8px 18px rgba(241, 92, 34, 0.08);
+}
+
+.modalTwoColumnRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.modalField {
+  flex: 1;
+}
+
+.modalLabel {
+  display: block;
+  font-size: 0.8rem;
+  color: #86868b;
+  margin-left: 4px;
+  margin-bottom: 4px;
+}
+
+.modalTimeRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+  align-items: center;
+}
+
+.modalButtonRow {
+  display: flex;
+  gap: 10px;
+}
+
+.modalSecondaryButton,
+.modalSaveButton {
+  flex: 1;
+  padding: 12px;
+
+  border-radius: 12px;
+  border: none;
+
+  font-weight: 700;
+  cursor: pointer;
+
+  transition:
+    transform 0.22s ease,
+    background 0.22s ease,
+    box-shadow 0.22s ease,
+    color 0.22s ease;
+}
+
+.modalSecondaryButton {
+  background: #f0f0f5;
+  color: #86868b;
+}
+
+.modalSecondaryButton:hover {
+  transform: translateY(-3px);
+  background: #fff4ed;
+  color: #f15c22;
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.04),
+    0 12px 26px rgba(241, 92, 34, 0.1);
+}
+
+.modalSaveButton {
+  background: #2b1d16;
+  color: white;
+}
+
+.modalSaveButton:hover {
+  transform: translateY(-3px);
+  background: #3a271f;
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.08),
+    0 14px 28px rgba(43, 29, 22, 0.18);
+}
+
+.modalSecondaryButton:active,
+.modalSaveButton:active {
+  transform: translateY(-1px);
+}
+
+/* ===== Unified Timeline Header Hover Override ===== */
+
+
+.todayButton,
+.jumpBox,
+.confirmButton {
+  transition:
+    transform 0.22s ease,
+    background 0.22s ease,
+    border-color 0.22s ease,
+    color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+
+.todayButton:not(:disabled):hover {
+  transform: translateY(-3px);
+  background: #fffdfb;
+  border-color: #f15c22;
+  color: #f15c22;
+
+  box-shadow:
+    0 0 0 4px rgba(241, 92, 34, 0.08),
+    0 8px 18px rgba(0, 0, 0, 0.05),
+    0 18px 38px rgba(241, 92, 34, 0.12);
+}
+
+
+.jumpBox:hover,
+.jumpBox:focus-within {
+  transform: translateY(-3px);
+  background: #fffdfb;
+  border-color: #f15c22;
+
+  box-shadow:
+    0 0 0 4px rgba(241, 92, 34, 0.08),
+    0 8px 18px rgba(0, 0, 0, 0.05),
+    0 18px 38px rgba(241, 92, 34, 0.12);
+}
+
+
+.confirmButton:not(:disabled):hover {
+  transform: translateY(-3px);
+  background: #fffdfb;
+  border-color: #f15c22;
+  color: #f15c22;
+
+  box-shadow:
+    0 0 0 4px rgba(241, 92, 34, 0.08),
+    0 8px 18px rgba(0, 0, 0, 0.05),
+    0 18px 38px rgba(241, 92, 34, 0.12);
+}
+
+
+.todayButton:not(:disabled):active,
+.jumpBox:active,
+.confirmButton:not(:disabled):active {
+  transform: translateY(-1px);
+}
+
+
+.todayButton:disabled,
+.confirmButton:disabled {
+  background: #f2f2f5;
+  border-color: #eeeeee;
+  color: #a8a8b0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.todayButton:disabled:hover,
+.confirmButton:disabled:hover {
+  background: #f2f2f5;
+  border-color: #eeeeee;
+  color: #a8a8b0;
+  transform: none;
+  box-shadow: none;
 }
