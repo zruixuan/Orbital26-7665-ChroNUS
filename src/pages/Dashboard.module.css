@@ -172,18 +172,43 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin: 30px auto 0;
-  padding: 12px 24px;
-  border: 1px solid #eaeaea;
-  border-radius: 24px;
-  background-color: #ffffff;
+
+  width: fit-content;
+  min-width: 180px;
+
+  margin: 34px auto 0;
+  padding: 14px 30px;
+
+  border: 1px solid #f3ded4;
+  border-radius: 18px;
+
+  background: #ffffff;
   color: #f15c22;
-  font-weight: 500;
+
+  font-size: 14px;
+  font-weight: 700;
+
   cursor: pointer;
-  transition: background-color 0.2s;
+
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.04),
+    0 12px 30px rgba(241, 92, 34, 0.08);
+
+  transition: all 0.22s ease;
 }
+
 .addButton:hover {
-  background-color: #fff4ed;
+  transform: translateY(-4px);
+  background: #fff7f2;
+  border-color: #f15c22;
+
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.06),
+    0 18px 38px rgba(241, 92, 34, 0.16);
+}
+
+.addButton:active {
+  transform: translateY(-1px);
 }
 
 /* Interactive Elements for TimelineItem */
@@ -220,4 +245,112 @@
 
 .deleteButton:hover {
   background-color: #e03126;
+}
+
+.importCard {
+  margin: 30px auto 0;
+  padding: 22px 24px;
+
+  background: #ffffff;
+  border: 1px solid #f0e5df;
+  border-radius: 20px;
+
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.04),
+    0 12px 30px rgba(241, 92, 34, 0.06);
+
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.importCard:hover {
+  transform: translateY(-3px);
+  border-color: #f3c7b4;
+
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.05),
+    0 18px 38px rgba(241, 92, 34, 0.12);
+}
+
+.importCard h3 {
+  margin: 0 0 6px;
+  color: #2b1d16;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.importCard p {
+  margin: 0;
+  color: #86868b;
+  font-size: 14px;
+}
+
+.importInputRow {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.importInput {
+  flex: 1;
+
+  padding: 12px 14px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+
+  color: #2b1d16;
+  font-size: 14px;
+
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.importInput:focus {
+  border-color: #f15c22;
+  box-shadow: 0 0 0 4px rgba(241, 92, 34, 0.1);
+}
+
+.importButton {
+  padding: 0 22px;
+
+  border: none;
+  border-radius: 14px;
+
+  background: #f15c22;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.importButton:hover {
+  transform: translateY(-2px);
+  background: #e94f17;
+  box-shadow: 0 10px 22px rgba(241, 92, 34, 0.22);
+}
+
+.importButton:disabled {
+  background: #d1d1d6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.importStatus {
+  margin-top: 12px !important;
+  color: #f15c22 !important;
+  font-size: 13px !important;
+  font-weight: 700;
 }

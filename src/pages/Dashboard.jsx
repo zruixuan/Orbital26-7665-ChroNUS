@@ -17,6 +17,103 @@ const getLocalDateString = (dateObj) => {
   return `${year}-${month}-${day}`;
 };
 
+const NUSMODS_ACAD_YEAR = "2026-2027";
+
+const SEMESTER_START_DATES = {
+  "2026-2027-1": "2026-08-10",
+  "2026-2027-2": "2027-01-12",
+};
+
+const LESSON_TYPE_MAP = {
+  LEC: "Lecture",
+  TUT: "Tutorial",
+  LAB: "Laboratory",
+  REC: "Recitation",
+  SEC: "Sectional Teaching",
+};
+
+const DAY_OFFSET = {
+  Monday: 0,
+  Tuesday: 1,
+  Wednesday: 2,
+  Thursday: 3,
+  Friday: 4,
+  Saturday: 5,
+  Sunday: 6,
+};
+
+const formatNusmodsTime = (time) => {
+  if (!time) return "00:00";
+  return `${time.slice(0, 2)}:${time.slice(2)}`;
+};
+
+const getLessonDate = (semesterStartDate, week, day) => {
+  const date = new Date(`${semesterStartDate}T00:00:00`);
+  date.setDate(date.getDate() + (week - 1) * 7 + DAY_OFFSET[day]);
+  return getLocalDateString(date);
+};
+
+const normalizeWeeks = (weeks) => {
+  if (Array.isArray(weeks)) {
+    return weeks;
+  }
+
+  if (typeof weeks === "number") {
+    return [weeks];
+  }
+
+  if (weeks && typeof weeks === "object") {
+    const result = [];
+
+    if (weeks.start && weeks.end) {
+      const interval = weeks.interval || 1;
+
+      for (let week = weeks.start; week <= weeks.end; week += interval) {
+        result.push(week);
+      }
+
+      return result;
+    }
+  }
+
+  return [];
+};
+
+const parseNusmodsShareUrl = (urlText) => {
+  const url = new URL(urlText.trim());
+
+  const semMatch = url.pathname.match(/sem-(\d)/);
+  const semester = semMatch ? Number(semMatch[1]) : 1;
+
+  const modules = [];
+
+  url.searchParams.forEach((value, moduleCode) => {
+    if (!/^[A-Z]{2,4}\d{4}[A-Z]{0,3}$/.test(moduleCode)) return;
+
+    const lessons = value
+      .split(",")
+      .map((part) => {
+        const [lessonTypeAbbr, classNo] = part.split(":");
+
+        return {
+          lessonType: LESSON_TYPE_MAP[lessonTypeAbbr] || lessonTypeAbbr,
+          classNo,
+        };
+      })
+      .filter((lesson) => lesson.lessonType && lesson.classNo);
+
+    modules.push({
+      moduleCode,
+      lessons,
+    });
+  });
+
+  return {
+    semester,
+    modules,
+  };
+};
+
 function Dashboard() {
   const now = new Date();
   const currentHours = String(now.getHours()).padStart(2, '0');
@@ -175,6 +272,9 @@ function Dashboard() {
     });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [nusmodsUrl, setNusmodsUrl] = useState("");
+  const [importStatus, setImportStatus] = useState("");
+  const [isImporting, setIsImporting] = useState(false);
   const [editingItemId, setEditingItemId] = useState(null);
   const [formData, setFormData] = useState({
     type: "task",
@@ -298,6 +398,174 @@ function Dashboard() {
       console.error("Error saving document: ", error);
     }
   };
+
+  const handleImportNusmods = async () => {
+    if (!auth.currentUser) {
+      setImportStatus("Please log in before importing your NUSMods timetable.");
+      return;
+    }
+
+    if (!nusmodsUrl.trim()) {
+      setImportStatus("Please paste a NUSMods share link first.");
+      return;
+    }
+
+    setIsImporting(true);
+    setImportStatus("Importing timetable from NUSMods...");
+
+    try {
+      const { semester, modules } = parseNusmodsShareUrl(nusmodsUrl);
+
+      if (modules.length === 0) {
+        setImportStatus("No modules were found in this NUSMods link.");
+        setIsImporting(false);
+        return;
+      }
+
+      const semesterStartDate =
+        SEMESTER_START_DATES[`${NUSMODS_ACAD_YEAR}-${semester}`];
+
+      if (!semesterStartDate) {
+        setImportStatus("Semester start date is not configured yet.");
+        setIsImporting(false);
+        return;
+      }
+
+      const existingImportKeys = new Set(
+        tasks
+          .filter((item) => item.importSource === "nusmods" && item.importKey)
+          .map((item) => item.importKey)
+      );
+
+      let importedCount = 0;
+      let skippedCount = 0;
+
+      for (const mod of modules) {
+        const response = await fetch(
+          `https://api.nusmods.com/v2/${NUSMODS_ACAD_YEAR}/modules/${mod.moduleCode}.json`
+        );
+
+        if (!response.ok) {
+          console.warn(`Failed to fetch ${mod.moduleCode}`);
+          continue;
+        }
+
+        const moduleInfo = await response.json();
+
+        const semesterInfo = moduleInfo.semesterData?.find(
+          (sem) => sem.semester === semester
+        );
+
+        if (!semesterInfo?.timetable) continue;
+
+        for (const selectedLesson of mod.lessons) {
+          const matchedLessons = semesterInfo.timetable.filter(
+            (lesson) =>
+              lesson.lessonType === selectedLesson.lessonType &&
+              String(lesson.classNo) === String(selectedLesson.classNo)
+          );
+
+          for (const lesson of matchedLessons) {
+            const weeks = normalizeWeeks(lesson.weeks);
+
+            for (const week of weeks) {
+              const lessonDate = getLessonDate(
+                semesterStartDate,
+                week,
+                lesson.day
+              );
+
+              const normalizeWeeks = (weeks) => {
+                if (Array.isArray(weeks)) {
+                  return weeks;
+                }
+
+                if (typeof weeks === "number") {
+                  return [weeks];
+                }
+
+                if (weeks && typeof weeks === "object") {
+                  const result = [];
+
+                  if (weeks.start && weeks.end) {
+                    const interval = weeks.interval || 1;
+
+                    for (let week = weeks.start; week <= weeks.end; week += interval) {
+                      result.push(week);
+                    }
+
+                    return result;
+                  }
+                }
+
+                return [];
+              };
+
+              const startTime = formatNusmodsTime(lesson.startTime);
+              const endTime = formatNusmodsTime(lesson.endTime);
+
+              const importKey = [
+                NUSMODS_ACAD_YEAR,
+                semester,
+                mod.moduleCode,
+                lesson.lessonType,
+                lesson.classNo,
+                week,
+                lesson.day,
+                lesson.startTime,
+                lesson.endTime,
+              ].join("-");
+
+              if (existingImportKeys.has(importKey)) {
+                skippedCount += 1;
+                continue;
+              }
+
+              const eventData = {
+                type: "event",
+                title: `${mod.moduleCode} ${lesson.lessonType}`,
+                detail: `${moduleInfo.title || ""}${
+                  lesson.venue ? ` · ${lesson.venue}` : ""
+                }`,
+                startTime: `${lessonDate} ${startTime}`,
+                endTime: `${lessonDate} ${endTime}`,
+                importance: "Important",
+                userId: auth.currentUser.uid,
+
+                importSource: "nusmods",
+                importKey,
+                moduleCode: mod.moduleCode,
+                lessonType: lesson.lessonType,
+                classNo: lesson.classNo,
+                venue: lesson.venue || "",
+                acadYear: NUSMODS_ACAD_YEAR,
+                semester,
+                nusmodsWeek: week,
+              };
+
+              await addDoc(collection(db, "tasks"), eventData);
+
+              existingImportKeys.add(importKey);
+              importedCount += 1;
+            }
+          }
+        }
+      }
+
+      setImportStatus(
+        `Imported ${importedCount} class events. Skipped ${skippedCount} duplicates.`
+      );
+      setNusmodsUrl("");
+    } catch (error) {
+      console.error("NUSMods import error:", error);
+      setImportStatus(
+        `Import failed: ${error.message || "Please check whether the link is valid."}`
+      );
+    } finally {
+      setIsImporting(false);
+    }
+  };
+  
   const checkIsInactive = (item) => {
     if (item.type === "task") return item.completed;
     if (item.type === "event" && item.endTime) return item.endTime <= currentFullTime;
@@ -429,7 +697,38 @@ function Dashboard() {
                 />
               ))
             ) : (
-              <div style={{ textAlign: "center", padding: "40px 0", color: "#86868b" }}>No tasks or events scheduled. Time to relax! ☕️</div>
+              <div style={{ textAlign: "center", padding: "40px 0", color: "#86868b" }}>
+                No tasks or events scheduled. Time to relax! ☕️
+              </div>
+            )}
+          </div>
+
+          <div className={styles.importCard}>
+            <div>
+              <h3>Import from NUSMods</h3>
+              <p>Paste your NUSMods share link to import the whole semester timetable.</p>
+            </div>
+
+            <div className={styles.importInputRow}>
+              <input
+                value={nusmodsUrl}
+                onChange={(e) => setNusmodsUrl(e.target.value)}
+                placeholder="Paste NUSMods share link here..."
+                className={styles.importInput}
+              />
+
+              <button
+                type="button"
+                onClick={handleImportNusmods}
+                disabled={isImporting}
+                className={styles.importButton}
+              >
+                {isImporting ? "Importing..." : "Import"}
+              </button>
+            </div>
+
+            {importStatus && (
+              <p className={styles.importStatus}>{importStatus}</p>
             )}
           </div>
 
