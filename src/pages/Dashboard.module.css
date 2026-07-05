@@ -1281,14 +1281,13 @@
 }
 
 .modalSecondaryButton {
-  background: #f0f0f5;
-  color: #86868b;
+  background: #bcbcc3;
+  color: #ffffff;
+  border:#010101;
 }
 
 .modalSecondaryButton:hover {
   transform: translateY(-3px);
-  background: #fff4ed;
-  color: #f15c22;
   box-shadow:
     0 6px 14px rgba(0, 0, 0, 0.04),
     0 12px 26px rgba(241, 92, 34, 0.1);
