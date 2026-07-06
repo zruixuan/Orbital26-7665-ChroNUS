@@ -238,8 +238,7 @@
 
   margin: 34px auto 0;
   padding: 14px 30px;
-
-  border: 1px solid #f3ded4;
+  border: 1px solid #eee7e3;
   border-radius: 18px;
 
   background: #ffffff;
@@ -251,8 +250,8 @@
   cursor: pointer;
 
   box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.04),
-    0 12px 30px rgba(241, 92, 34, 0.08);
+    0 10px 28px rgba(0, 0, 0, 0.025),
+    0 2px 8px rgba(0, 0, 0, 0.018);
 
   transition:
     transform 0.22s ease,
@@ -347,12 +346,12 @@
   padding: 22px 24px;
 
   background: #ffffff;
-  border: 1px solid #f0e5df;
+  border: 1px solid #eee7e3;
   border-radius: 20px;
 
   box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.04),
-    0 12px 30px rgba(241, 92, 34, 0.06);
+    0 10px 28px rgba(0, 0, 0, 0.025),
+    0 2px 8px rgba(0, 0, 0, 0.018);
 
   transition:
     transform 0.22s ease,
@@ -369,6 +368,34 @@
   box-shadow:
     0 8px 18px rgba(0, 0, 0, 0.05),
     0 18px 38px rgba(241, 92, 34, 0.12);
+}
+
+.importHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.importIconCircle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 22px;
+
+  color: #f15c22;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.9), rgba(255, 236, 229, 0.95)),
+    rgba(241, 92, 34, 0.08);
+
+  box-shadow:
+    0 14px 32px rgba(241, 92, 34, 0.13),
+    inset 0 0 0 1px rgba(241, 92, 34, 0.08);
 }
 
 .importCard h3 {
@@ -1389,4 +1416,573 @@
   color: #a8a8b0;
   transform: none;
   box-shadow: none;
+}
+
+/* ===== Bottom Dashboard Actions ===== */
+
+.dashboardActionArea {
+  margin-top: 34px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+}
+
+.clearImportedButton {
+  width: 285px;
+  height: 56px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  border: 1px solid #f3e7df;
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.72);
+  color: #f15c22;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 24px rgba(43, 29, 22, 0.035),
+    0 2px 8px rgba(241, 92, 34, 0.025);
+
+  transition:
+    transform 0.22s ease,
+    background 0.22s ease,
+    border-color 0.22s ease,
+    color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.clearImportedButton:hover {
+  transform: translateY(-4px);
+  background: #fffdfb;
+  border-color: #f3c7b4;
+  color: #f15c22;
+
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.045),
+    0 18px 38px rgba(241, 92, 34, 0.12);
+}
+
+.clearImportedButton:active {
+  transform: translateY(-1px);
+}
+
+.clearImportedButton:disabled {
+  color: #c8a89a;
+  background: rgba(255, 255, 255, 0.55);
+  border-color: #f1ebe7;
+  cursor: not-allowed;
+  transform: none;
+
+  box-shadow:
+    0 4px 12px rgba(43, 29, 22, 0.02);
+}
+
+.clearImportedButton:disabled:hover {
+  color: #c8a89a;
+  background: rgba(255, 255, 255, 0.55);
+  border-color: #f1ebe7;
+  cursor: not-allowed;
+  transform: none;
+
+  box-shadow:
+    0 4px 12px rgba(43, 29, 22, 0.02);
+}
+
+.clearImportedIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.addButtonIcon {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ===== Clear Imported Confirm Modal ===== */
+
+.clearModalBox {
+  width: 90%;
+  max-width: 430px;
+
+  padding: 32px 30px 28px;
+
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #f3e7df;
+  border-radius: 26px;
+
+  text-align: center;
+
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.12),
+    0 18px 42px rgba(241, 92, 34, 0.1);
+
+  animation: clearModalPopup 0.22s ease;
+}
+
+.clearModalIcon {
+  width: 72px;
+  height: 72px;
+
+  margin: 0 auto 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  color: #f15c22;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.95), rgba(255, 236, 229, 0.96)),
+    rgba(241, 92, 34, 0.08);
+
+  box-shadow:
+    0 14px 32px rgba(241, 92, 34, 0.13),
+    inset 0 0 0 1px rgba(241, 92, 34, 0.08);
+}
+
+.clearModalTitle {
+  margin: 0 0 12px;
+
+  color: #2b1d16;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.clearModalText {
+  margin: 0 auto;
+
+  max-width: 340px;
+
+  color: #86868b;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.clearModalCount {
+  margin: 22px auto 0;
+  padding: 12px 16px;
+
+  width: fit-content;
+
+  border: 1px solid #f3e7df;
+  border-radius: 999px;
+
+  background: #fff7f2;
+  color: #f15c22;
+
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.clearModalButtons {
+  display: flex;
+  gap: 12px;
+
+  margin-top: 28px;
+}
+
+.clearModalCancelButton,
+.clearModalConfirmButton {
+  flex: 1;
+  height: 44px;
+
+  border-radius: 14px;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.22s ease,
+    background 0.22s ease,
+    color 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.clearModalCancelButton {
+  border: 1px solid #f0e5df;
+  background: #ffffff;
+  color: #2b1d16;
+}
+
+.clearModalCancelButton:hover {
+  transform: translateY(-3px);
+  background: #fffdfb;
+  border-color: #f3c7b4;
+  color: #f15c22;
+
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.045),
+    0 18px 38px rgba(241, 92, 34, 0.1);
+}
+
+.clearModalConfirmButton {
+  border: none;
+  background: linear-gradient(135deg, #ff7a3d, #f15c22);
+  color: #ffffff;
+}
+
+.clearModalConfirmButton:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.06),
+    0 18px 38px rgba(241, 92, 34, 0.2);
+}
+
+.clearModalCancelButton:active,
+.clearModalConfirmButton:active {
+  transform: translateY(-1px);
+}
+
+.clearModalCancelButton:disabled,
+.clearModalConfirmButton:disabled {
+  cursor: not-allowed;
+  transform: none;
+  opacity: 0.65;
+  box-shadow: none;
+}
+
+@keyframes clearModalPopup {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===== Manage Imported Classes Button ===== */
+
+.importManageRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+
+  width: 100%;
+}
+
+.manageImportedButton {
+  width: 285px;
+  height: 56px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  border: 1px solid #f3e7df;
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.72);
+  color: #f15c22;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 24px rgba(43, 29, 22, 0.035),
+    0 2px 8px rgba(241, 92, 34, 0.025);
+
+  transition:
+    transform 0.22s ease,
+    background 0.22s ease,
+    border-color 0.22s ease,
+    color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.manageImportedButton:hover {
+  transform: translateY(-4px);
+  background: #fffdfb;
+  border-color: #f3c7b4;
+  color: #f15c22;
+
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.045),
+    0 18px 38px rgba(241, 92, 34, 0.12);
+}
+
+.manageImportedButton:active {
+  transform: translateY(-1px);
+}
+
+.manageImportedIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transform: translateY(1px);
+}
+
+/* ===== Imported Classes Modal ===== */
+
+.importedModalBox {
+  width: 90%;
+  max-width: 620px;
+  max-height: 76vh;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 28px;
+
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #f3e7df;
+  border-radius: 26px;
+
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.12),
+    0 18px 42px rgba(241, 92, 34, 0.08);
+
+  font-family: 'Nunito', sans-serif;
+  animation: clearModalPopup 0.22s ease;
+}
+
+.importedModalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding-bottom: 18px;
+  border-bottom: 1px solid #f3eee9;
+}
+
+.importedModalTitle {
+  margin: 0 0 10px;
+
+  color: #2b1d16;
+  font-size: 22px;
+  font-weight: 900;
+
+  text-align: left;
+}
+
+.importedModalSubtitle {
+  margin: 0;
+
+  color: #86868b;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.importedCloseButton {
+  width: 34px;
+  height: 34px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #fff4ed;
+  color: #f15c22;
+
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+
+  transition:
+    transform 0.22s ease,
+    background 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.importedCloseButton:hover {
+  transform: translateY(-3px);
+  background: #ffe8dc;
+
+  box-shadow:
+    0 8px 18px rgba(241, 92, 34, 0.12);
+}
+
+.importedClassList {
+  margin-top: 18px;
+  padding-right: 4px;
+
+  overflow-y: auto;
+}
+
+.importedClassList::-webkit-scrollbar {
+  width: 8px;
+}
+
+.importedClassList::-webkit-scrollbar-track {
+  background: #fff7f2;
+  border-radius: 999px;
+}
+
+.importedClassList::-webkit-scrollbar-thumb {
+  background: #f3c7b4;
+  border-radius: 999px;
+}
+
+.importedClassCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+
+  padding: 16px 18px;
+  margin-bottom: 12px;
+
+  border: 1px solid #f3e7df;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 6px 16px rgba(43, 29, 22, 0.025);
+
+  transition:
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    background 0.22s ease;
+}
+
+.importedClassCard:hover {
+  transform: translateY(-3px);
+  background: #fffdfb;
+  border-color: #f3c7b4;
+
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.045),
+    0 16px 34px rgba(241, 92, 34, 0.09);
+}
+
+.importedClassInfo {
+  min-width: 0;
+}
+
+.importedClassTitle {
+  color: #2b1d16;
+  font-size: 15px;
+  font-weight: 900;
+
+  margin: 0;
+  padding: 0;
+  text-indent: 0;
+  text-align: left;
+  white-space: normal;
+}
+
+.importedClassMeta {
+  margin-top: 4px;
+
+  color: #86868b;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.importedRemoveButton {
+  flex-shrink: 0;
+
+  height: 36px;
+  padding: 0 16px;
+
+  border: 1px solid #ffd1c2;
+  border-radius: 12px;
+
+  background: #fff7f2;
+  color: #f15c22;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.22s ease,
+    background 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.importedRemoveButton:hover {
+  transform: translateY(-3px);
+  background: #ffe8dc;
+
+  box-shadow:
+    0 8px 18px rgba(241, 92, 34, 0.12);
+}
+
+.emptyImportedBox {
+  margin-top: 18px;
+  padding: 40px 20px;
+
+  text-align: center;
+
+  color: #86868b;
+  font-size: 14px;
+  font-weight: 700;
+
+  border: 1px dashed #f3c7b4;
+  border-radius: 18px;
+
+  background: #fffaf7;
+}
+
+.importedModalFooter {
+  display: flex;
+  gap: 12px;
+
+  margin-top: 20px;
+  padding-top: 18px;
+
+  border-top: 1px solid #f3eee9;
+}
+
+.importedModalCloseBottomButton {
+  width: 100%;
+  height: 44px;
+
+  border: none;
+  border-radius: 14px;
+
+  background: linear-gradient(135deg, #ff7a3d, #f15c22);
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.importedModalCloseBottomButton:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.06),
+    0 18px 38px rgba(241, 92, 34, 0.18);
 }

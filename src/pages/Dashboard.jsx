@@ -49,7 +49,13 @@ const formatNusmodsTime = (time) => {
 
 const getLessonDate = (semesterStartDate, week, day) => {
   const date = new Date(`${semesterStartDate}T00:00:00`);
-  date.setDate(date.getDate() + (week - 1) * 7 + DAY_OFFSET[day]);
+
+  const recessWeekOffset = week >= 7 ? 7 : 0;
+
+  date.setDate(
+    date.getDate() + (week - 1) * 7 + recessWeekOffset + DAY_OFFSET[day]
+  );
+
   return getLocalDateString(date);
 };
 
@@ -323,6 +329,13 @@ const handleCalendarDateClick = (dateObj) => {
   const [nusmodsUrl, setNusmodsUrl] = useState("");
   const [importStatus, setImportStatus] = useState("");
   const [isImporting, setIsImporting] = useState(false);
+
+  const [isClearingImported, setIsClearingImported] = useState(false);
+
+  const [showClearImportedModal, setShowClearImportedModal] = useState(false);
+
+  const [showImportedModal, setShowImportedModal] = useState(false);
+
   const [editingItemId, setEditingItemId] = useState(null);
   const [formData, setFormData] = useState({
     type: "task",
@@ -614,6 +627,125 @@ const handleCalendarDateClick = (dateObj) => {
     }
   };
   
+  const importedItems = tasks.filter(
+  (item) =>
+    item.importSource === "nusmods" &&
+    item.userId === auth.currentUser?.uid
+);
+
+const importedClassGroups = importedItems.reduce((groups, item) => {
+  const groupKey = [
+    item.moduleCode || "Unknown Module",
+    item.lessonType || "Class",
+    item.classNo || "",
+  ].join("-");
+
+  if (!groups[groupKey]) {
+    groups[groupKey] = {
+      key: groupKey,
+      moduleCode: String(item.moduleCode || "Unknown Module").trim(),
+      lessonType: String(item.lessonType || "Class").trim(),
+      classNo: String(item.classNo || "").trim(),
+      venue: String(item.venue || "").trim(),
+      items: [],
+    };
+  }
+
+  groups[groupKey].items.push(item);
+  return groups;
+}, {});
+
+const importedClassList = Object.values(importedClassGroups).sort((a, b) =>
+  `${a.moduleCode} ${a.lessonType}`.localeCompare(
+    `${b.moduleCode} ${b.lessonType}`
+  )
+);
+
+const cleanImportedText = (value) => {
+  return String(value || "")
+    .replace(/[\u0000-\u001F\u007F-\u009F]/g, "")
+    .replace(/[\u00A0\u1680\u180E\u2000-\u200F\u2028\u2029\u202F\u205F\u2060\u3000\uFEFF]/g, "")
+    .trim();
+};
+
+const formatImportedClassTitle = (group) => {
+  const rawModuleCode = cleanImportedText(group.moduleCode);
+  const rawLessonType = cleanImportedText(group.lessonType);
+  const rawClassNo = cleanImportedText(group.classNo);
+
+  const moduleMatch = rawModuleCode.match(/[A-Z]{2,4}\d{4}[A-Z]{0,3}/);
+  const moduleCode = moduleMatch ? moduleMatch[0] : rawModuleCode;
+
+  return `${moduleCode} ${rawLessonType}${rawClassNo ? `[${rawClassNo}]` : ""}`;
+};
+
+const handleClearImported = () => {
+  if (!auth.currentUser) {
+    setImportStatus("Please log in before clearing imported classes.");
+    return;
+  }
+
+  if (importedItems.length === 0) {
+    setImportStatus("No imported NUSMods classes to clear.");
+    return;
+  }
+
+  setShowClearImportedModal(true);
+};
+
+const confirmClearImported = async () => {
+  setIsClearingImported(true);
+  setImportStatus("Clearing imported NUSMods classes...");
+
+  try {
+    const itemsToDelete = importedItems.filter(
+      (item) => typeof item.id === "string"
+    );
+
+    await Promise.all(
+      itemsToDelete.map((item) => deleteDoc(doc(db, "tasks", item.id)))
+    );
+
+    setImportStatus(`Cleared ${itemsToDelete.length} imported class events.`);
+    setShowClearImportedModal(false);
+  } catch (error) {
+    console.error("Clear imported classes error:", error);
+    setImportStatus("Failed to clear imported classes. Please try again.");
+  } finally {
+    setIsClearingImported(false);
+  }
+};
+
+const handleDeleteImportedGroup = async (group) => {
+  if (!auth.currentUser) {
+    setImportStatus("Please log in before managing imported classes.");
+    return;
+  }
+
+  const confirmed = window.confirm(
+    `Remove ${group.moduleCode} ${group.lessonType}${
+      group.classNo ? ` [${group.classNo}]` : ""
+    } from your imported timetable?`
+  );
+
+  if (!confirmed) return;
+
+  try {
+    const itemsToDelete = group.items.filter(
+      (item) => typeof item.id === "string"
+    );
+
+    await Promise.all(
+      itemsToDelete.map((item) => deleteDoc(doc(db, "tasks", item.id)))
+    );
+
+    setImportStatus(`Removed ${formatImportedClassTitle(group)}.`);
+  } catch (error) {
+    console.error("Delete imported group error:", error);
+    setImportStatus("Failed to remove this imported class. Please try again.");
+  }
+};
+
   const checkIsInactive = (item) => {
     if (item.type === "task") return item.completed;
     if (item.type === "event" && item.endTime) return item.endTime <= currentFullTime;
@@ -843,7 +975,25 @@ const handleCalendarDateClick = (dateObj) => {
             </div>
 
             <div className={styles.importCard}>
-              <div>
+              <div className={styles.importHeader}>
+                <div className={styles.importIconCircle}>
+                  <svg
+                    width="34"
+                    height="34"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M16 16l-4-4-4 4" />
+                    <path d="M12 12v9" />
+                    <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+                    <path d="M16 16l-4-4-4 4" />
+                  </svg>
+                </div>
+
                 <h3>Import from NUSMods</h3>
                 <p>Paste your NUSMods share link to import the whole semester timetable.</p>
               </div>
@@ -871,11 +1021,193 @@ const handleCalendarDateClick = (dateObj) => {
               )}
             </div>
 
-            <button className={styles.addButton} onClick={handleOpenModal}>
-              <span style={{ fontSize: "1.2rem" }}>+</span> Add Task / Event
-            </button>
+            <div className={styles.dashboardActionArea}>
+              <div className={styles.importManageRow}>
+                <button
+                  type="button"
+                  onClick={handleClearImported}
+                  disabled={isClearingImported || importedItems.length === 0}
+                  className={styles.clearImportedButton}
+                >
+                  <span className={styles.clearImportedIcon}>
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 6h18" />
+                      <path d="M8 6V4h8v2" />
+                      <path d="M19 6l-1 14H6L5 6" />
+                      <path d="M10 11v5" />
+                      <path d="M14 11v5" />
+                    </svg>
+                  </span>
+
+                  {isClearingImported ? "Clearing..." : "Clear Imported"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowImportedModal(true)}
+                  className={styles.manageImportedButton}
+                >
+                  <span className={styles.manageImportedIcon}>
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <rect x="3" y="4" width="18" height="16" rx="2" />
+                      <path d="M7 8h10" />
+                      <path d="M7 12h10" />
+                      <path d="M7 16h6" />
+                    </svg>
+                  </span>
+
+                  Manage Imported Classes
+                </button>
+              </div>
+
+              <button className={styles.addButton} onClick={handleOpenModal}>
+                <span className={styles.addButtonIcon}>+</span>
+                Add Task / Event
+              </button>
+            </div>
           </main>
       </div>
+
+      {showClearImportedModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.clearModalBox}>
+            <div className={styles.clearModalIcon}>
+              <svg
+                width="30"
+                height="30"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M3 6h18" />
+                <path d="M8 6V4h8v2" />
+                <path d="M19 6l-1 14H6L5 6" />
+                <path d="M10 11v5" />
+                <path d="M14 11v5" />
+              </svg>
+            </div>
+
+            <h2 className={styles.clearModalTitle}>
+              Clear imported classes?
+            </h2>
+
+            <p className={styles.clearModalText}>
+              This will remove all NUSMods imported class events from your timeline.
+              Your manually added tasks and events will not be affected.
+            </p>
+
+            <div className={styles.clearModalCount}>
+              {importedItems.length} imported class events will be removed.
+            </div>
+
+            <div className={styles.clearModalButtons}>
+              <button
+                type="button"
+                onClick={() => setShowClearImportedModal(false)}
+                disabled={isClearingImported}
+                className={styles.clearModalCancelButton}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={confirmClearImported}
+                disabled={isClearingImported}
+                className={styles.clearModalConfirmButton}
+              >
+                {isClearingImported ? "Clearing..." : "Clear All"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showImportedModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.importedModalBox}>
+            <div className={styles.importedModalHeader}>
+              <div>
+                <h2 className={styles.importedModalTitle}>
+                  Imported Classes
+                </h2>
+
+                <p className={styles.importedModalSubtitle}>
+                  Manage classes imported from your NUSMods timetable.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowImportedModal(false)}
+                className={styles.importedCloseButton}
+              >
+                ×
+              </button>
+            </div>
+
+            {importedClassList.length > 0 ? (
+              <div className={styles.importedClassList}>
+                {importedClassList.map((group) => (
+                  <div key={group.key} className={styles.importedClassCard}>
+                    <div className={styles.importedClassInfo}>
+                      <div className={styles.importedClassTitle}>{formatImportedClassTitle(group)}</div>
+
+                      <div className={styles.importedClassMeta}>
+                        {group.items.length} class events
+                        {group.venue ? ` · ${group.venue}` : ""}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteImportedGroup(group)}
+                      className={styles.importedRemoveButton}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className={styles.emptyImportedBox}>
+                No imported NUSMods classes yet.
+              </div>
+            )}
+
+            <div className={styles.importedModalFooter}>
+              <button
+                type="button"
+                onClick={() => setShowImportedModal(false)}
+                className={styles.importedModalCloseBottomButton}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isModalOpen && (
         <div className={styles.modalOverlay}>
