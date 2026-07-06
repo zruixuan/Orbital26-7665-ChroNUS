@@ -17,11 +17,45 @@ const getLocalDateString = (dateObj) => {
   return `${year}-${month}-${day}`;
 };
 
-const NUSMODS_ACAD_YEAR = "2026-2027";
+const getSecondMondayOfMonth = (year, monthIndex) => {
+  const date = new Date(year, monthIndex, 1);
 
-const SEMESTER_START_DATES = {
-  "2026-2027-1": "2026-08-10",
-  "2026-2027-2": "2027-01-12",
+  let mondayCount = 0;
+
+  while (date.getMonth() === monthIndex) {
+    if (date.getDay() === 1) {
+      mondayCount += 1;
+
+      if (mondayCount === 2) {
+        return getLocalDateString(date);
+      }
+    }
+
+    date.setDate(date.getDate() + 1);
+  }
+
+  return "";
+};
+
+const getSemesterStartDate = (academicYear, semester) => {
+  const acadYearMatch = academicYear.trim().match(/^(\d{4})-(\d{4})$/);
+
+  if (!acadYearMatch) return "";
+
+  const startYear = Number(acadYearMatch[1]);
+  const endYear = Number(acadYearMatch[2]);
+
+  if (endYear !== startYear + 1) return "";
+
+  if (semester === 1) {
+    return getSecondMondayOfMonth(startYear, 7);
+  }
+
+  if (semester === 2) {
+    return getSecondMondayOfMonth(endYear, 0);
+  }
+
+  return "";
 };
 
 const LESSON_TYPE_MAP = {
@@ -326,6 +360,10 @@ const handleCalendarDateClick = (dateObj) => {
     });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [startYear, setStartYear] = useState("");
+  const [endYear, setEndYear] = useState("");
+
   const [nusmodsUrl, setNusmodsUrl] = useState("");
   const [importStatus, setImportStatus] = useState("");
   const [isImporting, setIsImporting] = useState(false);
@@ -460,172 +498,175 @@ const handleCalendarDateClick = (dateObj) => {
     }
   };
 
-  const handleImportNusmods = async () => {
-    if (!auth.currentUser) {
-      setImportStatus("Please log in before importing your NUSMods timetable.");
+const handleImportNusmods = async () => {
+  if (!auth.currentUser) {
+    setImportStatus("Please log in before importing your NUSMods timetable.");
+    return;
+  }
+
+const trimmedStartYear = startYear.trim();
+const trimmedEndYear = endYear.trim();
+
+if (!trimmedStartYear || !trimmedEndYear) {
+  setImportStatus("Please enter both start year and end year, for example 2026 and 2027.");
+  return;
+}
+
+if (!/^\d{4}$/.test(trimmedStartYear) || !/^\d{4}$/.test(trimmedEndYear)) {
+  setImportStatus("Start year and end year should both be 4-digit years.");
+  return;
+}
+
+if (Number(trimmedEndYear) !== Number(trimmedStartYear) + 1) {
+  setImportStatus("End year should be exactly one year after start year.");
+  return;
+}
+
+const trimmedAcademicYear = `${trimmedStartYear}-${trimmedEndYear}`;
+
+  if (!nusmodsUrl.trim()) {
+    setImportStatus("Please paste a NUSMods share link first.");
+    return;
+  }
+
+  setIsImporting(true);
+  setImportStatus("Importing timetable from NUSMods...");
+
+  try {
+    const { semester, modules } = parseNusmodsShareUrl(nusmodsUrl);
+
+    if (modules.length === 0) {
+      setImportStatus("No modules were found in this NUSMods link.");
+      setIsImporting(false);
       return;
     }
 
-    if (!nusmodsUrl.trim()) {
-      setImportStatus("Please paste a NUSMods share link first.");
+    const semesterStartDate = getSemesterStartDate(
+      trimmedAcademicYear,
+      semester
+    );
+
+    if (!semesterStartDate) {
+      setImportStatus(
+        "Semester start date could not be calculated. Please check the academic year."
+      );
+      setIsImporting(false);
       return;
     }
 
-    setIsImporting(true);
-    setImportStatus("Importing timetable from NUSMods...");
+    const existingImportKeys = new Set(
+      tasks
+        .filter((item) => item.importSource === "nusmods" && item.importKey)
+        .map((item) => item.importKey)
+    );
 
-    try {
-      const { semester, modules } = parseNusmodsShareUrl(nusmodsUrl);
+    let importedCount = 0;
+    let skippedCount = 0;
 
-      if (modules.length === 0) {
-        setImportStatus("No modules were found in this NUSMods link.");
-        setIsImporting(false);
-        return;
-      }
-
-      const semesterStartDate =
-        SEMESTER_START_DATES[`${NUSMODS_ACAD_YEAR}-${semester}`];
-
-      if (!semesterStartDate) {
-        setImportStatus("Semester start date is not configured yet.");
-        setIsImporting(false);
-        return;
-      }
-
-      const existingImportKeys = new Set(
-        tasks
-          .filter((item) => item.importSource === "nusmods" && item.importKey)
-          .map((item) => item.importKey)
+    for (const mod of modules) {
+      const response = await fetch(
+        `https://api.nusmods.com/v2/${trimmedAcademicYear}/modules/${mod.moduleCode}.json`
       );
 
-      let importedCount = 0;
-      let skippedCount = 0;
+      if (!response.ok) {
+        console.warn(`Failed to fetch ${mod.moduleCode}`);
+        continue;
+      }
 
-      for (const mod of modules) {
-        const response = await fetch(
-          `https://api.nusmods.com/v2/${NUSMODS_ACAD_YEAR}/modules/${mod.moduleCode}.json`
+      const moduleInfo = await response.json();
+
+      const semesterInfo = moduleInfo.semesterData?.find(
+        (sem) => sem.semester === semester
+      );
+
+      if (!semesterInfo?.timetable) continue;
+
+      for (const selectedLesson of mod.lessons) {
+        const matchedLessons = semesterInfo.timetable.filter(
+          (lesson) =>
+            lesson.lessonType === selectedLesson.lessonType &&
+            String(lesson.classNo) === String(selectedLesson.classNo)
         );
 
-        if (!response.ok) {
-          console.warn(`Failed to fetch ${mod.moduleCode}`);
-          continue;
-        }
+        for (const lesson of matchedLessons) {
+          const weeks = normalizeWeeks(lesson.weeks);
 
-        const moduleInfo = await response.json();
+          for (const week of weeks) {
+            const lessonDate = getLessonDate(
+              semesterStartDate,
+              week,
+              lesson.day
+            );
 
-        const semesterInfo = moduleInfo.semesterData?.find(
-          (sem) => sem.semester === semester
-        );
+            const startTime = formatNusmodsTime(lesson.startTime);
+            const endTime = formatNusmodsTime(lesson.endTime);
 
-        if (!semesterInfo?.timetable) continue;
+            const importKey = [
+              trimmedAcademicYear,
+              semester,
+              mod.moduleCode,
+              lesson.lessonType,
+              lesson.classNo,
+              week,
+              lesson.day,
+              lesson.startTime,
+              lesson.endTime,
+            ].join("-");
 
-        for (const selectedLesson of mod.lessons) {
-          const matchedLessons = semesterInfo.timetable.filter(
-            (lesson) =>
-              lesson.lessonType === selectedLesson.lessonType &&
-              String(lesson.classNo) === String(selectedLesson.classNo)
-          );
-
-          for (const lesson of matchedLessons) {
-            const weeks = normalizeWeeks(lesson.weeks);
-
-            for (const week of weeks) {
-              const lessonDate = getLessonDate(
-                semesterStartDate,
-                week,
-                lesson.day
-              );
-
-              const normalizeWeeks = (weeks) => {
-                if (Array.isArray(weeks)) {
-                  return weeks;
-                }
-
-                if (typeof weeks === "number") {
-                  return [weeks];
-                }
-
-                if (weeks && typeof weeks === "object") {
-                  const result = [];
-
-                  if (weeks.start && weeks.end) {
-                    const interval = weeks.interval || 1;
-
-                    for (let week = weeks.start; week <= weeks.end; week += interval) {
-                      result.push(week);
-                    }
-
-                    return result;
-                  }
-                }
-
-                return [];
-              };
-
-              const startTime = formatNusmodsTime(lesson.startTime);
-              const endTime = formatNusmodsTime(lesson.endTime);
-
-              const importKey = [
-                NUSMODS_ACAD_YEAR,
-                semester,
-                mod.moduleCode,
-                lesson.lessonType,
-                lesson.classNo,
-                week,
-                lesson.day,
-                lesson.startTime,
-                lesson.endTime,
-              ].join("-");
-
-              if (existingImportKeys.has(importKey)) {
-                skippedCount += 1;
-                continue;
-              }
-
-              const eventData = {
-                type: "event",
-                title: `${mod.moduleCode} ${lesson.lessonType}${lesson.classNo ? ` [${lesson.classNo}]` : ""}`,
-                detail: `${moduleInfo.title || ""}${
-                  lesson.venue ? ` · ${lesson.venue}` : ""
-                }`,
-                startTime: `${lessonDate} ${startTime}`,
-                endTime: `${lessonDate} ${endTime}`,
-                importance: "Important",
-                userId: auth.currentUser.uid,
-
-                importSource: "nusmods",
-                importKey,
-                moduleCode: mod.moduleCode,
-                lessonType: lesson.lessonType,
-                classNo: lesson.classNo,
-                venue: lesson.venue || "",
-                acadYear: NUSMODS_ACAD_YEAR,
-                semester,
-                nusmodsWeek: week,
-              };
-
-              await addDoc(collection(db, "tasks"), eventData);
-
-              existingImportKeys.add(importKey);
-              importedCount += 1;
+            if (existingImportKeys.has(importKey)) {
+              skippedCount += 1;
+              continue;
             }
+
+            const eventData = {
+              type: "event",
+              title: `${mod.moduleCode} ${lesson.lessonType}${
+                lesson.classNo ? ` [${lesson.classNo}]` : ""
+              }`,
+              detail: `${moduleInfo.title || ""}${
+                lesson.venue ? ` · ${lesson.venue}` : ""
+              }`,
+              startTime: `${lessonDate} ${startTime}`,
+              endTime: `${lessonDate} ${endTime}`,
+              importance: "Important",
+              userId: auth.currentUser.uid,
+
+              importSource: "nusmods",
+              importKey,
+              moduleCode: mod.moduleCode,
+              lessonType: lesson.lessonType,
+              classNo: lesson.classNo,
+              venue: lesson.venue || "",
+              acadYear: trimmedAcademicYear,
+              semester,
+              nusmodsWeek: week,
+            };
+
+            await addDoc(collection(db, "tasks"), eventData);
+
+            existingImportKeys.add(importKey);
+            importedCount += 1;
           }
         }
       }
-
-      setImportStatus(
-        `Imported ${importedCount} class events. Skipped ${skippedCount} duplicates.`
-      );
-      setNusmodsUrl("");
-    } catch (error) {
-      console.error("NUSMods import error:", error);
-      setImportStatus(
-        `Import failed: ${error.message || "Please check whether the link is valid."}`
-      );
-    } finally {
-      setIsImporting(false);
     }
-  };
+
+    setImportStatus(
+      `Imported ${importedCount} class events from AY ${trimmedAcademicYear} Sem ${semester}. Skipped ${skippedCount} duplicates.`
+    );
+
+    setNusmodsUrl("");
+  } catch (error) {
+    console.error("NUSMods import error:", error);
+    setImportStatus(
+      `Import failed: ${
+        error.message || "Please check whether the link is valid."
+      }`
+    );
+  } finally {
+    setIsImporting(false);
+  }
+};
   
   const importedItems = tasks.filter(
   (item) =>
@@ -659,6 +700,36 @@ const importedClassList = Object.values(importedClassGroups).sort((a, b) =>
   `${a.moduleCode} ${a.lessonType}`.localeCompare(
     `${b.moduleCode} ${b.lessonType}`
   )
+);
+
+const importedClassSections = importedClassList.reduce((sections, group) => {
+  const firstItem = group.items.find(
+    (item) => item.acadYear && item.semester
+  );
+
+  const acadYear = firstItem?.acadYear || "Unknown Academic Year";
+  const semester = firstItem?.semester || "Unknown Semester";
+
+  const sectionKey = `${acadYear}-sem-${semester}`;
+  const sectionTitle =
+    semester === "Unknown Semester"
+      ? `${acadYear} ${semester}`
+      : `${acadYear} Semester ${semester}`;
+
+  if (!sections[sectionKey]) {
+    sections[sectionKey] = {
+      key: sectionKey,
+      title: sectionTitle,
+      classes: [],
+    };
+  }
+
+  sections[sectionKey].classes.push(group);
+  return sections;
+}, {});
+
+const importedClassSectionList = Object.values(importedClassSections).sort(
+  (a, b) => a.key.localeCompare(b.key)
 );
 
 const cleanImportedText = (value) => {
@@ -998,22 +1069,60 @@ const handleDeleteImportedGroup = async (group) => {
                 <p>Paste your NUSMods share link to import the whole semester timetable.</p>
               </div>
 
-              <div className={styles.importInputRow}>
-                <input
-                  value={nusmodsUrl}
-                  onChange={(e) => setNusmodsUrl(e.target.value)}
-                  placeholder="Paste NUSMods share link here..."
-                  className={styles.importInput}
-                />
+              <div className={styles.importYearGrid}>
+                <div className={styles.importFieldGroup}>
+                  <label className={styles.importFieldLabel}>
+                    Start Year
+                  </label>
 
-                <button
-                  type="button"
-                  onClick={handleImportNusmods}
-                  disabled={isImporting}
-                  className={styles.importButton}
-                >
-                  {isImporting ? "Importing..." : "Import"}
-                </button>
+                  <input
+                    value={startYear}
+                    onChange={(e) =>
+                      setStartYear(e.target.value.replace(/\D/g, "").slice(0, 4))
+                    }
+                    placeholder="e.g. 2026"
+                    className={styles.importYearInput}
+                  />
+                </div>
+
+                <div className={styles.importFieldGroup}>
+                  <label className={styles.importFieldLabel}>
+                    End Year
+                  </label>
+
+                  <input
+                    value={endYear}
+                    onChange={(e) =>
+                      setEndYear(e.target.value.replace(/\D/g, "").slice(0, 4))
+                    }
+                    placeholder="e.g. 2027"
+                    className={styles.importYearInput}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.importLinkBox}>
+                <label className={styles.importFieldLabel}>
+                  NUSMods Share Link
+                </label>
+
+                <div className={styles.importInputRow}>
+                  <input
+                    value={nusmodsUrl}
+                    onChange={(e) => setNusmodsUrl(e.target.value)}
+                    placeholder="Paste NUSMods share link here..."
+                    className={styles.importInput}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={handleImportNusmods}
+                    disabled={isImporting}
+                    className={styles.importButton}
+                  >
+                    {isImporting ? "Importing..." : "Import"}
+                  </button>
+                </div>
               </div>
 
               {importStatus && (
@@ -1169,24 +1278,35 @@ const handleDeleteImportedGroup = async (group) => {
 
             {importedClassList.length > 0 ? (
               <div className={styles.importedClassList}>
-                {importedClassList.map((group) => (
-                  <div key={group.key} className={styles.importedClassCard}>
-                    <div className={styles.importedClassInfo}>
-                      <div className={styles.importedClassTitle}>{formatImportedClassTitle(group)}</div>
-
-                      <div className={styles.importedClassMeta}>
-                        {group.items.length} class events
-                        {group.venue ? ` · ${group.venue}` : ""}
-                      </div>
+                {importedClassSectionList.map((section) => (
+                  <div key={section.key} className={styles.importedSemesterSection}>
+                    <div className={styles.importedSemesterTitle}>
+                      {section.title}
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteImportedGroup(group)}
-                      className={styles.importedRemoveButton}
-                    >
-                      Remove
-                    </button>
+                    {section.classes.map((group) => (
+                      <div key={group.key} className={styles.importedClassCard}>
+                        <div className={styles.importedClassInfo}>
+                          <div className={styles.importedClassTitle}>
+                            {formatImportedClassTitle(group)}
+                          </div>
+
+                          <div className={styles.importedClassMeta}>
+                            {`${group.items.length} class events${
+                              group.venue ? ` · ${group.venue}` : ""
+                            }`}
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteImportedGroup(group)}
+                          className={styles.importedRemoveButton}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 ))}
               </div>
