@@ -738,26 +738,46 @@
 
 .popoverHeader {
   display: flex;
-  align-items: center;
-  gap: 14px;
+  align-items: flex-start;
+  gap: 16px;
 
-  padding: 14px 18px;
+  padding: 24px 28px 22px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
 
-  border-bottom: 1px solid rgba(120, 90, 70, 0.12);
+.popoverHeader h3 {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding-top: 1px;
+
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #4b4658;
+
+  white-space: normal;
+  overflow: hidden;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .popoverIcon {
-  width: 40px;
-  height: 40px;
-
-  border-radius: 50%;
-
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  font-size: 22px;
+  font-size: 28px;
+  line-height: 1;
+  margin-top: 2px;
 }
+
 
 .popoverHeader h3 {
   flex: 1;
@@ -771,67 +791,63 @@
 }
 
 .popoverClose {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
   border: none;
   background: transparent;
-
-  font-size: 26px;
+  font-size: 30px;
+  line-height: 1;
   color: #999;
-
   cursor: pointer;
+  margin-top: 0;
 }
 
 .popoverBody {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-
-  padding: 20px 28px;
-
-  gap: 20px 28px;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 36px;
+  row-gap: 18px;
+  padding: 22px 36px 24px;
 }
 
 .popoverInfo {
   display: flex;
-  align-items: center;
-  gap: 10px;
-
-  min-width: 0;
+  align-items: flex-start;
+  gap: 14px;
 }
-
 .popoverInfo > div {
+  flex: 1;
   min-width: 0;
 }
-
 .infoIcon {
-  flex: 0 0 18px;
-
-  width: 18px;
-
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
   display: flex;
-  justify-content: center;
   align-items: center;
-
-  font-size: 15px;
-
-  margin-top: 0;
-  transform: translateY(-25px);
+  justify-content: center;
+  font-size: 22px;
+  line-height: 1;
+  margin-top: 2px;
 }
+
 
 .infoLabel {
-  margin: 0 0 3px;
-
-  font-size: 13px;
-  font-weight: 750;
-  line-height: 1;
-
-  color: #8a817c;
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #9b948d;
 }
+
 .infoValue {
   margin: 0;
+  font-size: 20px;
+  color: #817a8f;
+}
 
-  font-size: 15px;
-  font-weight: 700;
-
-  line-height: 1.15;
+.fullWidthInfo {
+  grid-column: 1 / 2;
 }
 
 .orangeBadge,
@@ -865,33 +881,33 @@
 }
 
 .popoverDetail {
-  padding: 14px 20px 18px;
-  background: #fffdfb;
-  border-top: 1px solid rgba(120, 90, 70, 0.12);
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
+  padding: 24px 36px 28px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
+.detailLabel {
+  margin: 0 0 14px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #817a8f;
+}
 .detailBox {
-  margin-top: 14px;
-
-  padding: 18px 20px;
-
-  border-radius: 16px;
-
-  background: rgba(255, 255, 255, 0.85);
-
-  color: #6b6570;
-
-  font-size: 15px;
-
-  line-height: 1.6;
-
-  max-height: 120px;
+  margin-top: 0;
+  max-height: 180px;
   overflow-y: auto;
+
+  padding: 22px 28px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+
+  font-size: 17px;
+  line-height: 1.65;
+  color: #8a8496;
+
+  white-space: pre-wrap;
   word-break: break-word;
-  padding-bottom: 18px;
+  overflow-wrap: anywhere;
 }
 
 @keyframes popIn {
@@ -928,4 +944,250 @@
 
 .task .overdueText {
   font-weight: 1000 !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===== Eisenhower task popover size fix ===== */
+
+.taskPopover {
+  width: 560px;
+  max-width: 90vw;
+  max-height: 82vh;
+  overflow: hidden;
+
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.16);
+}
+
+/* top title area */
+.popoverHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+
+  padding: 18px 24px 16px;
+
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+.popoverIcon {
+  flex-shrink: 0;
+
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 24px;
+  line-height: 1;
+  margin-top: 1px;
+}
+
+.popoverHeader h3 {
+  flex: 1;
+  min-width: 0;
+
+  margin: 0;
+  padding-top: 1px;
+
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #4b4658;
+
+  white-space: normal;
+  overflow: hidden;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.popoverClose {
+  flex-shrink: 0;
+
+  width: 24px;
+  height: 24px;
+
+  border: none;
+  background: transparent;
+
+  font-size: 26px;
+  line-height: 1;
+  color: #999;
+  cursor: pointer;
+
+  margin-top: 0;
+  padding: 0;
+}
+
+/* middle information area */
+.popoverBody {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 28px;
+  row-gap: 14px;
+
+  padding: 20px 34px 22px;
+}
+
+.popoverInfo {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.infoIcon {
+  flex-shrink: 0;
+
+  width: 24px;
+  height: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 20px;
+  line-height: 1;
+  margin-top: 1px;
+}
+
+.popoverInfo > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.infoLabel {
+  margin: 0 0 6px;
+
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #9b948d;
+}
+
+.infoValue {
+  margin: 0;
+
+  font-size: 17px;
+  line-height: 1.35;
+  color: #817a8f;
+}
+
+.orangeBadge,
+.completedBadge,
+.pendingBadge {
+  font-size: 15px;
+  line-height: 1.2;
+  padding: 7px 14px;
+  border-radius: 12px;
+}
+
+.fullWidthInfo {
+  grid-column: 1 / 2;
+}
+
+/* detail area */
+.popoverDetail {
+  padding: 22px 34px 26px;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+.detailLabel {
+  margin: 0 0 12px;
+
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #817a8f;
+}
+
+.detailBox {
+  margin: 0;
+  max-height: 150px;
+  overflow-y: auto;
+
+  padding: 18px 24px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+
+  font-size: 15px;
+  line-height: 1.55;
+  color: #8a8496;
+
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+
+
+/* ===== Matrix task row text overflow fix ===== */
+
+.task {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-width: 0;
+}
+
+.taskLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  min-width: 0;
+  flex: 1;
+}
+
+.taskLeft span {
+  min-width: 0;
+  flex: 1;
+
+  font-size: 15.5px;
+  font-weight: 600;
+  color: #6f675f;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.task > span:last-child {
+  flex-shrink: 0;
+  white-space: nowrap;
 }

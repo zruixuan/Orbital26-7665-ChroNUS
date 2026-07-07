@@ -2,7 +2,14 @@ import NavBar from "../components/NavBar";
 import styles from "./Eisenhower.module.css";
 import { useState, useEffect } from "react";
 
-import { collection, getDocs } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+  doc,
+  setDoc,
+} from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../api/firebase";
 import { FiTrash2 } from "react-icons/fi";
@@ -15,36 +22,151 @@ function Eisenhower() {
   const [activeFilter, setActiveFilter] = useState("all");
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    let unsubscribeNewTasks = null;
+    let unsubscribeOldTasks = null;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       if (!user) {
         console.log("No user logged in");
         setTasks([]);
         return;
       }
 
-      try {
-        const querySnapshot = await getDocs(collection(db, "tasks"));
+      const newTaskQuery = query(
+        collection(db, "task"),
+        where("userId", "==", user.uid)
+      );
 
-        const taskList = querySnapshot.docs
-          .map((doc) => ({
+      const oldTaskQuery = query(
+        collection(db, "tasks"),
+        where("userId", "==", user.uid)
+      );
+
+      let newTaskList = [];
+      let oldTaskList = [];
+
+      const updateTasks = () => {
+        const combinedTasks = [...newTaskList, ...oldTaskList];
+
+        const uniqueTasks = Array.from(
+          new Map(combinedTasks.map((task) => [task.id, task])).values()
+        );
+
+        console.log("Eisenhower loaded tasks:", uniqueTasks);
+
+        setTasks(uniqueTasks);
+      };
+
+      unsubscribeNewTasks = onSnapshot(
+        newTaskQuery,
+        (querySnapshot) => {
+          newTaskList = querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
-          }))
-          .filter(
-            (item) =>
-              item.type === "task" &&
-              item.userId === user.uid
-          );
+            type: "task",
+          }));
 
-        setTasks(taskList);
-      } catch (error) {
-        console.error("Failed to fetch tasks:", error);
-      }
+          updateTasks();
+        },
+        (error) => {
+          console.error("Failed to fetch task collection:", error);
+        }
+      );
+
+      unsubscribeOldTasks = onSnapshot(
+        oldTaskQuery,
+        (querySnapshot) => {
+          oldTaskList = querySnapshot.docs
+            .map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            }))
+            .filter((item) => item.type === "task" || !item.type);
+
+          updateTasks();
+        },
+        (error) => {
+          console.error("Failed to fetch tasks collection:", error);
+        }
+      );
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribeAuth();
+
+      if (unsubscribeNewTasks) {
+        unsubscribeNewTasks();
+      }
+
+      if (unsubscribeOldTasks) {
+        unsubscribeOldTasks();
+      }
+    };
   }, []);
 
+  useEffect(() => {
+    let unsubscribeUrgentDays = null;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        setUrgentDays(3);
+        return;
+      }
+
+      const urgentDaysRef = doc(db, "eisenhowerSettings", user.uid);
+
+      unsubscribeUrgentDays = onSnapshot(
+        urgentDaysRef,
+        (docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+
+            if (typeof data.urgentDays === "number") {
+              setUrgentDays(data.urgentDays);
+            }
+          }
+        },
+        (error) => {
+          console.error("Failed to load urgentDays:", error);
+        }
+      );
+    });
+
+    return () => {
+      unsubscribeAuth();
+
+      if (unsubscribeUrgentDays) {
+        unsubscribeUrgentDays();
+      }
+    };
+  }, []);
+
+  const handleUrgentDaysChange = async (day) => {
+    setUrgentDays(day);
+    setShowUrgentMenu(false);
+
+    const user = auth.currentUser;
+
+    if (!user) {
+      console.log("No user logged in");
+      return;
+    }
+
+    try {
+      const urgentDaysRef = doc(db, "eisenhowerSettings", user.uid);
+
+      await setDoc(
+        urgentDaysRef,
+        {
+          urgentDays: day,
+          userId: user.uid,
+        },
+        { merge: true }
+      );
+    } catch (error) {
+      console.error("Failed to save urgentDays:", error);
+    }
+  };
   const today = new Date();
 
   const formatDateTime = (dateTime) => {
@@ -95,23 +217,21 @@ function Eisenhower() {
   const displayImportance = (task) =>
     isImportant(task) ? "Important" : "Unimportant";
 
-  let filteredTasks = tasks.filter(
-  (task) => !task.completed
-);
+  let filteredTasks = tasks.filter((task) => !task.completed);
 
   if (activeFilter === "urgent") {
-    filteredTasks = tasks.filter((task) => isUrgent(task));
+    filteredTasks = filteredTasks.filter((task) => isUrgent(task));
   }
 
   if (activeFilter === "important") {
-    filteredTasks = tasks.filter((task) => isImportant(task));
+    filteredTasks = filteredTasks.filter((task) => isImportant(task));
   }
 
   if (activeFilter === "overdue") {
-    filteredTasks = tasks.filter((task) => {
+    filteredTasks = filteredTasks.filter((task) => {
       const deadline = new Date(task.deadline);
 
-      return deadline < today && !task.completed;
+      return deadline < today;
     });
   }
 
@@ -148,6 +268,12 @@ function Eisenhower() {
   const totalTasks = tasks.filter(
     (task) => !task.completed
   ).length;
+
+  const sortByDeadline = (taskList) => {
+    return [...taskList].sort((a, b) => {
+      return new Date(a.deadline) - new Date(b.deadline);
+    });
+  };
 
   const renderTask = (task, dotClass) => (
     <div className={styles.taskWrapper} key={task.id}>
@@ -286,10 +412,7 @@ function Eisenhower() {
                 {[1, 2, 3, 4, 5, 6, 7].map((day) => (
                   <button
                     key={day}
-                    onClick={() => {
-                      setUrgentDays(day);
-                      setShowUrgentMenu(false);
-                    }}
+                    onClick={() => handleUrgentDaysChange(day)}
                   >
                     {day} Day{day > 1 ? "s" : ""}
                   </button>
@@ -396,7 +519,7 @@ function Eisenhower() {
               </div>
 
               <div className={styles.taskList}>
-                {importantUrgent.map((task) =>
+                {sortByDeadline(importantUrgent).map((task) =>
                   renderTask(task, styles.redDot)
                 )}
               </div>
@@ -424,7 +547,7 @@ function Eisenhower() {
               </div>
 
               <div className={styles.taskList}>
-                {importantNotUrgent.map((task) =>
+                {sortByDeadline(importantNotUrgent).map((task) =>
                   renderTask(task, styles.greenDot)
                 )}
               </div>
@@ -454,7 +577,7 @@ function Eisenhower() {
               </div>
 
               <div className={styles.taskList}>
-                {notImportantUrgent.map((task) =>
+                {sortByDeadline(notImportantUrgent).map((task) =>
                   renderTask(task, styles.blueDot)
                 )}
               </div>
@@ -484,7 +607,7 @@ function Eisenhower() {
               </div>
 
               <div className={styles.taskList}>
-                {notImportantNotUrgent.map((task) =>
+                {sortByDeadline(notImportantNotUrgent).map((task) =>
                   renderTask(task, styles.orangeDot)
                 )}
               </div>

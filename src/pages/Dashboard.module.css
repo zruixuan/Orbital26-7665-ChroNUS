@@ -2096,7 +2096,7 @@
   padding: 0 14px;
 
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 300;
 }
 
 .importLinkBox .importButton {
@@ -2150,4 +2150,13 @@
 
 .importedSemesterSection .importedClassCard {
   margin-bottom: 12px;
+}
+
+/* ===== Unified Import Placeholder Color ===== */
+
+.importYearInput::placeholder,
+.importLinkBox .importInput::placeholder {
+  color: #9b9ba3;
+  font-weight: 300;
+  opacity: 1;
 }
