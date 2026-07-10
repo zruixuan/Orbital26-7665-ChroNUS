@@ -42,6 +42,10 @@ const [showAchievementModal, setShowAchievementModal] = useState(false);
 const [customAchievements, setCustomAchievements] = useState([]);
 const [newAchievement, setNewAchievement] = useState("");
 
+const [showStatusModal, setShowStatusModal] = useState(false);
+const [statusType, setStatusType] = useState("");
+const [statusMessage, setStatusMessage] = useState("");
+
 const maxLength = 500;
 
 const handleAnswerChange = (key, value) => {
@@ -53,11 +57,17 @@ const handleAnswerChange = (key, value) => {
   }
 };
 
+const openStatusModal = (type, message) => {
+  setStatusType(type);
+  setStatusMessage(message);
+  setShowStatusModal(true);
+};
+
 const handleAddAchievement = async () => {
   if (!newAchievement.trim()) return;
 
   if (!currentUser) {
-    alert("Please log in first.");
+    openStatusModal("error", "Please log in first.");
     return;
   }
 
@@ -86,7 +96,7 @@ const handleAddAchievement = async () => {
     );
   } catch (error) {
     console.error("Save achievement error:", error);
-    alert("Failed to save achievement.");
+    openStatusModal("error", "Failed to save achievement. Please try again.");
   }
 };
 
@@ -94,7 +104,96 @@ const [activities, setActivities] = useState([]);
 const [currentUser, setCurrentUser] = useState(null);
 
 useEffect(() => {
+  let unsubscribeOldTasks = null;
+  let unsubscribeTasks = null;
+  let unsubscribeEvents = null;
+
+  let oldTasksActivities = [];
+  let taskActivities = [];
+  let eventActivities = [];
+
+  const mergeActivities = () => {
+    const activityMap = new Map();
+
+    [...oldTasksActivities, ...taskActivities, ...eventActivities].forEach((item) => {
+      const uniqueKey = `${item.source}-${item.rawId}`;
+      activityMap.set(uniqueKey, item);
+    });
+
+    setActivities(Array.from(activityMap.values()));
+  };
+
+  const stopFirestoreListeners = () => {
+    if (unsubscribeOldTasks) unsubscribeOldTasks();
+    if (unsubscribeTasks) unsubscribeTasks();
+    if (unsubscribeEvents) unsubscribeEvents();
+
+    unsubscribeOldTasks = null;
+    unsubscribeTasks = null;
+    unsubscribeEvents = null;
+  };
+
+  const normalizeMixedActivity = (activityDoc) => {
+    const data = activityDoc.data();
+    const itemType = data.type === "event" ? "event" : "task";
+
+    return {
+      rawId: activityDoc.id,
+      source: "tasks",
+      id: `tasks-${activityDoc.id}`,
+      title:
+        data.title ||
+        (itemType === "event" ? "Untitled event" : "Untitled task"),
+      detail: data.detail || "",
+      type: itemType,
+      date:
+        itemType === "event"
+          ? data.startTime || data.date || ""
+          : data.deadline || data.date || "",
+      completed: itemType === "event" ? true : Boolean(data.completed),
+      important: data.importance?.toLowerCase() === "important",
+    };
+  };
+
+  const normalizeTaskActivity = (taskDoc) => {
+    const data = taskDoc.data();
+
+    return {
+      rawId: taskDoc.id,
+      source: "task",
+      id: `task-${taskDoc.id}`,
+      title: data.title || "Untitled task",
+      detail: data.detail || "",
+      type: "task",
+      date: data.deadline || data.date || "",
+      completed: Boolean(data.completed),
+      important: data.importance?.toLowerCase() === "important",
+    };
+  };
+
+  const normalizeEventActivity = (eventDoc) => {
+    const data = eventDoc.data();
+
+    return {
+      rawId: eventDoc.id,
+      source: "event",
+      id: `event-${eventDoc.id}`,
+      title: data.title || "Untitled event",
+      detail: data.detail || "",
+      type: "event",
+      date: data.startTime || data.date || "",
+      completed: true,
+      important: data.importance?.toLowerCase() === "important",
+    };
+  };
+
   const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+    stopFirestoreListeners();
+
+    oldTasksActivities = [];
+    taskActivities = [];
+    eventActivities = [];
+
     if (!user) {
       setCurrentUser(null);
       setActivities([]);
@@ -103,35 +202,59 @@ useEffect(() => {
 
     setCurrentUser(user);
 
-    const activitiesQuery = query(
+    const oldTasksQuery = query(
       collection(db, "tasks"),
       where("userId", "==", user.uid)
     );
 
-    const unsubscribeActivities = onSnapshot(activitiesQuery, (snapshot) => {
-      const activityData = snapshot.docs.map((doc) => {
-        const data = doc.data();
+    const tasksQuery = query(
+      collection(db, "task"),
+      where("userId", "==", user.uid)
+    );
 
-        return {
-          id: doc.id,
-          title: data.title,
-          detail: data.detail,
-          type: data.type,
-          date: data.type === "event" ? data.startTime : data.deadline,
-          completed: data.type === "event" ? true : data.completed,
-          important: data.importance?.toLowerCase() === "important",
-        };
-      });
+    const eventsQuery = query(
+      collection(db, "event"),
+      where("userId", "==", user.uid)
+    );
 
-      console.log("Weekly activities:", activityData);
+    unsubscribeOldTasks = onSnapshot(
+      oldTasksQuery,
+      (snapshot) => {
+        oldTasksActivities = snapshot.docs.map(normalizeMixedActivity);
+        mergeActivities();
+      },
+      (error) => {
+        console.error("Load old tasks collection error:", error);
+      }
+    );
 
-      setActivities(activityData);
-    });
+    unsubscribeTasks = onSnapshot(
+      tasksQuery,
+      (snapshot) => {
+        taskActivities = snapshot.docs.map(normalizeTaskActivity);
+        mergeActivities();
+      },
+      (error) => {
+        console.error("Load task collection error:", error);
+      }
+    );
 
-    return () => unsubscribeActivities();
+    unsubscribeEvents = onSnapshot(
+      eventsQuery,
+      (snapshot) => {
+        eventActivities = snapshot.docs.map(normalizeEventActivity);
+        mergeActivities();
+      },
+      (error) => {
+        console.error("Load event collection error:", error);
+      }
+    );
   });
 
-  return () => unsubscribeAuth();
+  return () => {
+    stopFirestoreListeners();
+    unsubscribeAuth();
+  };
 }, []);
 
 const getStartOfWeek = (date) => {
@@ -157,6 +280,21 @@ const formatDateKey = (date) => {
   const day = String(date.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
+};
+
+const parseActivityDate = (value) => {
+  if (!value) return null;
+
+  if (typeof value?.toDate === "function") {
+    return value.toDate();
+  }
+
+  if (value instanceof Date) {
+    return value;
+  }
+
+  const parsed = new Date(String(value).replace(" ", "T"));
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
 };
 
 const [currentWeekStart, setCurrentWeekStart] = useState(
@@ -201,7 +339,8 @@ const currentWeekEnd = addDays(currentWeekStart, 7);
 
 const currentWeekActivities = activities.filter((item) => {
   if (!item.date) return false;
-  const itemDate = new Date(item.date.replace(" ", "T"));
+  const itemDate = parseActivityDate(item.date);
+  if (!itemDate) return false;
   return itemDate >= currentWeekStart && itemDate < currentWeekEnd;
 });
 
@@ -234,7 +373,8 @@ const formatWeekRange = (startDate) => {
 };
 
 const formatDueDate = (dateString) => {
-  const date = new Date(dateString.replace(" ", "T"));
+  const date = parseActivityDate(dateString);
+  if (!date) return "No date";
 
   return date.toLocaleDateString("en-GB", {
     day: "numeric",
@@ -250,13 +390,12 @@ const weeklyAchievements = currentWeekActivities.filter(
 
 const nextWeekItems = activities
   .filter((item) => {
-    const itemDate = new Date(item.date.replace(" ", "T"));
-    return itemDate >= nextWeekStart && itemDate < nextWeekEnd;
+    const itemDate = parseActivityDate(item.date);
+    return itemDate && itemDate >= nextWeekStart && itemDate < nextWeekEnd;
   })
   .sort(
     (a, b) =>
-      new Date(a.date.replace(" ", "T")) -
-      new Date(b.date.replace(" ", "T"))
+      parseActivityDate(a.date) - parseActivityDate(b.date)
   )
   .slice(0, 3)
   .map((item) => ({
@@ -281,7 +420,7 @@ const overdue = currentWeekActivities.filter(
   (item) =>
     item.type === "task" &&
     !item.completed &&
-    new Date(item.date.replace(" ", "T")) < now
+    parseActivityDate(item.date) < now
 ).length;
 
 const completionRate =
@@ -313,7 +452,8 @@ const weekDays = Array.from({ length: 7 }).map((_, index) => {
 const activitiesByDay = weekDays.map((dayItem) => {
   const dayActivities = currentWeekActivities.filter(
     (item) =>
-      item.date?.split(" ")[0] === dayItem.fullDate &&
+      parseActivityDate(item.date) &&
+      formatDateKey(parseActivityDate(item.date)) === dayItem.fullDate &&
       item.completed
   );
 
@@ -348,12 +488,14 @@ const recommendation =
 
 const saveReflection = async () => {
   if (!currentUser) {
-    alert("Please log in first.");
+    openStatusModal("error", "Please log in first.");
     return;
   }
 
   const weekKey = formatDateKey(currentWeekStart);
   const reflectionId = `${currentUser.uid}_${weekKey}`;
+
+  openStatusModal("loading", "Saving your reflection...");
 
   try {
     await setDoc(
@@ -371,15 +513,16 @@ const saveReflection = async () => {
       { merge: true }
     );
 
-    alert("Reflection saved!");
+    openStatusModal("success", "Reflection saved successfully!");
   } catch (error) {
     console.error("Save reflection error:", error);
-    alert("Failed to save reflection.");
+    openStatusModal("error", "Failed to save reflection. Please try again.");
   }
 };
 
 const getOverdueText = (dateString) => {
-  const deadline = new Date(dateString.replace(" ", "T"));
+  const deadline = parseActivityDate(dateString);
+  if (!deadline) return "Invalid deadline";
   const diffMs = now - deadline;
 
   const diffMinutes = Math.floor(diffMs / (1000 * 60));
@@ -401,7 +544,7 @@ const overdueTasks = currentWeekActivities.filter(
   (item) =>
     item.type === "task" &&
     !item.completed &&
-    new Date(item.date.replace(" ", "T")) < now
+    parseActivityDate(item.date) < now
 );
 
     return (
@@ -836,6 +979,47 @@ const overdueTasks = currentWeekActivities.filter(
           </div>
         )}
         
+        {showStatusModal && (
+          <div className={styles.modalOverlay}>
+            <div className={styles.statusModalBox}>
+              <div
+                className={`${styles.statusIcon} ${
+                  statusType === "success"
+                    ? styles.successIcon
+                    : statusType === "error"
+                    ? styles.errorIcon
+                    : styles.loadingIcon
+                }`}
+              >
+                {statusType === "success" && "✓"}
+                {statusType === "error" && "!"}
+                {statusType === "loading" && (
+                  <span className={styles.spinner}></span>
+                )}
+              </div>
+
+              <h3>
+                {statusType === "success"
+                  ? "Success"
+                  : statusType === "error"
+                  ? "Something went wrong"
+                  : "Please wait"}
+              </h3>
+
+              <p>{statusMessage}</p>
+
+              {statusType !== "loading" && (
+                <button
+                  className={styles.statusBtn}
+                  onClick={() => setShowStatusModal(false)}
+                >
+                  OK
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         </main>
       </div>
     </div>
