@@ -103,17 +103,31 @@ function NavBar() {
     Tasks
   </NavLink>
   
-    <NavLink
+  <NavLink
     to="/timer"
     className={({ isActive }) =>
       `${styles.navItem} ${isActive ? styles.active : ""}`
     }
   >
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10"></circle>
-      <polyline points="12 6 12 12 16 14"></polyline>
+    <svg
+      width="19"
+      height="19"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="13" r="8" />
+      <path d="M12 9v4l2.5 1.5" />
+      <path d="M9 2h6" />
+      <path d="M12 2v3" />
+      <path d="M18 6l1.5-1.5" />
     </svg>
-    Timer
+
+    <span>Timer</span>
   </NavLink>
   
   <NavLink

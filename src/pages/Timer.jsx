@@ -54,12 +54,25 @@ function Timer() {
                     <header className={styles.header}>
                         <div>
                             <div className={styles.titleRow}>
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f15c22" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                <svg
+                                    width="23"
+                                    height="23"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="#f15c22"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <circle cx="12" cy="13" r="8" />
+                                    <path d="M12 9v4l2.5 1.5" />
+                                    <path d="M9 2h6" />
+                                    <path d="M12 2v3" />
+                                    <path d="M18 6l1.5-1.5" />
                                 </svg>
-                                <h1 className={styles.title}>Study Timer</h1>                            </div>
-                            <p className={styles.subtitle}>Focus better. Achieve more.</p>
+                                <h1 className={styles.title}>Study Timer</h1>                              
+                            </div>
                         </div>
 
                         <button
