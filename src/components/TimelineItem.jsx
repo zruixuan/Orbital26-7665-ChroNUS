@@ -1,7 +1,7 @@
 // src/components/TimelineItem.jsx
 import styles from '../pages/Dashboard.module.css'; 
 
-function TimelineItem({ item, isInactive, onToggle, onCardClick, showCurrentPointer }) {
+function TimelineItem({ item, isInactive, onToggle, onCardClick }) {
   const isEvent = item.type === "event";
   const isImportant = item.importance?.toLowerCase() === "important";
 
@@ -49,44 +49,14 @@ function TimelineItem({ item, isInactive, onToggle, onCardClick, showCurrentPoin
         transition: "all 0.2s ease"
       }}
     >
-      
-      {/* 附着在卡片居中位置的指针 (Current Time Pointer) */}
-      {showCurrentPointer && (
-        <div style={{
-          position: "absolute",
-          top: "50%",
-          left: "-30px", 
-          right: "-10px", 
-          display: "flex",
-          alignItems: "center",
-          zIndex: 10,
-          pointerEvents: "none",
-          transform: "translateY(-50%)"
-        }}>
-          <div style={{
-            width: "28px", height: "28px", borderRadius: "50%", 
-            backgroundColor: "#2b1d16", color: "white",
-            display: "flex", alignItems: "center", justifyContent: "center", 
-            fontSize: "10px", fontWeight: "bold",
-            border: "2px solid white", boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-            flexShrink: 0
-          }}>
-            Me
-          </div>
-          <div style={{ flex: 1, height: "2px", backgroundColor: "#f15c22", marginLeft: "8px", opacity: 0.8 }} />
-        </div>
-      )}
-
-      {/* 卡片内部结构 (Card Content) */}
       <div style={{ display: "flex", width: "100%", gap: "24px" }}>
         
-        {/* Left Column: 时间 */}
         <div style={{ 
           width: "145px", 
           flexShrink: 0, 
-          display: "flex",             /* 启用 Flexbox */
-          justifyContent: "center",    /* 水平居中 */
-          alignItems: "center",        /* 垂直居中 */
+          display: "flex",             
+          justifyContent: "center",    
+          alignItems: "center",        
           color: themeColor, 
           fontWeight: "600", 
           fontSize: "1.05rem",
@@ -94,24 +64,39 @@ function TimelineItem({ item, isInactive, onToggle, onCardClick, showCurrentPoin
           {timeDisplay}
         </div>
 
-        {/* Middle Column: 核心信息 */}
         <div style={{ 
           flex: 1, 
           minWidth: 0,
-          textAlign: "left" /* 强制文本左对齐 */ 
+          textAlign: "left"  
         }}>
-          <h3 style={{ margin: "0 0 6px 0", fontSize: "1.1rem", fontWeight: "600", color: "#1d1d1f" }}>
+          <h3 style={{ 
+            margin: "0 0 6px 0", 
+            fontSize: "1.1rem", 
+            fontWeight: "600", 
+            color: "#1d1d1f",
+            whiteSpace: "normal",
+            overflowWrap: "break-word",
+            wordBreak: "break-word"
+          }}>
             {item.title}
           </h3>
           
           {item.detail && (
-            <p style={{ margin: "0 0 12px 0", fontSize: "0.95rem", color: "#86868b", lineHeight: "1.4" }}>
+            <p style={{ 
+              margin: "0 0 12px 0", 
+              fontSize: "0.95rem", 
+              color: "#86868b", 
+              lineHeight: "1.4",
+              whiteSpace: "normal",
+              overflowWrap: "break-word",
+              wordBreak: "break-word"
+            }}>
               {item.detail}
             </p>
           )}
           
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            {/* Event/Task 标识 */}
+            {/* Event/Task */}
             <span style={{ 
               display: "inline-flex", alignItems: "center", gap: "4px",
               fontSize: "0.8rem", color: "#6b7280", backgroundColor: "#f3f4f6", 
@@ -120,7 +105,6 @@ function TimelineItem({ item, isInactive, onToggle, onCardClick, showCurrentPoin
               {isEvent ? "📅 Event" : "📋 Task"}
             </span>
             
-            {/* Importance 标识 */}
             {item.importance && (
               <span style={{
                 display: "inline-flex", alignItems: "center", gap: "4px",
@@ -135,7 +119,7 @@ function TimelineItem({ item, isInactive, onToggle, onCardClick, showCurrentPoin
           </div>
         </div>
 
-        {/* Right Column: 交互式 Badge */}
+        {/* Right Column */}
         <div style={{ flexShrink: 0, display: "flex", alignItems: "flex-start" }}>
           {isEvent ? (
             <span style={{ 

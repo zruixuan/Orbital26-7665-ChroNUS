@@ -48,7 +48,7 @@ function NavBar() {
 
         ChroNUS
       </div>
-
+ 
       {/* Navigation Links */}
       <nav className={styles.navLinks}>
   
