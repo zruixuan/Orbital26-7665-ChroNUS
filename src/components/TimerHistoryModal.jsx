@@ -34,7 +34,7 @@ function TimerHistoryModal({ isOpen, onClose }) {
         const unsubSessions = onSnapshot(q, (snapshot) => {
             const fetched = [];
             snapshot.forEach(doc => fetched.push({ id: doc.id, ...doc.data() }));
-            
+
             fetched.sort((a, b) => b.startTime.toDate() - a.startTime.toDate());
             setSessions(fetched);
         });
@@ -47,7 +47,7 @@ function TimerHistoryModal({ isOpen, onClose }) {
     return (
         <div className={styles.modalOverlay} onClick={onClose}>
             <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
-                
+
                 <div className={styles.modalHeader}>
                     <h2>Timer History</h2>
                     <button className={styles.closeBtn} onClick={onClose}>&times;</button>
@@ -77,11 +77,13 @@ function TimerHistoryModal({ isOpen, onClose }) {
                                 </div>
                                 <div className={styles.itemDetails}>
                                     <div className={styles.durationBadge}>
-                                        {session.duration} min
+                                        {session.status === 'abandoned'
+                                            ? `${session.completedDuration}/${session.targetDuration} min`
+                                            : `${session.duration} min`}
                                     </div>
                                     <div className={styles.linkedTasks}>
-                                        {(session.completedTasks?.length > 0 || session.completedEvents?.length > 0) ? 
-                                            <span className={styles.taskDone}>✓ Tasks/Events completed</span> : 
+                                        {(session.completedTasks?.length > 0 || session.completedEvents?.length > 0) ?
+                                            <span className={styles.taskDone}>✓ Tasks/Events completed</span> :
                                             <span className={styles.noTask}>No tasks linked</span>
                                         }
                                     </div>

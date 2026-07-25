@@ -1,6 +1,6 @@
 // src/hooks/useFocusTasks.js
 import { useState, useEffect, useMemo } from 'react';
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { collection, onSnapshot, query, where, doc, updateDoc } from "firebase/firestore";
 import { db, auth } from "../api/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -16,7 +16,7 @@ export const useFocusTasks = () => {
 
     useEffect(() => {
         let unsubscribeSnapshot = null;
-        
+
         const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
             if (unsubscribeSnapshot) {
                 unsubscribeSnapshot();
@@ -33,7 +33,7 @@ export const useFocusTasks = () => {
                 setTasks([]);
             }
         });
-        
+
         return () => {
             unsubscribeAuth();
             if (unsubscribeSnapshot) unsubscribeSnapshot();
@@ -54,7 +54,7 @@ export const useFocusTasks = () => {
         const todayUncompletedTasks = tasks.filter(t =>
             t.type === "task" && !t.completed && t.deadline && t.deadline.startsWith(todayStr)
         );
-        
+
         todayUncompletedTasks.sort((a, b) => a.deadline.localeCompare(b.deadline));
         const nextTaskDeadline = todayUncompletedTasks.length > 0 ? todayUncompletedTasks[0].deadline : null;
         const nextTasks = nextTaskDeadline ? todayUncompletedTasks.filter(t => t.deadline === nextTaskDeadline) : [];
@@ -62,5 +62,17 @@ export const useFocusTasks = () => {
         return [...currentEvents, ...nextTasks];
     }, [tasks]);
 
-    return { currentlyFocusingItems };
+    const toggleTaskCompletion = async (taskId, currentStatus) => {
+        if (!auth.currentUser) return;
+        try {
+            const taskRef = doc(db, "tasks", taskId);
+            await updateDoc(taskRef, {
+                completed: !currentStatus
+            });
+        } catch (error) {
+            console.error("Failed to toggle task completion:", error);
+        }
+    };
+
+    return { currentlyFocusingItems, toggleTaskCompletion };
 };

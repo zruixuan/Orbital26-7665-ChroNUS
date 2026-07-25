@@ -6,27 +6,32 @@ import { collection, addDoc } from 'firebase/firestore';
 
 export const useTimerEngine = () => {
     const [sessions, setSessions] = useState([
-        { id: 1, title: "Lesson Focus" },
-        { id: 2, title: "Project Development" },
-        { id: 3, title: "Reading Time" }
+        { id: 1, title: "Lesson Focus", duration: 25 },
+        { id: 2, title: "Project Development", duration: 50 },
+        { id: 3, title: "Reading Time", duration: 25 }
     ]);
     const [currentIndex, setCurrentIndex] = useState(0);
 
+    const focusDuration = sessions[currentIndex]?.duration || 25;
+
     const [timerMode, setTimerMode] = useState("countdown");
-    const [focusDuration, setFocusDuration] = useState(25);
     const [shortBreak, setShortBreak] = useState(5);
     const [longBreak, setLongBreak] = useState(15);
 
-    const initialTime = focusDuration * 60;
+    const [isBreak, setIsBreak] = useState(false);
+
+    const currentDuration = isBreak ? shortBreak : focusDuration;
+    const initialTime = currentDuration * 60;
+
     const [timeLeft, setTimeLeft] = useState(initialTime);
     const [isActive, setIsActive] = useState(false);
     const [hasStarted, setHasStarted] = useState(false);
 
     useEffect(() => {
-        if (!hasStarted) setTimeLeft(focusDuration * 60);
-    }, [focusDuration, hasStarted]);
+        if (!hasStarted) setTimeLeft(currentDuration * 60);
+    }, [focusDuration, shortBreak, isBreak, hasStarted, currentDuration]);
 
-     useEffect(() => {
+    useEffect(() => {
         let interval = null;
 
         if (isActive && timeLeft > 0) {
@@ -34,47 +39,60 @@ export const useTimerEngine = () => {
         } else if (timeLeft === 0 && isActive) {
             clearInterval(interval);
             setIsActive(false);
-            setHasStarted(false);
 
-            (async () => {
-                const endTime = new Date();
-                const startTime = new Date(endTime.getTime() - focusDuration * 60000);
+            const endTime = new Date();
+            const startTime = new Date(endTime.getTime() - currentDuration * 60000);
 
+            setTimeout(() => {
+                if (!isBreak) {
+                    const startBreak = window.confirm("Focus session completed! ☕️ Do you want to start a short break now?");
+                    if (startBreak) {
+                        setIsBreak(true);
+                        setTimeLeft(shortBreak * 60);
+                        setIsActive(true);
+                        setHasStarted(true);
+                    } else {
+                        setIsBreak(false);
+                        setHasStarted(false);
+                        setTimeLeft(focusDuration * 60);
+                    }
+                } else {
+                    alert("Break is over! Ready to focus again?");
+                    setIsBreak(false);
+                    setHasStarted(false);
+                    setTimeLeft(focusDuration * 60);
+                }
+            }, 50);
+
+            if (!isBreak && auth.currentUser) {
                 const sessionData = {
                     duration: focusDuration,
                     isPomodoro: timerMode === "countdown" && focusDuration === 25,
                     timerMode: timerMode,
                     startTime: startTime,
                     endTime: endTime,
-                    completedTasks: [], 
+                    completedTasks: [],
                     completedEvents: []
                 };
 
-                if (auth.currentUser) {
-                    try {
-                        await addDoc(collection(db, "sessions"), {
-                            ...sessionData,
-                            userId: auth.currentUser.uid,
-                            createdAt: new Date()
-                        });
-
-                        const newlyUnlocked = await checkAndUnlockAchievements(auth.currentUser.uid, sessionData);
-                        if (newlyUnlocked.length > 0) {
-                            alert(`Session completed! 🎉 You unlocked ${newlyUnlocked.length} new achievement(s)!`);
-                        } else {
-                            alert("Session completed! Time for a break.");
-                        }
-                    } catch (error) {
-                        console.error("Failed to save session:", error);
+                addDoc(collection(db, "sessions"), {
+                    ...sessionData,
+                    userId: auth.currentUser.uid,
+                    createdAt: new Date()
+                }).then(() => {
+                    return checkAndUnlockAchievements(auth.currentUser.uid, sessionData);
+                }).then(newlyUnlocked => {
+                    if (newlyUnlocked && newlyUnlocked.length > 0) {
+                        setTimeout(() => alert(`🎉 You unlocked ${newlyUnlocked.length} new achievement(s)!`), 500);
                     }
-                } else {
-                    alert("Session completed! Time for a break.");
-                }
-            })();
+                }).catch(error => {
+                    console.error("Failed to save session:", error);
+                });
+            }
         }
 
         return () => clearInterval(interval);
-    }, [isActive, timeLeft, focusDuration, timerMode]);
+    }, [isActive, timeLeft, focusDuration, shortBreak, timerMode, isBreak, currentDuration]);
 
 
     const toggleTimer = () => {
@@ -82,21 +100,82 @@ export const useTimerEngine = () => {
         setIsActive(!isActive);
     };
 
-    const resetTimer = () => {
-        if (hasStarted && timeLeft < initialTime && !window.confirm("Discard progress?")) return;
-        setIsActive(false); 
-        setHasStarted(false); 
-        setTimeLeft(initialTime);
-    };
+    const resetTimer = async () => {
+        if (isBreak) {
+            if (window.confirm("Skip the rest of your break and start focusing now?")) {
+                setIsBreak(false);
+                setHasStarted(true);
+                setIsActive(true);
+                setTimeLeft(focusDuration * 60);
+            }
+            return;
+        } const isProgressMade = hasStarted && timeLeft < initialTime;
 
-    const handleDurationChange = (minutes) => {
-        if (hasStarted) {
-            if (!window.confirm("Changing duration will reset your current progress. Continue?")) return;
+        if (isProgressMade && !window.confirm("Discard progress?")) return;
+
+        let abandonedSessionData = null;
+        if (isProgressMade && timerMode === "countdown" && !isBreak) {
+            const completedSeconds = initialTime - timeLeft;
+            const completedMinutes = Math.round(completedSeconds / 60);
+
+            if (completedSeconds > 0) {
+                const endTime = new Date();
+                const startTime = new Date(endTime.getTime() - (completedSeconds * 1000));
+
+                abandonedSessionData = {
+                    targetDuration: focusDuration,
+                    completedDuration: completedMinutes,
+                    status: 'abandoned',
+                    isPomodoro: false,
+                    timerMode: timerMode,
+                    startTime: startTime,
+                    endTime: endTime
+                };
+            }
         }
-        setFocusDuration(minutes);
+
         setIsActive(false);
         setHasStarted(false);
-        setTimeLeft(minutes * 60);
+        setIsBreak(false);
+        setTimeLeft(focusDuration * 60);
+
+        if (abandonedSessionData && auth.currentUser) {
+            addDoc(collection(db, "sessions"), {
+                ...abandonedSessionData,
+                userId: auth.currentUser.uid,
+                createdAt: new Date()
+            }).catch(error => {
+                console.error("Failed to save abandoned session:", error);
+            });
+        }
+    };
+
+    const switchSession = (newIndex) => {
+        if (hasStarted && !isBreak) {
+            if (!window.confirm("Switching sessions will discard current progress. Continue?")) return;
+        }
+        setCurrentIndex(newIndex);
+        setIsActive(false);
+        setHasStarted(false);
+        setIsBreak(false);
+        setTimeLeft(sessions[newIndex].duration * 60);
+    };
+
+    const handlePrev = () => switchSession(currentIndex > 0 ? currentIndex - 1 : sessions.length - 1);
+    const handleNext = () => switchSession(currentIndex < sessions.length - 1 ? currentIndex + 1 : 0);
+
+    const handleDurationChange = (minutes) => {
+        if (hasStarted && !isBreak) {
+            if (!window.confirm("Changing duration will reset your current progress. Continue?")) return;
+        }
+
+        const updated = [...sessions];
+        updated[currentIndex].duration = minutes;
+        setSessions(updated);
+
+        setIsActive(false);
+        setHasStarted(false);
+        if (!isBreak) setTimeLeft(minutes * 60);
     };
 
     const handleCustomDuration = () => {
@@ -116,8 +195,6 @@ export const useTimerEngine = () => {
         }
     };
 
-    const handlePrev = () => setCurrentIndex((prev) => (prev > 0 ? prev - 1 : sessions.length - 1));
-    const handleNext = () => setCurrentIndex((prev) => (prev < sessions.length - 1 ? prev + 1 : 0));
     const handleTitleChange = (e) => {
         const updated = [...sessions];
         updated[currentIndex].title = e.target.value;
@@ -129,6 +206,7 @@ export const useTimerEngine = () => {
 
     return {
         sessions, currentIndex, timerMode, setTimerMode, focusDuration, shortBreak, longBreak,
+        isBreak,
         timeLeft, isActive, hasStarted, initialTime, displaySeconds, progressRatio,
         toggleTimer, resetTimer, handleDurationChange, handleCustomDuration, handleBreakEdit,
         handlePrev, handleNext, handleTitleChange

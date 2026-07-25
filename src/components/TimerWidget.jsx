@@ -9,13 +9,14 @@ function TimerWidget() {
     const {
         sessions, currentIndex, timerMode, setTimerMode, 
         focusDuration, shortBreak, longBreak,
-        isActive, hasStarted, displaySeconds, progressRatio,
+        isBreak, isActive, hasStarted, displaySeconds, progressRatio,
         toggleTimer, resetTimer, handleDurationChange, 
         handleCustomDuration, handleBreakEdit,
         handlePrev, handleNext, handleTitleChange
     } = useTimerEngine();
     
-    const { currentlyFocusingItems } = useFocusTasks();
+    // 解构出 toggleTaskCompletion 方法
+    const { currentlyFocusingItems, toggleTaskCompletion } = useFocusTasks();
 
     const formatTime = (seconds) => {
         const m = Math.floor(seconds / 60).toString().padStart(2, '0');
@@ -46,21 +47,33 @@ function TimerWidget() {
                     <div className={styles.circleWrapper}>
                         <svg className={styles.svgRing} width={size} height={size}>
                             <circle cx={center} cy={center} r={radius} fill="none" stroke="#f5f5f7" strokeWidth="14" />
-                            <circle cx={center} cy={center} r={radius} fill="none" stroke="#f15c22" strokeWidth="14" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} strokeLinecap="round" style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%', transition: 'stroke-dashoffset 1s linear' }} />
+                            {/* 休息模式时，进度条颜色可以变更为绿色系，这里用三元运算根据 isBreak 动态调整 stroke */}
+                            <circle cx={center} cy={center} r={radius} fill="none" stroke={isBreak ? "#34c759" : "#f15c22"} strokeWidth="14" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} strokeLinecap="round" style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%', transition: 'stroke-dashoffset 1s linear' }} />
                         </svg>
                         <div className={styles.circleContent}>
-                            <div className={styles.statusText}>{!hasStarted ? "Focus Time" : (isActive ? "Focusing..." : "Paused")}</div>
+                            {/* 动态状态文案 (Dynamic Status Text) */}
+                            <div className={styles.statusText}>
+                                {isBreak 
+                                    ? (isActive ? "Break Time ☕️" : "Break Paused") 
+                                    : (!hasStarted ? "Focus Time" : (isActive ? "Focusing..." : "Paused"))}
+                            </div>
                             <h1 className={styles.timeDisplay}>{formatTime(displaySeconds)}</h1>
-                            {!hasStarted && <div className={styles.readyText}>Ready to focus?</div>}
+                            {!hasStarted && <div className={styles.readyText}>{isBreak ? "Ready to recharge?" : "Ready to focus?"}</div>}
                         </div>
                     </div>
                     
                     <div className={styles.actionRow}>
-                        <button className={styles.startButton} onClick={toggleTimer} style={{ background: !hasStarted ? "#f15c22" : (!isActive ? "#34c759" : "#1d1d1f") }}>
-                            {isActive ? <><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg> Pause</> : <><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> {hasStarted ? "Resume" : "Start Focus"}</>}
+                        <button className={styles.startButton} onClick={toggleTimer} style={{ background: !hasStarted ? (isBreak ? "#34c759" : "#f15c22") : (!isActive ? "#34c759" : "#1d1d1f") }}>
+                            {isActive 
+                                ? <><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg> Pause</> 
+                                : <><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> {hasStarted ? "Resume" : (isBreak ? "Start Break" : "Start Focus")}</>
+                            }
                         </button>
-                        <button className={styles.resetButton} onClick={resetTimer} disabled={!hasStarted} style={{ opacity: hasStarted ? 1 : 0.4, cursor: hasStarted ? 'pointer' : 'not-allowed' }}>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                        <button className={styles.resetButton} onClick={resetTimer} disabled={!hasStarted && !isBreak} style={{ opacity: (hasStarted || isBreak) ? 1 : 0.4, cursor: (hasStarted || isBreak) ? 'pointer' : 'not-allowed' }} title={isBreak ? "Skip Break" : "Reset Timer"}>
+                            {isBreak 
+                                ? <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg> // Skip icon for break
+                                : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                            }
                         </button>
                     </div>
                     
@@ -127,12 +140,30 @@ function TimerWidget() {
                     <div className={styles.focusingList}>
                         {currentlyFocusingItems.length > 0 ? (
                             currentlyFocusingItems.map(item => (
-                                <div key={item.id} className={styles.focusingItem}>
-                                    <div className={styles.focusingItemTitle}>{item.title}</div>
-                                    <div className={styles.focusingItemTime}>
-                                        {item.type === 'event'
-                                            ? `In Progress until ${item.endTime.split(' ')[1]}`
-                                            : `Task due by ${item.deadline.split(' ')[1]}`}
+                                <div key={item.id} className={styles.focusingItem} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    
+                                    {/* 仅在类型为 task 时渲染 Checkbox */}
+                                    {item.type === 'task' && (
+                                        <input 
+                                            type="checkbox" 
+                                            checked={item.completed || false} 
+                                            onChange={() => toggleTaskCompletion(item.id, item.completed)}
+                                            style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                                        />
+                                    )}
+
+                                    <div style={{ flex: 1 }}>
+                                        <div 
+                                            className={styles.focusingItemTitle} 
+                                            style={{ textDecoration: item.completed ? 'line-through' : 'none', opacity: item.completed ? 0.6 : 1 }}
+                                        >
+                                            {item.type === 'event' ? '📅 ' : ''}{item.title}
+                                        </div>
+                                        <div className={styles.focusingItemTime}>
+                                            {item.type === 'event'
+                                                ? `In Progress until ${item.endTime.split(' ')[1]}`
+                                                : `Task due by ${item.deadline.split(' ')[1]}`}
+                                        </div>
                                     </div>
                                 </div>
                             ))
