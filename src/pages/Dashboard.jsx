@@ -33,7 +33,6 @@ const getSecondMondayOfMonth = (year, monthIndex) => {
 
     date.setDate(date.getDate() + 1);
   }
-
   return "";
 };
 
@@ -982,6 +981,7 @@ const handleDeleteImportedGroup = async (group) => {
 
             <div className={styles.dateCarousel}>
               <button
+                aria-label="Previous date"
                 onClick={() => shiftDate(-1)}
                 className={styles.carouselArrowButton}
               >
@@ -1016,6 +1016,7 @@ const handleDeleteImportedGroup = async (group) => {
               })}
 
               <button
+                aria-label="Next date"
                 onClick={() => shiftDate(1)}
                 className={styles.carouselArrowButton}
               >

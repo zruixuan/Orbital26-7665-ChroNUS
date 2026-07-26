@@ -1,6 +1,11 @@
 import NavBar from "../components/NavBar";
 import styles from "./Eisenhower.module.css";
 import { useState, useEffect } from "react";
+import {
+  isUrgent as checkUrgent,
+  isImportant,
+  isUnimportant,
+} from '../utils/eisenhowerUtils'
 
 import {
   collection,
@@ -200,20 +205,7 @@ function Eisenhower() {
   return ` ❗️ ${diffDays} day${diffDays > 1 ? "s" : ""} overdue`;
 };
 
-  const isUrgent = (task) => {
-    const deadline = new Date(task.deadline);
-    const diffTime = deadline - today;
-    const diffDays = diffTime / (1000 * 60 * 60 * 24);
-
-    return diffDays <= urgentDays;
-  };
-
-  const isImportant = (task) =>
-    task.importance?.toLowerCase() === "important";
-
-  const isUnimportant = (task) =>
-    task.importance?.toLowerCase() === "unimportant";
-
+  const isUrgent = (task) => checkUrgent(task, urgentDays, today)
   const displayImportance = (task) =>
     isImportant(task) ? "Important" : "Unimportant";
 
@@ -504,7 +496,9 @@ function Eisenhower() {
           </div>
 
           <section className={styles.matrix}>
-            <div className={`${styles.quadrant} ${styles.doFirst}`}>
+            <div 
+              data-testid="important-urgent-quadrant"
+                className={`${styles.quadrant} ${styles.doFirst}`}>
               <div className={styles.quadrantHeader}>
                 <div className={styles.quadrantTitleRow}>
                   <div className={`${styles.quadrantIcon} ${styles.redIcon}`}>
