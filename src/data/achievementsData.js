@@ -3,39 +3,255 @@
 export const achievementsData = [
 
   // Libraries (Total Study Time)
-  { id: "lib_1", type: "total_time", requirement: 1, title: "Medicine and Science Library", description: "Total study time reached 1 hour.", icon: "/achievements/med-sci-lib.png" },
-  { id: "lib_10", type: "total_time", requirement: 10, title: "Wan Boo Sow Chinese Library", description: "Total study time reached 10 hours.", icon: "/achievements/chinese-lib.png" },
-  { id: "lib_50", type: "total_time", requirement: 50, title: "Hon Sui Sen Memorial Library", description: "Total study time reached 50 hours.", icon: "/achievements/hss-lib.png" },
-  { id: "lib_100", type: "total_time", requirement: 100, title: "C J Koh Law Library", description: "Total study time reached 100 hours.", icon: "/achievements/law-lib.png" },
-  { id: "lib_500", type: "total_time", requirement: 500, title: "Central Library", description: "Total study time reached 500 hours. A true scholar!", icon: "/achievements/central-lib.png" },
+  { 
+    id: "lib_1", 
+    type: "total_time", 
+    requirement: 1, 
+    title: "Medicine and Science Library", 
+    description: "Total study time reached 1 hour.", 
+    icon: "/achievements/med-sci-lib.png",
+    introduction: "Located at Kent Ridge Campus, MSL supports the Yong Loo Lin School of Medicine, Faculty of Science, and Dentistry with specialized medical and scientific resources."
+  },
+  { 
+    id: "lib_10", 
+    type: "total_time", 
+    requirement: 10, 
+    title: "Wan Boo Sow Chinese Library", 
+    description: "Total study time reached 10 hours.", 
+    icon: "/achievements/chinese-lib.png",
+    introduction: "Situated within Central Library, this specialized library houses one of the most comprehensive academic Chinese collections in Southeast Asia."
+  },
+  { 
+    id: "lib_50", 
+    type: "total_time", 
+    requirement: 50, 
+    title: "Hon Sui Sen Memorial Library", 
+    description: "Total study time reached 50 hours.", 
+    icon: "/achievements/hss-lib.png",
+    introduction: "Named after Singapore's former Finance Minister, HSSML is located near NUS Business School and provides specialized business and financial databases."
+  },
+  { 
+    id: "lib_100", 
+    type: "total_time", 
+    requirement: 100, 
+    title: "C J Koh Law Library", 
+    description: "Total study time reached 100 hours.", 
+    icon: "/achievements/law-lib.png",
+    introduction: "Nestled in the Bukit Timah Campus, the Law Library serves the Faculty of Law with an extensive collection of legal literature, statutes, and case law."
+  },
+  { 
+    id: "lib_500", 
+    type: "total_time", 
+    requirement: 500, 
+    title: "Central Library", 
+    description: "Total study time reached 500 hours. A true scholar!", 
+    icon: "/achievements/central-lib.png",
+    introduction: "The flagship library of NUS located at Forum, housing multidisciplinary research collections, high-tech collaborative spaces, and 24/7 study areas."
+  },
 
   // Halls (Single Session Duration)
-  { id: "hall_10m", type: "single_time", requirement: 10/60, title: "Sheares Hall", description: "Focused for 10 mins in a single session.", icon: "/achievements/sheares.png" },
-  { id: "hall_30m", type: "single_time", requirement: 30/60, title: "King Edward VII Hall", description: "Focused for 30 mins in a single session.", icon: "/achievements/ke7.png" },
-  { id: "hall_1h", type: "single_time", requirement: 1, title: "Eusoff Hall", description: "Focused for 1 hour in a single session.", icon: "/achievements/eusoff.png" },
-  { id: "hall_2h", type: "single_time", requirement: 2, title: "Raffles Hall", description: "Focused for 2 hours in a single session.", icon: "/achievements/raffles.png" },
-  { id: "hall_5h", type: "single_time", requirement: 5, title: "Kent Ridge Hall", description: "Focused for 5 hours in a single session.", icon: "/achievements/kent-ridge.png" },
-  { id: "hall_8h", type: "single_time", requirement: 8, title: "Temasek Hall", description: "Focused for 8 hours in a single session.", icon: "/achievements/temasek.png" },
+  { 
+    id: "hall_10m", 
+    type: "single_time", 
+    requirement: 10/60, 
+    title: "Sheares Hall", 
+    description: "Focused for 10 mins in a single session.", 
+    icon: "/achievements/sheares.png",
+    introduction: "Named after Singapore's second President Dr. Benjamin Sheares, this hall is known for its vibrant culture, leadership initiatives, and strong community spirit."
+  },
+  { 
+    id: "hall_30m", 
+    type: "single_time", 
+    requirement: 30/60, 
+    title: "King Edward VII Hall", 
+    description: "Focused for 30 mins in a single session.", 
+    icon: "/achievements/ke7.png",
+    introduction: "Rich in history, KEVII Hall traces its roots back to 1916 and fosters a close-knit residential tradition with active involvement in cultural and sports events."
+  },
+  { 
+    id: "hall_1h", 
+    type: "single_time", 
+    requirement: 1, 
+    title: "Eusoff Hall", 
+    description: "Focused for 1 hour in a single session.", 
+    icon: "/achievements/eusoff.png",
+    introduction: "Renowned for its excellence in sports and performing arts, Eusoff Hall fosters holistic development and lifelong bonds among its residents."
+  },
+  { 
+    id: "hall_2h", 
+    type: "single_time", 
+    requirement: 2, 
+    title: "Raffles Hall", 
+    description: "Focused for 2 hours in a single session.", 
+    icon: "/achievements/raffles.png",
+    introduction: "Located near the Cultural Centre and Engineering quad, Raffles Hall offers a warm residential experience guided by its motto 'Phoenix Strives for Excellence'."
+  },
+  { 
+    id: "hall_5h", 
+    type: "single_time", 
+    requirement: 5, 
+    title: "Kent Ridge Hall", 
+    description: "Focused for 5 hours in a single session.", 
+    icon: "/achievements/kent-ridge.png",
+    introduction: "Situated right next to the Sports Centre, KR Hall emphasizes sports, volunteerism, and active participation in university life."
+  },
+  { 
+    id: "hall_8h", 
+    type: "single_time", 
+    requirement: 8, 
+    title: "Temasek Hall", 
+    description: "Focused for 8 hours in a single session.", 
+    icon: "/achievements/temasek.png",
+    introduction: "Famed for its dynamic spirit and sports prowess, Temasek Hall empowers students through diverse co-curricular activities and residential learning."
+  },
 
   // Houses (Tasks in Single Session)
-  { id: "house_1", type: "single_tasks", requirement: 1, title: "Pioneer House", description: "Completed 1 task in a single session.", icon: "/achievements/pioneer.png" },
-  { id: "house_3", type: "single_tasks", requirement: 3, title: "LightHouse", description: "Completed 3 tasks in a single session.", icon: "/achievements/lighthouse.png" },
-  { id: "house_5", type: "single_tasks", requirement: 5, title: "Helix House", description: "Completed 5 tasks in a single session.", icon: "/achievements/helix.png" },
-  { id: "house_10", type: "single_tasks", requirement: 10, title: "Valour House", description: "Completed 10 tasks in a single session.", icon: "/achievements/valour.png" },
+  { 
+    id: "house_1", 
+    type: "single_tasks", 
+    requirement: 1, 
+    title: "Pioneer House", 
+    description: "Completed 1 task in a single session.", 
+    icon: "/achievements/pioneer.png",
+    introduction: "Pioneer House offers a non-meal-plan hostel option that emphasizes personal leadership, self-directed community projects, and cross-cultural exchanges."
+  },
+  { 
+    id: "house_3", 
+    type: "single_tasks", 
+    requirement: 3, 
+    title: "LightHouse", 
+    description: "Completed 3 tasks in a single session.", 
+    icon: "/achievements/lighthouse.png",
+    introduction: "A vibrant Student Residence housing community that promotes holistic well-being, peer support networks, and experiential learning."
+  },
+  { 
+    id: "house_5", 
+    type: "single_tasks", 
+    requirement: 5, 
+    title: "Helix House", 
+    description: "Completed 5 tasks in a single session.", 
+    icon: "/achievements/helix.png",
+    introduction: "Helix House provides residents with opportunities to build collaborative networks, active living habits, and engaging local community projects."
+  },
+  { 
+    id: "house_10", 
+    type: "single_tasks", 
+    requirement: 10, 
+    title: "Valour House", 
+    description: "Completed 10 tasks in a single session.", 
+    icon: "/achievements/valour.png",
+    introduction: "Part of NUS Student Residences, Valour House creates a supportive environment focused on resilience, leadership, and personal growth."
+  },
 
   // Residential Colleges (Pomodoro Count)
-  { id: "col_1", type: "pomodoro", requirement: 1, title: "Tembusu College", description: "Completed 1 Pomodoro session.", icon: "/achievements/tembusu.png" },
-  { id: "col_3", type: "pomodoro", requirement: 3, title: "CAPT", description: "Completed 3 Pomodoro sessions.", icon: "/achievements/capt.png" },
-  { id: "col_5", type: "pomodoro", requirement: 5, title: "RVRC", description: "Completed 5 Pomodoro sessions.", icon: "/achievements/rvrc.png" },
-  { id: "col_10", type: "pomodoro", requirement: 10, title: "RC4", description: "Completed 10 Pomodoro sessions.", icon: "/achievements/rc4.png" },
-  { id: "col_20", type: "pomodoro", requirement: 20, title: "Acacia College", description: "Completed 20 Pomodoro sessions.", icon: "/achievements/acacia.png" },
+  { 
+    id: "col_1", 
+    type: "pomodoro", 
+    requirement: 1, 
+    title: "Tembusu College", 
+    description: "Completed 1 Pomodoro session.", 
+    icon: "/achievements/tembusu.png",
+    introduction: "Known as the 'Home of Possibilities' at University Town, Tembusu focuses on multidisciplinary learning, active seminars, and critical thinking."
+  },
+  { 
+    id: "col_3", 
+    type: "pomodoro", 
+    requirement: 3, 
+    title: "CAPT", 
+    description: "Completed 3 Pomodoro sessions.", 
+    icon: "/achievements/capt.png",
+    introduction: "College of Alice & Peter Tan integrates active community engagement with academic learning, encouraging students to contribute meaningfully to society."
+  },
+  { 
+    id: "col_5", 
+    type: "pomodoro", 
+    requirement: 5, 
+    title: "RVRC", 
+    description: "Completed 5 Pomodoro sessions.", 
+    icon: "/achievements/rvrc.png",
+    introduction: "Ridge View Residential College emphasizes sustainability, environmental stewardship, and workplace readiness integrated into its living-learning curriculum."
+  },
+  { 
+    id: "col_10", 
+    type: "pomodoro", 
+    requirement: 10, 
+    title: "RC4", 
+    description: "Completed 10 Pomodoro sessions.", 
+    icon: "/achievements/rc4.png",
+    introduction: "Residential College 4 centers its curriculum around Systems Thinking, equipping students to analyze complex socio-technical problems holistically."
+  },
+  { 
+    id: "col_20", 
+    type: "pomodoro", 
+    requirement: 20, 
+    title: "Acacia College", 
+    description: "Completed 20 Pomodoro sessions.", 
+    icon: "/achievements/acacia.png",
+    introduction: "One of the modern residential setups at UTown, fostering an inclusive community and diverse living-learning programs for undergraduates."
+  },
 
   // Hidden Achievements
-  { id: "hide_freshman", type: "hidden", isHidden: true, title: "Freshman", description: "Completed at least one countup and one countdown session.", icon: "/achievements/freshman.png" },
-  { id: "hide_final_week", type: "hidden", isHidden: true, title: "Final Week", description: "Studied for 7 consecutive days.", icon: "/achievements/final-week.png" },
-  { id: "hide_night_owl", type: "hidden", isHidden: true, title: "Night Owl", description: "Studied for 2 hours between 12 AM and 4 AM.", icon: "/achievements/night-owl.png" },
-  { id: "hide_early_bird", type: "hidden", isHidden: true, title: "Early Bird", description: "Studied for 1 hour between 4 AM and 7 AM.", icon: "/achievements/early-bird.png" },
-  { id: "hide_cap_5", type: "hidden", isHidden: true, title: "CAP 5.0", description: "Accumulated 500 hours of total study time.", icon: "/achievements/cap-5.png" },
-  { id: "hide_welcome_back", type: "hidden", isHidden: true, title: "Welcome Back", description: "Returned to study after a 1-week break.", icon: "/achievements/welcome-back.png" },
-  { id: "hide_nice_break", type: "hidden", isHidden: true, title: "Nice to Have a Break", description: "Accumulated 10 hours of study in a single day.", icon: "/achievements/nice-break.png" },
+  { 
+    id: "hide_freshman", 
+    type: "hidden", 
+    isHidden: true, 
+    title: "Freshman", 
+    description: "Completed at least one countup and one countdown session.", 
+    icon: "/achievements/freshman.png",
+    introduction: "Marking your official induction into NUS campus life—taking your first steps across both flexible study and timed focus sessions."
+  },
+  { 
+    id: "hide_final_week", 
+    type: "hidden", 
+    isHidden: true, 
+    title: "Final Week", 
+    description: "Studied for 7 consecutive days.", 
+    icon: "/achievements/final-week.png",
+    introduction: "A homage to the legendary Reading Week at NUS, where students across campus pull together to review lectures and prepare for exams."
+  },
+  { 
+    id: "hide_night_owl", 
+    type: "hidden", 
+    isHidden: true, 
+    title: "Night Owl", 
+    description: "Studied for 2 hours between 12 AM and 4 AM.", 
+    icon: "/achievements/night-owl.png",
+    introduction: "Commemorating late-night study sessions at UTown MacCommons or 24-hour study spots across campus under the Singapore night sky."
+  },
+  { 
+    id: "hide_early_bird", 
+    type: "hidden", 
+    isHidden: true, 
+    title: "Early Bird", 
+    description: "Studied for 1 hour between 4 AM and 7 AM.", 
+    icon: "/achievements/early-bird.png",
+    introduction: "Honoring those who catch the earliest campus shuttles and start their learning journey as Kent Ridge wakes up."
+  },
+  { 
+    id: "hide_cap_5", 
+    type: "hidden", 
+    isHidden: true, 
+    title: "CAP 5.0", 
+    description: "Accumulated 500 hours of total study time.", 
+    icon: "/achievements/cap-5.png",
+    introduction: "Symbolizing academic excellence and unwavering focus, reflecting the highest achievable Cumulative Average Point at NUS."
+  },
+  { 
+    id: "hide_welcome_back", 
+    type: "hidden", 
+    isHidden: true, 
+    title: "Welcome Back", 
+    description: "Returned to study after a 1-week break.", 
+    icon: "/achievements/welcome-back.png",
+    introduction: "Reflecting the return from a well-deserved Recess Week, recharged and ready to tackle the rest of the semester."
+  },
+  { 
+    id: "hide_nice_break", 
+    type: "hidden", 
+    isHidden: true, 
+    title: "Nice to Have a Break", 
+    description: "Accumulated 10 hours of study in a single day.", 
+    icon: "/achievements/nice-break.png",
+    introduction: "A tribute to intense assignment marathon days before major project submission deadlines."
+  },
 ];

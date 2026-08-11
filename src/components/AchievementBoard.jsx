@@ -1,11 +1,16 @@
 // src/components/AchievementBoard.jsx
+"use client";
+import { useState } from 'react';
 import { achievementsData } from '../data/achievementsData';
 import styles from './AchievementBoard.module.css'; 
-
 
 const PLACEHOLDER_IMG = "/achievements/hidden-placeholder.png";
 
 function AchievementBoard({ userUnlockedIds = [] }) {
+  const [selectedAch, setSelectedAch] = useState(null);
+
+  const closeModal = () => setSelectedAch(null);
+
   return (
     <div className={styles.boardContainer}>
       <h2 className={styles.boardTitle}>Campus Milestones</h2>
@@ -23,6 +28,7 @@ function AchievementBoard({ userUnlockedIds = [] }) {
             <div 
               key={ach.id} 
               className={`${styles.achievementCard} ${isUnlocked ? styles.unlocked : styles.locked}`}
+              onClick={() => setSelectedAch(ach)} 
             >
               <div className={styles.iconWrapper}>
                 <img 
@@ -40,6 +46,41 @@ function AchievementBoard({ userUnlockedIds = [] }) {
           );
         })}
       </div>
+
+      {selectedAch && (
+        <div className={styles.modalOverlay} onClick={closeModal}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <button className={styles.closeBtn} onClick={closeModal}>×</button>
+            
+            <img 
+              src={selectedAch.icon} 
+              alt={selectedAch.title} 
+              className={styles.modalImage} 
+            />
+            <h2 className={styles.modalTitle}>{selectedAch.title}</h2>
+            
+            <div className={styles.modalDetails}>
+              <div className={styles.detailSection}>
+                <strong>Requirement: </strong>
+                <span>
+                  {(!userUnlockedIds.includes(selectedAch.id) && selectedAch.isHidden) 
+                    ? "???" 
+                    : selectedAch.description}
+                </span>
+              </div>
+              
+              <div className={styles.detailSection}>
+                <strong>Introduction: </strong>
+                <span>
+                  {userUnlockedIds.includes(selectedAch.id) 
+                    ? selectedAch.introduction 
+                    : "???"}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
