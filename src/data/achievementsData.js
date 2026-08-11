@@ -9,7 +9,7 @@ export const achievementsData = [
     requirement: 1, 
     title: "Medicine and Science Library", 
     description: "Total study time reached 1 hour.", 
-    icon: "/achievements/med-sci-lib.png",
+    icon: "/achievements/med-sci-lib.jpg",
     introduction: "Located at Kent Ridge Campus, MSL supports the Yong Loo Lin School of Medicine, Faculty of Science, and Dentistry with specialized medical and scientific resources."
   },
   { 
@@ -18,7 +18,7 @@ export const achievementsData = [
     requirement: 10, 
     title: "Wan Boo Sow Chinese Library", 
     description: "Total study time reached 10 hours.", 
-    icon: "/achievements/chinese-lib.png",
+    icon: "/achievements/chinese-lib.jpg",
     introduction: "Situated within Central Library, this specialized library houses one of the most comprehensive academic Chinese collections in Southeast Asia."
   },
   { 
@@ -27,7 +27,7 @@ export const achievementsData = [
     requirement: 50, 
     title: "Hon Sui Sen Memorial Library", 
     description: "Total study time reached 50 hours.", 
-    icon: "/achievements/hss-lib.png",
+    icon: "/achievements/hss-lib.jpg", 
     introduction: "Named after Singapore's former Finance Minister, HSSML is located near NUS Business School and provides specialized business and financial databases."
   },
   { 
@@ -36,7 +36,7 @@ export const achievementsData = [
     requirement: 100, 
     title: "C J Koh Law Library", 
     description: "Total study time reached 100 hours.", 
-    icon: "/achievements/law-lib.png",
+    icon: "/achievements/law-lib.jpg",
     introduction: "Nestled in the Bukit Timah Campus, the Law Library serves the Faculty of Law with an extensive collection of legal literature, statutes, and case law."
   },
   { 
@@ -45,7 +45,7 @@ export const achievementsData = [
     requirement: 500, 
     title: "Central Library", 
     description: "Total study time reached 500 hours. A true scholar!", 
-    icon: "/achievements/central-lib.png",
+    icon: "/achievements/central-lib.jpeg",
     introduction: "The flagship library of NUS located at Forum, housing multidisciplinary research collections, high-tech collaborative spaces, and 24/7 study areas."
   },
 
@@ -56,7 +56,7 @@ export const achievementsData = [
     requirement: 10/60, 
     title: "Sheares Hall", 
     description: "Focused for 10 mins in a single session.", 
-    icon: "/achievements/sheares.png",
+    icon: "/achievements/sheares.png", 
     introduction: "Named after Singapore's second President Dr. Benjamin Sheares, this hall is known for its vibrant culture, leadership initiatives, and strong community spirit."
   },
   { 
@@ -74,7 +74,7 @@ export const achievementsData = [
     requirement: 1, 
     title: "Eusoff Hall", 
     description: "Focused for 1 hour in a single session.", 
-    icon: "/achievements/eusoff.png",
+    icon: "/achievements/eusoff.jpeg",
     introduction: "Renowned for its excellence in sports and performing arts, Eusoff Hall fosters holistic development and lifelong bonds among its residents."
   },
   { 
@@ -112,7 +112,7 @@ export const achievementsData = [
     requirement: 1, 
     title: "Pioneer House", 
     description: "Completed 1 task in a single session.", 
-    icon: "/achievements/pioneer.png",
+    icon: "/achievements/pioneer.png", 
     introduction: "Pioneer House offers a non-meal-plan hostel option that emphasizes personal leadership, self-directed community projects, and cross-cultural exchanges."
   },
   { 
@@ -121,7 +121,7 @@ export const achievementsData = [
     requirement: 3, 
     title: "LightHouse", 
     description: "Completed 3 tasks in a single session.", 
-    icon: "/achievements/lighthouse.png",
+    icon: "/achievements/lighthouse.png", 
     introduction: "A vibrant Student Residence housing community that promotes holistic well-being, peer support networks, and experiential learning."
   },
   { 
@@ -150,7 +150,7 @@ export const achievementsData = [
     requirement: 1, 
     title: "Tembusu College", 
     description: "Completed 1 Pomodoro session.", 
-    icon: "/achievements/tembusu.png",
+    icon: "/achievements/tembusu.jpg", 
     introduction: "Known as the 'Home of Possibilities' at University Town, Tembusu focuses on multidisciplinary learning, active seminars, and critical thinking."
   },
   { 
@@ -159,7 +159,7 @@ export const achievementsData = [
     requirement: 3, 
     title: "CAPT", 
     description: "Completed 3 Pomodoro sessions.", 
-    icon: "/achievements/capt.png",
+    icon: "/achievements/capt.jpg",
     introduction: "College of Alice & Peter Tan integrates active community engagement with academic learning, encouraging students to contribute meaningfully to society."
   },
   { 
@@ -168,7 +168,7 @@ export const achievementsData = [
     requirement: 5, 
     title: "RVRC", 
     description: "Completed 5 Pomodoro sessions.", 
-    icon: "/achievements/rvrc.png",
+    icon: "/achievements/rvrc.jpg",
     introduction: "Ridge View Residential College emphasizes sustainability, environmental stewardship, and workplace readiness integrated into its living-learning curriculum."
   },
   { 
@@ -177,7 +177,7 @@ export const achievementsData = [
     requirement: 10, 
     title: "RC4", 
     description: "Completed 10 Pomodoro sessions.", 
-    icon: "/achievements/rc4.png",
+    icon: "/achievements/rc4.jpg",
     introduction: "Residential College 4 centers its curriculum around Systems Thinking, equipping students to analyze complex socio-technical problems holistically."
   },
   { 
@@ -197,7 +197,7 @@ export const achievementsData = [
     isHidden: true, 
     title: "Freshman", 
     description: "Completed at least one countup and one countdown session.", 
-    icon: "/achievements/freshman.png",
+    icon: "/achievements/freshman.jpeg",
     introduction: "Marking your official induction into NUS campus life—taking your first steps across both flexible study and timed focus sessions."
   },
   { 
@@ -206,7 +206,7 @@ export const achievementsData = [
     isHidden: true, 
     title: "Final Week", 
     description: "Studied for 7 consecutive days.", 
-    icon: "/achievements/final-week.png",
+    icon: "/achievements/final-week.jepg", 
     introduction: "A homage to the legendary Reading Week at NUS, where students across campus pull together to review lectures and prepare for exams."
   },
   { 
@@ -215,7 +215,7 @@ export const achievementsData = [
     isHidden: true, 
     title: "Night Owl", 
     description: "Studied for 2 hours between 12 AM and 4 AM.", 
-    icon: "/achievements/night-owl.png",
+    icon: "/achievements/night-owl.jpg",
     introduction: "Commemorating late-night study sessions at UTown MacCommons or 24-hour study spots across campus under the Singapore night sky."
   },
   { 
@@ -224,7 +224,7 @@ export const achievementsData = [
     isHidden: true, 
     title: "Early Bird", 
     description: "Studied for 1 hour between 4 AM and 7 AM.", 
-    icon: "/achievements/early-bird.png",
+    icon: "/achievements/early-bird.jpeg",
     introduction: "Honoring those who catch the earliest campus shuttles and start their learning journey as Kent Ridge wakes up."
   },
   { 
@@ -242,7 +242,7 @@ export const achievementsData = [
     isHidden: true, 
     title: "Welcome Back", 
     description: "Returned to study after a 1-week break.", 
-    icon: "/achievements/welcome-back.png",
+    icon: "/achievements/welcome-back.png", 
     introduction: "Reflecting the return from a well-deserved Recess Week, recharged and ready to tackle the rest of the semester."
   },
   { 
@@ -251,7 +251,7 @@ export const achievementsData = [
     isHidden: true, 
     title: "Nice to Have a Break", 
     description: "Accumulated 10 hours of study in a single day.", 
-    icon: "/achievements/nice-break.png",
+    icon: "/achievements/nice-break.jpeg",
     introduction: "A tribute to intense assignment marathon days before major project submission deadlines."
   },
 ];
