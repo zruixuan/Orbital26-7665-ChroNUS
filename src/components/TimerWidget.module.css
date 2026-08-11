@@ -1,5 +1,3 @@
-/* src/components/TimerWidget.module.css */
-
 .timerWidgetContainer {
     display: flex;
     flex-direction: column;
@@ -54,7 +52,7 @@
     font-weight: 700;
     text-align: center;
     outline: none;
-    width: 100%;
+    width: 80%;
     padding: 6px;
     transition: all 0.2s ease;
     text-overflow: ellipsis;
@@ -95,30 +93,6 @@
     transform: scale(0.95);
 }
 
-.sessionTitleInput {
-    background: transparent;
-    border: none;
-    border-bottom: 2px dashed #d1d1d6;
-    color: #1d1d1f;
-    font-size: 1.25rem;
-    font-weight: 700;
-    text-align: center;
-    outline: none;
-    width: 80%;
-    padding: 6px;
-    transition: all 0.2s ease;
-}
-
-.sessionTitleInput:focus {
-    border-bottom-style: solid;
-    border-bottom-color: #f15c22;
-}
-
-.sessionTitleInput::placeholder {
-    color: #d1d1d6;
-    font-weight: 500;
-}
-
 .circleWrapper {
     position: relative;
     width: 320px;
@@ -147,11 +121,11 @@
 }
 
 .statusText {
-    font-size: .95rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: #8e8e93;
     text-transform: uppercase;
-    letter-spacing: .12em;
+    letter-spacing: 0.12em;
     margin-bottom: 16px;
 }
 
@@ -163,8 +137,8 @@
         sans-serif;
     font-size: 3.6rem;
     font-weight: 400;
-    line-height: .95;
-    letter-spacing: -.05em;
+    line-height: 0.95;
+    letter-spacing: -0.05em;
     font-variant-numeric: tabular-nums;
     color: #1d1d1f;
     margin: 10px 0 12px;
@@ -246,17 +220,18 @@
     font-weight: 500;
 }
 
-.dotActive {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #f15c22;
-}
-
+.dotActive,
 .dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
+}
+
+.dotActive {
+    background: #f15c22;
+}
+
+.dot {
     border: 2px solid #d1d1d6;
 }
 
@@ -364,81 +339,310 @@
 }
 
 .statsAndFocusContainer {
-  display: flex;
-  gap: 32px;
-  align-items: stretch; 
-  width: 100%;
+    display: flex;
+    gap: 32px;
+    align-items: stretch;
+    width: 100%;
 }
 
 .statsWrapper {
-  flex: 6; 
+    flex: 6;
 }
 
 .focusingWrapper {
-  flex: 4; 
-  background: #ffffff;
-  border-radius: 20px;
-  border: 1px solid #eaeaea;
-  padding: 32px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-  display: flex;
-  flex-direction: column;
+    flex: 4;
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #eaeaea;
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
 }
 
 .focusingTitle {
-  margin: 0 0 20px 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #1d1d1f;
+    margin: 0 0 20px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1d1d1f;
 }
 
 .focusingList {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  overflow-y: auto;
-  max-height: 200px;
-  padding-right: 8px; 
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    max-height: 200px;
+    padding-right: 8px;
 }
 
 .focusingList::-webkit-scrollbar {
-  width: 4px;
+    width: 4px;
 }
+
 .focusingList::-webkit-scrollbar-thumb {
-  background-color: #d1d1d6;
-  border-radius: 4px;
+    background-color: #d1d1d6;
+    border-radius: 4px;
 }
 
 .focusingItem {
-  background: #fff4ed;
-  border-left: 4px solid #f15c22;
-  padding: 12px 16px;
-  border-radius: 8px;
-  transition: transform 0.2s ease;
+    background: #fff4ed;
+    border-left: 4px solid #f15c22;
+    padding: 12px 16px;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
 }
 
 .focusingItem:hover {
-  transform: translateX(4px);
+    transform: translateX(4px);
 }
 
 .focusingItemTitle {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #1d1d1f;
-  margin-bottom: 4px;
-  line-height: 1.3;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin-bottom: 4px;
+    line-height: 1.3;
 }
 
 .focusingItemTime {
-  font-size: 0.8rem;
-  color: #f15c22;
-  font-weight: 600;
+    font-size: 0.8rem;
+    color: #f15c22;
+    font-weight: 600;
 }
 
 .focusingEmpty {
-  color: #86868b;
-  font-size: 0.9rem;
-  font-weight: 500;
-  text-align: center;
-  margin-top: 20px;
+    color: #86868b;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.dialogOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(43, 29, 22, 0.22);
+    backdrop-filter: blur(6px);
+    animation: dialogFadeIn 0.2s ease;
+}
+
+.dialogBox {
+    position: relative;
+    width: 100%;
+    max-width: 430px;
+    padding: 32px;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid rgba(241, 92, 34, 0.14);
+    border-radius: 22px;
+    box-shadow: 0 24px 70px rgba(43, 29, 22, 0.18);
+    text-align: center;
+    animation: dialogPop 0.24s ease;
+}
+
+.dialogClose {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f7;
+    border: none;
+    border-radius: 50%;
+    color: #77777d;
+    font-family: inherit;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.dialogClose:hover {
+    background: #ebebed;
+    color: #f15c22;
+}
+
+.dialogIcon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff0e8;
+    border: 1px solid #f7c6b1;
+    border-radius: 50%;
+    color: #f15c22;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.dialogIconDanger {
+    background: #fff1f0;
+    border-color: #ffc9c5;
+    color: #e5483f;
+}
+
+.dialogTitle {
+    margin: 0;
+    color: #2b1d16;
+    font-size: 24px;
+    font-weight: 750;
+}
+
+.dialogMessage {
+    margin: 10px auto 0;
+    max-width: 340px;
+    color: #77777d;
+    font-size: 14px;
+    line-height: 1.55;
+}
+
+.dialogInputGroup {
+    margin-top: 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dialogInputGroup span {
+    flex-shrink: 0;
+    color: #77777d;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.dialogInput {
+    min-width: 0;
+    width: 100%;
+    height: 46px;
+    padding: 0 14px;
+    box-sizing: border-box;
+    background: #fafafa;
+    border: 1px solid #dedee2;
+    border-radius: 12px;
+    color: #2b1d16;
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+}
+
+.dialogInput:focus {
+    background: #ffffff;
+    border-color: #f15c22;
+    box-shadow: 0 0 0 3px rgba(241, 92, 34, 0.12);
+}
+
+.dialogInputError {
+    border-color: #e5483f;
+}
+
+.dialogError {
+    margin: 8px 0 0;
+    color: #e5483f;
+    font-size: 12px;
+    text-align: left;
+}
+
+.dialogActions {
+    margin-top: 26px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.dialogCancelBtn,
+.dialogConfirmBtn {
+    min-width: 104px;
+    height: 42px;
+    padding: 0 20px;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.dialogCancelBtn {
+    background: #f5f5f7;
+    border: 1px solid #e1e1e5;
+    color: #55555b;
+}
+
+.dialogCancelBtn:hover {
+    background: #ebebed;
+}
+
+.dialogConfirmBtn {
+    background: #f15c22;
+    border: 1px solid #f15c22;
+    color: #ffffff;
+    box-shadow: 0 6px 14px rgba(241, 92, 34, 0.2);
+}
+
+.dialogConfirmBtn:hover {
+    background: #dc4e18;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(241, 92, 34, 0.25);
+}
+
+.dialogDangerBtn {
+    background: #e5483f;
+    border-color: #e5483f;
+    box-shadow: 0 6px 14px rgba(229, 72, 63, 0.2);
+}
+
+.dialogDangerBtn:hover {
+    background: #cf3831;
+    box-shadow: 0 8px 18px rgba(229, 72, 63, 0.25);
+}
+
+@keyframes dialogFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes dialogPop {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 520px) {
+    .dialogBox {
+        padding: 28px 22px 22px;
+    }
+
+    .dialogActions {
+        flex-direction: column-reverse;
+    }
+
+    .dialogCancelBtn,
+    .dialogConfirmBtn {
+        width: 100%;
+    }
 }

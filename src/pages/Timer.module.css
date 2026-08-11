@@ -36,12 +36,12 @@
 }
 
 .content {
-    padding: 48px 64px 60px;
+  padding: 48px 64px 60px;
 
-    background-color: #fafafc;
+  background: transparent;
 
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
 }
 
 .header {

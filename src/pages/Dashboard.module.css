@@ -141,7 +141,7 @@
 /* Main Content */
 .mainContent {
   padding: 40px 60px;
-  background-color: #fafafc;
+  background: transparent;
   flex: 1;
 }
 
