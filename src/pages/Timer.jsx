@@ -41,12 +41,11 @@ function Timer() {
         };
     }, []);
 
-    // Placeholder for future implementation
     const handleViewHistory = () => {
         console.log("History modal or navigation will be triggered here.");
     };
 
-    return (
+        return (
         <div className={styles.pageWrapper}>
             <div className={styles.mainContainer}>
                 <NavBar />
@@ -93,6 +92,16 @@ function Timer() {
                     <section className={styles.achievementsSection}>
                         <AchievementBoard userUnlockedIds={unlockedIds} />
                     </section>
+
+                    <div style={{ 
+                        textAlign: "center", 
+                        fontSize: "0.85rem", 
+                        color: "#86868b", 
+                        marginTop: "2rem", 
+                        paddingBottom: "1rem" 
+                    }}>
+                        Pictures from NUS official websites, Chen Letao，Zheng Kaiyuan，Liu Yuhan and Zhang Hanzhong
+                    </div>
                 </main>
             </div>
 
@@ -102,6 +111,7 @@ function Timer() {
             />
         </div>
     );
+
 }
 
 export default Timer;
