@@ -279,54 +279,69 @@ const handleCalendarDateClick = (dateObj) => {
     setJumpDate("");
   };
 
-  // Mock Data 
-  const tutorialTasks = [
+// Tutorial Tasks
+const getTutorialTasks = (dateStr) => [
+  {
+    id: "tut-1", type: "task",
+    title: "This is dashboard and you can edit your everyday timeline here",
+    detail: "Click on this timeline card to edit the details",
+    deadline: `${dateStr} 10:00`,
+    completed: false,
+    importance: "Important"
+  },
+  {
+    id: "tut-2", type: "task",
+    title: "This is a task (things with a specific deadline)",
+    detail: "You can click on the status box on the right (showing Pending) to change its status for tasks",
+    deadline: `${dateStr} 11:00`,
+    completed: false,
+    importance: "Unimportant"
+  },
+  {
+    id: "tut-3", type: "event",
+    title: "This is a event (things last for a period of time)",
+    detail: "Click on this timeline card and try to set its importance to Unimportant",
+    startTime: `${dateStr} 12:00`,
+    endTime: `${dateStr} 13:00`,
+    importance: "Important"
+  },
+  {
+    id: "tut-4", type: "task",
+    title: "Scroll to the bottom to add a event/task for your own planning",
+    detail: "You can also import your NUSmods course table below",
+    deadline: `${dateStr} 14:00`,
+    completed: false,
+    importance: "Important"
+  },
+  {
+    id: "tut-5", type: "task",
+    title: "Go to Tasks Page to see all your unfinished things now (mark this task as completed once you've done it)",
+    detail: "Use Eisenhower Matrix to better manage your things, finish those that are important and urgent first",
+    deadline: `${dateStr} 15:00`,
+    completed: false,
+    importance: "Important"
+  },
     {
-      id: 1, type: "event",
-      title: "CP2106 Orbital Mission Control #2",
-      detail: "Discuss core features with teammate",
-      startTime: `${getLocalDateString(now)} 10:00`,
-      endTime: `${getLocalDateString(now)} 12:00`,
-      importance: "Important"
-    },
-    {
-      id: 2, type: "task",
-      title: "CS2040 Lecture Review",
-      detail: "Review graph traversal algorithms",
-      deadline: `${getLocalDateString(now)} 14:00`,
-      completed: false,
-      importance: "Unimportant"
-    },
-    {
-      id: 3, type: "task",
-      title: "CP2106 Orbital Web app development: Implement Dashboard feature",
-      detail: "Refactor data schema and UI components",
-      deadline: `${getLocalDateString(now)} 16:00`,
-      completed: false,
-      importance: "Important"
-    },
-    {
-      id: 4, type: "task",
-      title: "Finish CS2040S PS6",
-      detail: "Implement amortized analysis for Union-Find",
-      deadline: `${getLocalDateString(now)} 23:59`,
-      completed: true,
-      importance: "Important"
-    },
-    {
-      id: 5, type: "event",
-      title: "Night walk",
-      detail: "Take your time and have a rest",
-      startTime: `${getLocalDateString(now)} 23:00`,
-      endTime: `${getLocalDateString(now)} 23:59`,
-      importance: "Unimportant"
-    }
-  ];
+    id: "tut-6", type: "task",
+    title: "Go to Timer Page and start a focus session (mark this task as completed once you've done it)",
+    detail: "Focus to unlock the achievement in Timer Page",
+    deadline: `${dateStr} 23:59`,
+    completed: false,
+    importance: "Unimportant"
+  }
+];
 
-  const [tasks, setTasks] = useState(tutorialTasks);
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      let baseDateStr = getLocalDateString(new Date());
+      if (user && user.metadata && user.metadata.creationTime) {
+        baseDateStr = getLocalDateString(new Date(user.metadata.creationTime));
+      }
+
+      const dynamicTutorialTasks = getTutorialTasks(baseDateStr);
+
       if (user) {
         const q = query(collection(db, "tasks"), where("userId", "==", user.uid));
         const unsubscribeSnapshot = onSnapshot(q, (querySnapshot) => {
@@ -334,16 +349,17 @@ const handleCalendarDateClick = (dateObj) => {
           querySnapshot.forEach((doc) => {
             firebaseTasks.push({ id: doc.id, ...doc.data() });
           });
-          setTasks([...tutorialTasks, ...firebaseTasks]);
+          setTasks([...dynamicTutorialTasks, ...firebaseTasks]);
         });
         return () => unsubscribeSnapshot();
       } else {
-        setTasks(tutorialTasks);
+        setTasks(dynamicTutorialTasks);
       }
     });
 
     return () => unsubscribeAuth();
   }, []);
+
 
   // Filtering and Sorting 
   const displayTasks = tasks
@@ -398,7 +414,7 @@ const handleCalendarDateClick = (dateObj) => {
   const handleToggleCompletion = async (taskId, currentStatus) => {
     setTasks(prevTasks => prevTasks.map(t => t.id === taskId ? { ...t, completed: !currentStatus } : t));
 
-    if (typeof taskId === "string") {
+    if (typeof taskId === "string" && !String(taskId).startsWith("tut-")) {
       try {
         const taskRef = doc(db, "tasks", taskId);
         await updateDoc(taskRef, { completed: !currentStatus });
@@ -407,6 +423,7 @@ const handleCalendarDateClick = (dateObj) => {
       }
     }
   };
+
 
   const handleCardClick = (item) => {
     try {
@@ -440,7 +457,8 @@ const handleCalendarDateClick = (dateObj) => {
 
     setTasks(prev => prev.filter(t => t.id !== idToDelete));
 
-    if (typeof idToDelete === "string") {
+    // 拦截 tutorial 数据
+    if (typeof idToDelete === "string" && !String(idToDelete).startsWith("tut-")) {
       try {
         const itemRef = doc(db, "tasks", idToDelete);
         await deleteDoc(itemRef);
@@ -477,9 +495,9 @@ const handleCalendarDateClick = (dateObj) => {
     setIsModalOpen(false);
     setEditingItemId(null);
 
-    try {
+      try {
       if (currentEditingId) {
-        if (typeof currentEditingId === "string") {
+        if (typeof currentEditingId === "string" && !String(currentEditingId).startsWith("tut-")) {
           const itemRef = doc(db, "tasks", currentEditingId);
           await updateDoc(itemRef, itemData);
         } else {
@@ -495,6 +513,7 @@ const handleCalendarDateClick = (dateObj) => {
     } catch (error) {
       console.error("Error saving document: ", error);
     }
+
   };
 
 const handleImportNusmods = async () => {
